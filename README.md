@@ -55,11 +55,10 @@ These instructions will help you set up and run the project on your local machin
    dotnet ef database update --project SpendWise.DAL
    ```
 
-7. **Build and Run the Project**
+7. **Build**
 
    ```bash
    dotnet build
-   dotnet run
    ```
 
 ### Running Tests
