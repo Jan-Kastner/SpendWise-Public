@@ -35,25 +35,30 @@ These instructions will help you set up and run the project on your local machin
 
    Ensure your `.env` file (if needed) is correctly configured with the database connection settings.
 
-4. **Restore Dependencies**
+4. **Change Directory to Project Folder**
+
+   ```bash
+   cd SpendWise
+   ```
+
+5. **Restore Dependencies**
 
    ```bash
    dotnet restore
    ```
 
-5. **Run Migrations**
+6. **Run Migrations**
 
    Apply database migrations to set up the initial schema:
 
    ```bash
-   dotnet ef database update
+   dotnet ef database update --project SpendWise.DAL
    ```
 
-6. **Build and Run the Project**
+7. **Build**
 
    ```bash
    dotnet build
-   dotnet run
    ```
 
 ### Running Tests
