@@ -52,7 +52,7 @@ These instructions will help you set up and run the project on your local machin
    Apply database migrations to set up the initial schema:
 
    ```bash
-   dotnet ef database update
+   dotnet ef database update --project SpendWise.DAL
    ```
 
 7. **Build and Run the Project**
