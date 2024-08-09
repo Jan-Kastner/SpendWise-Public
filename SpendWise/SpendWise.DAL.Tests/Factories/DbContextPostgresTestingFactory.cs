@@ -4,7 +4,7 @@ using System.IO;
 using SpendWise.DAL;
 using Npgsql;
 
-namespace SpendWise.DAL.Factories
+namespace SpendWise.DAL.Tests.Factories
 {
     /// <summary>
     /// Factory class for creating instances of <see cref="SpendWiseDbContext"/> configured for PostgreSQL with a specified database name.

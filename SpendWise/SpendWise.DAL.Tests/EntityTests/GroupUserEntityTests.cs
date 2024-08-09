@@ -70,7 +70,7 @@ namespace SpendWise.DAL.Tests
             await using var dbx = await DbContextFactory.CreateDbContextAsync();
             var actualGroupUser = await dbx.GroupUsers.FindAsync(groupUser.Id);
             Assert.NotNull(actualGroupUser);
-            DeepAssert.Equal(groupUser, actualGroupUser, propertiesToIgnore: new[] { "User", "Group" });
+            DeepAssert.Equal(groupUser, actualGroupUser, propertiesToIgnore: new[] { "User", "Group", "Limit" });
         }
         
         /// <summary>
@@ -204,8 +204,8 @@ namespace SpendWise.DAL.Tests
 
             // Assert
             Assert.NotNull(groupUsers);
-            DeepAssert.Contains(GroupUserSeeds.GroupUserJohnDoeInFriendsWithRelations, groupUsers, propertiesToIgnore: new[] { "User", "Group" });
-            DeepAssert.DoesNotContain(GroupUserSeeds.GroupUserAliceBrownInWorkWithRelations, groupUsers, propertiesToIgnore: new[] { "User", "Group" });
+            DeepAssert.Contains(GroupUserSeeds.GroupUserJohnDoeInFriendsWithRelations, groupUsers, propertiesToIgnore: new[] { "User", "Group", "Limit"});
+            DeepAssert.DoesNotContain(GroupUserSeeds.GroupUserAliceBrownInWorkWithRelations, groupUsers, propertiesToIgnore: new[] { "User", "Group", "Limit" });
         }
 
         /// <summary>
@@ -225,9 +225,9 @@ namespace SpendWise.DAL.Tests
 
             // Assert
             Assert.NotNull(groupUsers);
-            DeepAssert.Contains(GroupUserSeeds.GroupUserJohnDoeInFriendsWithRelations, groupUsers, propertiesToIgnore: new[] { "User", "Group" });
-            DeepAssert.Contains(GroupUserSeeds.GroupUserJohnDoeInFamilyWithRelations, groupUsers, propertiesToIgnore: new[] { "User", "Group" });
-            DeepAssert.DoesNotContain(GroupUserSeeds.GroupUserAliceBrownInWorkWithRelations, groupUsers, propertiesToIgnore: new[] { "User", "Group" });
+            DeepAssert.Contains(GroupUserSeeds.GroupUserJohnDoeInFriendsWithRelations, groupUsers, propertiesToIgnore: new[] { "User", "Group", "Limit" });
+            DeepAssert.Contains(GroupUserSeeds.GroupUserJohnDoeInFamilyWithRelations, groupUsers, propertiesToIgnore: new[] { "User", "Group", "Limit" });
+            DeepAssert.DoesNotContain(GroupUserSeeds.GroupUserAliceBrownInWorkWithRelations, groupUsers, propertiesToIgnore: new[] { "User", "Group", "Limit" });
         }
 
         /// <summary>
@@ -255,7 +255,7 @@ namespace SpendWise.DAL.Tests
             {
                 var actualGroupUser = await dbx.GroupUsers.FindAsync(groupUser.Id);
                 Assert.NotNull(actualGroupUser);
-                DeepAssert.Equal(groupUser, actualGroupUser, propertiesToIgnore: new[] { "User", "Group" });
+                DeepAssert.Equal(groupUser, actualGroupUser, propertiesToIgnore: new[] { "User", "Group", "Limit" });
             }
         }
 

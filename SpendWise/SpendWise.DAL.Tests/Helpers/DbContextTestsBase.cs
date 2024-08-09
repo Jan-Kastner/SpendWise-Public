@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Xunit.Abstractions;
-using SpendWise.DAL.Factories;
+using SpendWise.DAL.Tests.Factories;
 using System;
 using System.Threading.Tasks;
 
