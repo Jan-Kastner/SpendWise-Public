@@ -1,11 +1,7 @@
 using SpendWise.DAL.Entities;
 using SpendWise.DAL.Seeds;
 using Microsoft.EntityFrameworkCore;
-using Xunit;
 using Xunit.Abstractions;
-using System.Linq;
-using System;
-using System.Collections.Generic;
 using SpendWise.DAL.Tests.Helpers;
 
 namespace SpendWise.DAL.Tests
@@ -385,4 +381,3 @@ namespace SpendWise.DAL.Tests
         }
     }
 }
-

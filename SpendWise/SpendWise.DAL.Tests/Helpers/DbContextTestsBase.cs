@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Xunit.Abstractions;
 using SpendWise.DAL.Tests.Factories;
-using System;
-using System.Threading.Tasks;
 
 namespace SpendWise.DAL.Tests.Helpers
 {
