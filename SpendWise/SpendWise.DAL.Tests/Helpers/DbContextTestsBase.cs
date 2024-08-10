@@ -1,25 +1,22 @@
 using Microsoft.EntityFrameworkCore;
+using Xunit;
 using Xunit.Abstractions;
-using SpendWise.DAL.Tests.Factories;
+using Microsoft.Extensions.DependencyInjection;
+using SpendWise.DAL;
+using SpendWise.DAL.Tests.Helpers;
 
 namespace SpendWise.DAL.Tests.Helpers
 {
-    /// <summary>
-    /// Provides a base class for database context tests, handling initialization and disposal of the database context.
-    /// </summary>
     public class DbContextTestsBase : IAsyncLifetime
     {
-        private readonly string _uniqueDbName;
+        private readonly IServiceProvider _serviceProvider;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DbContextTestsBase"/> class.
-        /// </summary>
-        /// <param name="output">The output helper for logging test results.</param>
         public DbContextTestsBase(ITestOutputHelper output)
         {
             Output = output;
-            _uniqueDbName = $"TestDatabase_{Guid.NewGuid()}"; // Unique database name for each test
-            DbContextFactory = new DbContextPostgresTestingFactory(_uniqueDbName, seedTestingData: true);
+
+            _serviceProvider = TestServiceProvider.CreateServiceProvider();
+            DbContextFactory = _serviceProvider.GetRequiredService<IDbContextFactory<SpendWiseDbContext>>();
             SpendWiseDbContextSUT = DbContextFactory.CreateDbContext();
         }
 
@@ -38,18 +35,12 @@ namespace SpendWise.DAL.Tests.Helpers
         /// </summary>
         protected SpendWiseDbContext SpendWiseDbContextSUT { get; }
 
-        /// <summary>
-        /// Initializes the database context for tests by ensuring it is created.
-        /// </summary>
         public async Task InitializeAsync()
         {
             await SpendWiseDbContextSUT.Database.EnsureDeletedAsync();
             await SpendWiseDbContextSUT.Database.EnsureCreatedAsync();
         }
 
-        /// <summary>
-        /// Disposes of the database context and ensures it is deleted after tests are completed.
-        /// </summary>
         public async Task DisposeAsync()
         {
             await SpendWiseDbContextSUT.Database.EnsureDeletedAsync();

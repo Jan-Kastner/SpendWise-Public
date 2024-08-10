@@ -62,20 +62,6 @@ namespace SpendWise.DAL
         public DbSet<TransactionGroupUserEntity> TransactionGroupUsers { get; set; }
 
         /// <summary>
-        /// Configures the context to use Npgsql with retry on failure options.
-        /// </summary>
-        /// <param name="optionsBuilder">The options builder used to configure the context.</param>
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseNpgsql(b => b.EnableRetryOnFailure(
-                maxRetryCount: 5,
-                maxRetryDelay: TimeSpan.FromSeconds(10),
-                errorCodesToAdd: null
-            ));
-        }
-
-        /// <summary>
         /// Configures the model using the provided <see cref="ModelBuilder"/> instance.
         /// </summary>
         /// <param name="modelBuilder">The model builder used to configure the context's model.</param>

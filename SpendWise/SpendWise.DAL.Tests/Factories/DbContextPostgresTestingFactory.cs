@@ -10,8 +10,9 @@ namespace SpendWise.DAL.Tests.Factories
     /// </summary>
     public class DbContextPostgresTestingFactory : IDbContextFactory<SpendWiseDbContext>
     {
-        private readonly string _databaseName;
         private readonly bool _seedTestingData;
+
+        private readonly string _databaseName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DbContextPostgresTestingFactory"/> class.
@@ -20,8 +21,8 @@ namespace SpendWise.DAL.Tests.Factories
         /// <param name="seedTestingData">A boolean indicating whether to seed testing data into the database. Default is <c>false</c>.</param>
         public DbContextPostgresTestingFactory(string databaseName, bool seedTestingData = false)
         {
-            _databaseName = databaseName;
             _seedTestingData = seedTestingData;
+            _databaseName = databaseName;
         }
 
         /// <summary>

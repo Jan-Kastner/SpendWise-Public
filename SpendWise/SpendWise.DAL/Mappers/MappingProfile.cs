@@ -34,6 +34,16 @@ namespace SpendWise.DAL.Mappers
             CreateMap<TransactionGroupUserDto, TransactionGroupUserEntity>();
             CreateMap<TransactionDto, TransactionEntity>();
             CreateMap<UserDto, UserEntity>();
+
+            // Entity to Entity
+            CreateMap<CategoryEntity, CategoryEntity>();
+            CreateMap<GroupEntity, GroupEntity>();
+            CreateMap<GroupUserEntity, GroupUserEntity>();
+            CreateMap<InvitationEntity, InvitationEntity>();
+            CreateMap<LimitEntity, LimitEntity>();
+            CreateMap<TransactionGroupUserEntity, TransactionGroupUserEntity>();
+            CreateMap<TransactionEntity, TransactionEntity>();
+            CreateMap<UserEntity, UserEntity>();
         }
     }
 }
