@@ -6,6 +6,7 @@ using SpendWise.DAL.Tests.Helpers;
 using SpendWise.DAL.DTOs;
 using Microsoft.Extensions.DependencyInjection;
 using AutoMapper;
+using SpendWise.DAL.Repositories;
 
 namespace SpendWise.DAL.Tests
 {
