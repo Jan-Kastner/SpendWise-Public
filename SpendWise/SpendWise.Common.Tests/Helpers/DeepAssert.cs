@@ -1,7 +1,7 @@
 using KellermanSoftware.CompareNetObjects;
 using Xunit;
 
-namespace SpendWise.DAL.Tests.Helpers
+namespace SpendWise.Common.Tests.Helpers
 {
     /// <summary>
     /// Provides methods for performing deep comparison assertions in unit tests.
@@ -35,7 +35,7 @@ namespace SpendWise.DAL.Tests.Helpers
 
             if (collection.Any(item => compareLogic.Compare(expected!, item).AreEqual))
             {
-                Assert.True(false, $"Item found in collection that should not be present: {expected}");
+                Assert.Fail($"Item found in collection that should not be present: {expected}");
             }
         }
         
@@ -63,7 +63,7 @@ namespace SpendWise.DAL.Tests.Helpers
             ComparisonResult comparisonResult = compareLogic.Compare(expected!, actual!);
             if (!comparisonResult.AreEqual)
             {
-                Assert.True(false, comparisonResult.DifferencesString);
+                Assert.Fail(comparisonResult.DifferencesString);
             }
         }
 
@@ -94,7 +94,7 @@ namespace SpendWise.DAL.Tests.Helpers
 
             if (!collection.Any(item => compareLogic.Compare(expected!, item).AreEqual))
             {
-                Assert.True(false, $"Item not found in collection: {expected}");
+                Assert.Fail($"Item not found in collection: {expected}");
             }
         }
     }

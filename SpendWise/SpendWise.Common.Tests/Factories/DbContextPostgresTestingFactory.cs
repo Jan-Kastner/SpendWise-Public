@@ -1,27 +1,23 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using SpendWise.DAL;
 using Npgsql;
+using SpendWise.DAL.dbContext;
 
-namespace SpendWise.DAL.Tests.Factories
+namespace SpendWise.Common.Tests.Factories
 {
     /// <summary>
     /// Factory class for creating instances of <see cref="SpendWiseDbContext"/> configured for PostgreSQL with a specified database name.
     /// </summary>
-    public class DbContextPostgresTestingFactory : IDbContextFactory<SpendWiseDbContext>
+    public class DbContextPostgresTestingFactory : IDbContextFactory<SpendWiseTestDbContext>
     {
-        private readonly bool _seedTestingData;
-
         private readonly string _databaseName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DbContextPostgresTestingFactory"/> class.
         /// </summary>
         /// <param name="databaseName">The name of the PostgreSQL database to connect to.</param>
-        /// <param name="seedTestingData">A boolean indicating whether to seed testing data into the database. Default is <c>false</c>.</param>
-        public DbContextPostgresTestingFactory(string databaseName, bool seedTestingData = false)
+        public DbContextPostgresTestingFactory(string databaseName)
         {
-            _seedTestingData = seedTestingData;
             _databaseName = databaseName;
         }
 
@@ -29,7 +25,7 @@ namespace SpendWise.DAL.Tests.Factories
         /// Creates and configures a new instance of <see cref="SpendWiseDbContext"/> with the specified database name.
         /// </summary>
         /// <returns>A new instance of <see cref="SpendWiseDbContext"/>.</returns>
-        public SpendWiseDbContext CreateDbContext()
+        public SpendWiseTestDbContext CreateDbContext()
         {
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -43,10 +39,10 @@ namespace SpendWise.DAL.Tests.Factories
                 Database = _databaseName
             };
 
-            var optionsBuilder = new DbContextOptionsBuilder<SpendWiseDbContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<SpendWiseTestDbContext>();
             optionsBuilder.UseNpgsql(builder.ConnectionString);
 
-            return new SpendWiseDbContext(optionsBuilder.Options, _seedTestingData);
+            return new SpendWiseTestDbContext(optionsBuilder.Options);
         }
     }
 }

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpendWise.DAL", "SpendWise.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpendWise.DAL.Tests", "SpendWise.DAL.Tests\SpendWise.DAL.Tests.csproj", "{CB12D1F5-E0E1-4BF1-B5D5-DDEE01BAFA4D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpendWise.Common.Tests", "SpendWise.Common.Tests\SpendWise.Common.Tests.csproj", "{565D258A-5B1B-47D4-AABC-14A3B39DCF82}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,5 +30,9 @@ Global
 		{61A10F9E-1940-480E-A984-9EE121569657}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61A10F9E-1940-480E-A984-9EE121569657}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61A10F9E-1940-480E-A984-9EE121569657}.Release|Any CPU.Build.0 = Release|Any CPU
+		{565D258A-5B1B-47D4-AABC-14A3B39DCF82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{565D258A-5B1B-47D4-AABC-14A3B39DCF82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{565D258A-5B1B-47D4-AABC-14A3B39DCF82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{565D258A-5B1B-47D4-AABC-14A3B39DCF82}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

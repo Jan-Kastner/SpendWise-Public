@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 
-namespace SpendWise.DAL.Seeds
+namespace SpendWise.Common.Tests.Seeds
 {
     /// <summary>
     /// Provides seed data for the <see cref="TransactionEntity"/> entity.

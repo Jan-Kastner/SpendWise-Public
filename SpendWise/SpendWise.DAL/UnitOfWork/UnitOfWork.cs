@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using SpendWise.DAL.Entities;
 using SpendWise.DAL.DTOs;
 using SpendWise.DAL.Repositories;
+using SpendWise.DAL.dbContext;
 
 
 namespace SpendWise.DAL.UnitOfWork
@@ -11,7 +12,7 @@ namespace SpendWise.DAL.UnitOfWork
     /// </summary>
     public class UnitOfWork : IUnitOfWork, IAsyncDisposable
     {
-        private readonly SpendWiseDbContext _dbContext;
+        private readonly IDbContext _dbContext;
         private readonly ILogger<UnitOfWork> _logger;
 
         /// <summary>
@@ -71,7 +72,7 @@ namespace SpendWise.DAL.UnitOfWork
         /// <param name="logger">Logger for recording events.</param>
         /// <exception cref="ArgumentNullException">Thrown when any of the parameters is null.</exception>
         public UnitOfWork(
-            SpendWiseDbContext dbContext,
+            IDbContext dbContext,
             IRepository<CategoryEntity, CategoryDto> categories,
             IRepository<GroupUserEntity, GroupUserDto> groupUsers,
             IRepository<InvitationEntity, InvitationDto> invitations,

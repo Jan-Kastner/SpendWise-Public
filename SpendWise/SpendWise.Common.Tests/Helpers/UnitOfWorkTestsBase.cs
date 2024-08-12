@@ -1,49 +1,41 @@
-using System;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Xunit;
 using Xunit.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
-using SpendWise.DAL;
-using SpendWise.DAL.Tests.Helpers;
+using AutoMapper;
+using SpendWise.DAL.UnitOfWork;
+using SpendWise.DAL.dbContext;
 
-namespace SpendWise.DAL.Tests.Helpers
+namespace SpendWise.Common.Tests.Helpers
 {
-    /// <summary>
-    /// Base class for tests that involve <see cref="SpendWiseDbContext"/>.
-    /// Handles the initialization and disposal of the database context for testing.
-    /// </summary>
-    public class DbContextTestsBase : IAsyncLifetime
+    public class UnitOfWorkTestsBase : IAsyncLifetime
     {
+
         private readonly IServiceProvider _serviceProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DbContextTestsBase"/> class.
         /// </summary>
         /// <param name="output">An instance of <see cref="ITestOutputHelper"/> used for logging test output.</param>
-        public DbContextTestsBase(ITestOutputHelper output)
+        public UnitOfWorkTestsBase(ITestOutputHelper output)
         {
             Output = output ?? throw new ArgumentNullException(nameof(output));
 
             _serviceProvider = TestServiceProvider.CreateServiceProvider();
-            DbContextFactory = _serviceProvider.GetRequiredService<IDbContextFactory<SpendWiseDbContext>>();
-            SpendWiseDbContextSUT = DbContextFactory.CreateDbContext();
+
+            _SpendWiseDbContextSUT = _serviceProvider.GetRequiredService<IDbContext>();
+
+            _mapper = _serviceProvider.GetRequiredService<IMapper>();
+
+            _unitOfWork = _serviceProvider.GetRequiredService<IUnitOfWork>();
         }
 
         /// <summary>
         /// Gets the output helper used for logging test results.
         /// </summary>
         protected ITestOutputHelper Output { get; }
+        private IDbContext _SpendWiseDbContextSUT { get; }
 
-        /// <summary>
-        /// Gets the factory used to create instances of <see cref="SpendWiseDbContext"/>.
-        /// </summary>
-        protected IDbContextFactory<SpendWiseDbContext> DbContextFactory { get; }
-
-        /// <summary>
-        /// Gets the instance of <see cref="SpendWiseDbContext"/> used in tests.
-        /// </summary>
-        protected SpendWiseDbContext SpendWiseDbContextSUT { get; }
+        protected IMapper _mapper {get; }
+        protected IUnitOfWork _unitOfWork {get; }
 
         /// <summary>
         /// Initializes the database for testing by ensuring it is deleted and then created.
@@ -52,8 +44,8 @@ namespace SpendWise.DAL.Tests.Helpers
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task InitializeAsync()
         {
-            await SpendWiseDbContextSUT.Database.EnsureDeletedAsync();
-            await SpendWiseDbContextSUT.Database.EnsureCreatedAsync();
+            await _SpendWiseDbContextSUT.Database.EnsureDeletedAsync();
+            await _SpendWiseDbContextSUT.Database.EnsureCreatedAsync();
         }
 
         /// <summary>
@@ -63,8 +55,8 @@ namespace SpendWise.DAL.Tests.Helpers
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task DisposeAsync()
         {
-            await SpendWiseDbContextSUT.Database.EnsureDeletedAsync();
-            await SpendWiseDbContextSUT.DisposeAsync();
+            await _SpendWiseDbContextSUT.Database.EnsureDeletedAsync();
+            await _unitOfWork.DisposeAsync();
         }
     }
 }

@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace SpendWise.DAL.Seeds
+namespace SpendWise.Common.Tests.Seeds
 {
     /// <summary>
     /// Provides extension methods for the <see cref="ModelBuilder"/> class to apply seed data.

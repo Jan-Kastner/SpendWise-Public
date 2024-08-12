@@ -1,7 +1,7 @@
 using SpendWise.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace SpendWise.DAL.Seeds
+namespace SpendWise.Common.Tests.Seeds
 {
     /// <summary>
     /// Provides seed data for the <see cref="InvitationEntity"/> entity.

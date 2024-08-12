@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using SpendWise.DAL;
+using SpendWise.DAL.dbContext;
 using System.IO;
 
 namespace SpendWise.DAL.Factories
@@ -34,6 +34,6 @@ namespace SpendWise.DAL.Factories
         /// Creates and configures a new instance of <see cref="SpendWiseDbContext"/>.
         /// </summary>
         /// <returns>A new instance of <see cref="SpendWiseDbContext"/>.</returns>
-        public SpendWiseDbContext CreateDbContext() => new(_contextOptionsBuilder.Options, _seedTestingData);
+        public SpendWiseDbContext CreateDbContext() => new(_contextOptionsBuilder.Options);
     }
 }

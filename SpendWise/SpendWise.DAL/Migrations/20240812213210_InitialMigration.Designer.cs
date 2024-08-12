@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using SpendWise.DAL;
+using SpendWise.DAL.dbContext;
 
 #nullable disable
 
 namespace SpendWise.DAL.Migrations
 {
     [DbContext(typeof(SpendWiseDbContext))]
-    [Migration("20240810101713_InitialMigration")]
+    [Migration("20240812213210_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />

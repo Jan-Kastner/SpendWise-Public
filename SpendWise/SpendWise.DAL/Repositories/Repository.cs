@@ -2,6 +2,7 @@
 using SpendWise.DAL.Entities;
 using SpendWise.DAL.DTOs;
 using Microsoft.EntityFrameworkCore;
+using SpendWise.DAL.dbContext;
 
 namespace SpendWise.DAL.Repositories
 {
@@ -14,7 +15,7 @@ namespace SpendWise.DAL.Repositories
         where TEntity : class, IEntity
         where TDto : class, IDto
     {
-        private readonly SpendWiseDbContext _dbContext;
+        private readonly IDbContext _dbContext;
         private readonly DbSet<TEntity> _dbSet;
         private readonly IMapper _mapper;
 
@@ -23,7 +24,7 @@ namespace SpendWise.DAL.Repositories
         /// </summary>
         /// <param name="dbContext">The DbContext instance used for database access.</param>
         /// <param name="mapper">The AutoMapper instance used for mapping between entities and DTOs.</param>
-        public Repository(SpendWiseDbContext dbContext, IMapper mapper)
+        public Repository(IDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _dbSet = dbContext.Set<TEntity>();
@@ -68,17 +69,14 @@ namespace SpendWise.DAL.Repositories
         /// </summary>
         /// <param name="dto">The DTO representing the entity to insert.</param>
         /// <returns>A task representing the asynchronous operation, containing the inserted DTO.</returns>
-        public async Task<TDto> InsertAsync(TDto dto)
+        public Task<TDto> InsertAsync(TDto dto)
         {
             // Map DTO to entity
             var entity = _mapper.Map<TEntity>(dto);
             _dbSet.Add(entity);
             
-            // Save changes to the database
-            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
-            
             // Return the inserted DTO
-            return _mapper.Map<TDto>(entity);
+            return Task.FromResult(_mapper.Map<TDto>(entity));
         }
 
         /// <summary>
@@ -94,9 +92,6 @@ namespace SpendWise.DAL.Repositories
             // Map updated values from entity to existing entity
             _mapper.Map(entity, existingEntity);
 
-            // Save changes to the database
-            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
-
             // Return the updated DTO
             return _mapper.Map<TDto>(existingEntity);
         }
@@ -111,9 +106,6 @@ namespace SpendWise.DAL.Repositories
             // Find the entity to delete
             var entity = await _dbSet.SingleAsync(i => i.Id == entityId).ConfigureAwait(false);
             _dbSet.Remove(entity);
-            
-            // Save changes to the database
-            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }

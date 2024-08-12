@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
-using SpendWise.DAL;
+using SpendWise.DAL.dbContext;
 using System.IO;
 
 namespace SpendWise.DAL.Factories
@@ -27,7 +27,7 @@ namespace SpendWise.DAL.Factories
             var optionsBuilder = new DbContextOptionsBuilder<SpendWiseDbContext>();
             optionsBuilder.UseNpgsql(connectionString);
 
-            return new SpendWiseDbContext(optionsBuilder.Options, false);
+            return new SpendWiseDbContext(optionsBuilder.Options);
         }
     }
 }
