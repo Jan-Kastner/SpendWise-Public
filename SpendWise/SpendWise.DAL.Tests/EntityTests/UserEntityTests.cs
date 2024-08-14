@@ -50,7 +50,7 @@ namespace SpendWise.DAL.Tests
             // Arrange
             var baseTime = DateTime.UtcNow;
             baseTime = new DateTime(
-                baseTime.Ticks - (baseTime.Ticks % TimeSpan.TicksPerMillisecond), 
+                baseTime.Ticks - (baseTime.Ticks % TimeSpan.TicksPerMillisecond),
                 DateTimeKind.Utc
             );
 
@@ -255,7 +255,7 @@ namespace SpendWise.DAL.Tests
             // Arrange
             var baseTime = DateTime.UtcNow;
             baseTime = new DateTime(
-                baseTime.Ticks - (baseTime.Ticks % TimeSpan.TicksPerMillisecond), 
+                baseTime.Ticks - (baseTime.Ticks % TimeSpan.TicksPerMillisecond),
                 DateTimeKind.Utc
             );
             var expectedUsers = Enumerable.Range(0, 10).Select(i => new UserEntity
@@ -469,7 +469,7 @@ namespace SpendWise.DAL.Tests
 
             var remainingInvitationCount = await SpendWiseDbContextSUT.Invitations
                 .CountAsync(i => i.ReceiverId == user.Id);
-                
+
             Assert.Equal(0, remainingInvitationCount); // Verify no invitations are left
         }
 
@@ -500,7 +500,7 @@ namespace SpendWise.DAL.Tests
 
             var remainingGroupUserCount = await SpendWiseDbContextSUT.GroupUsers
                 .CountAsync(gu => gu.UserId == user.Id);
-                
+
             // Verify the user has only one remaining group user record
             Assert.Equal(0, remainingGroupUserCount);
         }
@@ -530,7 +530,7 @@ namespace SpendWise.DAL.Tests
 
             var remainingInvitationCount = await SpendWiseDbContextSUT.Invitations
                 .CountAsync(i => i.SenderId == user.Id);
-                
+
             Assert.Equal(0, remainingInvitationCount); // Verify there are no remaining invitations
         }
 
@@ -625,7 +625,7 @@ namespace SpendWise.DAL.Tests
             // Assert
             var remainingInvitationCount = await SpendWiseDbContextSUT.Invitations
                 .CountAsync(i => i.ReceiverId == user.Id || i.SenderId == user.Id);
-                
+
             Assert.Equal(0, remainingInvitationCount); // Verify no invitations are left
         }
 

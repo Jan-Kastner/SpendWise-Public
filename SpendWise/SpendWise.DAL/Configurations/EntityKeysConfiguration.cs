@@ -30,7 +30,7 @@ namespace SpendWise.DAL.Configurations
                 .HasKey(c => c.Id);
 
             // Configuration for LimitEntity
-            modelBuilder.Entity<LimitEntity>() 
+            modelBuilder.Entity<LimitEntity>()
                 // Sets Id as the primary key for LimitEntity
                 .HasKey(l => l.Id);
 

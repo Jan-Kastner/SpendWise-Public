@@ -114,7 +114,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionEntity"/> representing a transaction for Admin Food with related entities.
+        /// A seed instance of <see cref="TransactionEntity"/> representing a transaction for Admin Food 
+        /// with related entities.
         /// </summary>
         public static readonly TransactionEntity TransactionAdminFoodWithRelations = TransactionAdminFood with
         {
@@ -126,7 +127,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionEntity"/> representing a transaction for John Doe Transport with related entities.
+        /// A seed instance of <see cref="TransactionEntity"/> representing a transaction for John Doe Transport 
+        /// with related entities.
         /// </summary>
         public static readonly TransactionEntity TransactionJohnDoeTransportWithRelations = TransactionJohnDoeTransport with
         {
@@ -139,7 +141,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionEntity"/> representing a transaction for Minus 30 Hours with related entities.
+        /// A seed instance of <see cref="TransactionEntity"/> representing a transaction for Minus 30 Hours 
+        /// with related entities.
         /// </summary>
         public static readonly TransactionEntity TransactionMinus30HoursWithRelations = TransactionMinus30Hours with
         {
@@ -151,7 +154,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionEntity"/> representing a transaction for Minus 28 Hours with related entities.
+        /// A seed instance of <see cref="TransactionEntity"/> representing a transaction for Minus 28 Hours 
+        /// with related entities.
         /// </summary>
         public static readonly TransactionEntity TransactionMinus28HoursWithRelations = TransactionMinus28Hours with
         {
@@ -163,7 +167,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionEntity"/> representing a transaction for Minus 26 Hours with related entities.
+        /// A seed instance of <see cref="TransactionEntity"/> representing a transaction for Minus 26 Hours 
+        /// with related entities.
         /// </summary>
         public static readonly TransactionEntity TransactionMinus26HoursWithRelations = TransactionMinus26Hours with
         {
@@ -175,7 +180,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionEntity"/> representing a transaction for Minus 24 Hours with related entities.
+        /// A seed instance of <see cref="TransactionEntity"/> representing a transaction for Minus 24 Hours 
+        /// with related entities.
         /// </summary>
         public static readonly TransactionEntity TransactionMinus24HoursWithRelations = TransactionMinus24Hours with
         {
@@ -187,7 +193,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionEntity"/> representing a transaction for Minus 22 Hours with related entities.
+        /// A seed instance of <see cref="TransactionEntity"/> representing a transaction for Minus 22 Hours 
+        /// with related entities.
         /// </summary>
         public static readonly TransactionEntity TransactionMinus22HoursWithRelations = TransactionMinus22Hours with
         {
@@ -199,7 +206,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionEntity"/> representing a transaction for Deletion with related entities.
+        /// A seed instance of <see cref="TransactionEntity"/> representing a transaction for Deletion 
+        /// with related entities.
         /// </summary>
         public static readonly TransactionEntity TransactionDeleteWithRelations = TransactionDelete with
         {

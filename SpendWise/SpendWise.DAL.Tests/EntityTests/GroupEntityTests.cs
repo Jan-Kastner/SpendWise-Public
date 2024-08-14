@@ -8,7 +8,8 @@ namespace SpendWise.DAL.Tests
 {
     /// <summary>
     /// Unit tests for operations related to the <see cref="GroupEntity"/> class.
-    /// This class inherits from <see cref="DbContextTestsBase"/> to leverage common database context setup and teardown functionality.
+    /// This class inherits from <see cref="DbContextTestsBase"/> to leverage common database context setup and 
+    /// teardown functionality.
     /// </summary>
     public class GroupEntityTests : DbContextTestsBase
     {
@@ -37,7 +38,15 @@ namespace SpendWise.DAL.Tests
 
             // Assert
             Assert.NotNull(group);
-            DeepAssert.Equal(expectedGroup, group, propertiesToIgnore: new[] { "GroupUsers", "Invitations" });
+            DeepAssert.Equal(
+                expectedGroup,
+                group,
+                propertiesToIgnore: new[]
+                {
+                    "GroupUsers",
+                    "Invitations"
+                }
+            );
         }
 
         /// <summary>
@@ -62,7 +71,15 @@ namespace SpendWise.DAL.Tests
             // Assert
             var actualGroup = await SpendWiseDbContextSUT.Groups.FindAsync(newGroup.Id);
             Assert.NotNull(actualGroup);
-            DeepAssert.Equal(newGroup, actualGroup, propertiesToIgnore: new[] { "GroupUsers", "Invitations" });
+            DeepAssert.Equal(
+                newGroup,
+                actualGroup,
+                propertiesToIgnore: new[]
+                {
+                    "GroupUsers",
+                    "Invitations"
+                }
+            );
         }
 
         /// <summary>
@@ -132,18 +149,52 @@ namespace SpendWise.DAL.Tests
             Assert.NotNull(fetchedGroup);
             Assert.NotNull(fetchedGroup.GroupUsers);
             Assert.NotNull(fetchedGroup.Invitations);
-            
+
             // Verify the count of related entities
             Assert.True(fetchedGroup.GroupUsers.Count > 0);
             Assert.True(fetchedGroup.Invitations.Count > 0);
 
             // Verify the content of the navigation properties
-            DeepAssert.Contains(GroupUserSeeds.GroupUserAdminInFamily, fetchedGroup.GroupUsers, propertiesToIgnore: new[] { "User", "Group", "Limit", "Transactions"});
-            DeepAssert.Contains(GroupUserSeeds.GroupUserJohnDoeInFamily, fetchedGroup.GroupUsers, propertiesToIgnore: new[] { "User", "Group", "Limit", "Transactions"});
-            DeepAssert.Contains(InvitationSeeds.InvitationAdminToJohnDoeIntoFamily, fetchedGroup.Invitations, propertiesToIgnore: new[] { "Sender", "Reciever", "Group"});
+            DeepAssert.Contains(
+                GroupUserSeeds.GroupUserAdminInFamily,
+                fetchedGroup.GroupUsers,
+                propertiesToIgnore: new[]
+                {
+                    "User",
+                    "Group",
+                    "Limit",
+                    "Transactions"
+                }
+            );
+
+            DeepAssert.Contains(
+                GroupUserSeeds.GroupUserJohnDoeInFamily,
+                fetchedGroup.GroupUsers,
+                propertiesToIgnore: new[]
+                {
+                    "User",
+                    "Group",
+                    "Limit",
+                    "Transactions"
+                }
+            );
+
+            DeepAssert.Contains(
+                InvitationSeeds.InvitationAdminToJohnDoeIntoFamily,
+                fetchedGroup.Invitations,
+                propertiesToIgnore: new[]
+                {
+                    "Sender",
+                    "Reciever",
+                    "Group"
+                }
+            );
+
         }
+
         /// <summary>
-        /// Tests that adding a group with the maximum allowed field lengths correctly stores the <see cref="GroupEntity"/> in the database.
+        /// Tests that adding a group with the maximum allowed field lengths correctly stores 
+        /// the <see cref="GroupEntity"/> in the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
@@ -169,7 +220,8 @@ namespace SpendWise.DAL.Tests
         }
 
         /// <summary>
-        /// Tests that adding multiple groups concurrently correctly persists all <see cref="GroupEntity"/> records in the database.
+        /// Tests that adding multiple groups concurrently correctly persists 
+        /// all <see cref="GroupEntity"/> records in the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
@@ -216,12 +268,17 @@ namespace SpendWise.DAL.Tests
 
             // Act & Assert
             SpendWiseDbContextSUT.Groups.Update(invalidGroup);
-            var exception = await Assert.ThrowsAsync<DbUpdateException>(async () => await SpendWiseDbContextSUT.SaveChangesAsync());
+
+            var exception = await Assert.ThrowsAsync<DbUpdateException>(
+                async () => await SpendWiseDbContextSUT.SaveChangesAsync()
+            );
+
             Assert.NotNull(exception);
         }
 
         /// <summary>
-        /// Tests that retrieving groups by a name containing a specific substring returns the correct <see cref="GroupEntity"/> records.
+        /// Tests that retrieving groups by a name containing a specific substring returns the correct 
+        /// <see cref="GroupEntity"/> records.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
@@ -239,8 +296,10 @@ namespace SpendWise.DAL.Tests
             Assert.NotNull(groups);
             Assert.All(groups, group => Assert.Contains(substring, group.Name));
         }
+
         /// <summary>
-        /// Tests that retrieving groups by a description containing a specific substring returns the correct <see cref="GroupEntity"/> records.
+        /// Tests that retrieving groups by a description containing a specific substring returns the correct 
+        /// <see cref="GroupEntity"/> records.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
@@ -260,7 +319,8 @@ namespace SpendWise.DAL.Tests
         }
 
         /// <summary>
-        /// Tests that fetching a group with its related users correctly sets up the relationship between the group and its users.
+        /// Tests that fetching a group with its related users correctly sets up the relationship between 
+        /// the group and its users.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
@@ -281,7 +341,8 @@ namespace SpendWise.DAL.Tests
         }
 
         /// <summary>
-        /// Tests that deleting a group from the database correctly removes associated <see cref="GroupUserEntity"/> and <see cref="InvitationEntity"/> records.
+        /// Tests that deleting a group from the database correctly removes associated 
+        /// <see cref="GroupUserEntity"/> and <see cref="InvitationEntity"/> records.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
@@ -316,6 +377,6 @@ namespace SpendWise.DAL.Tests
                 .Where(i => i.GroupId == existingGroup.Id)
                 .ToListAsync();
             Assert.Empty(remainingInvitations);
-        }    
+        }
     }
 }

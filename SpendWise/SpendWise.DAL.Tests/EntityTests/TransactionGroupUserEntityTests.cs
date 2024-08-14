@@ -66,7 +66,7 @@ namespace SpendWise.DAL.Tests
             Assert.NotNull(actualEntity);
             DeepAssert.Equal(entity, actualEntity);
         }
-        
+
         /// <summary>
         /// Tests that changes to an existing transaction group user are persisted correctly.
         /// </summary>
@@ -142,7 +142,7 @@ namespace SpendWise.DAL.Tests
                 GroupUserSeeds.GroupUserAdminInFamily,
                 GroupUserSeeds.GroupUserJohnDoeInFamily
             };
-            
+
             var expectedTransactionGroupUsers = new List<TransactionGroupUserEntity>
             {
                 TransactionGroupUserSeeds.TransactionGroupUserAdminInFamilyForMinus22Hours,
@@ -160,9 +160,9 @@ namespace SpendWise.DAL.Tests
             var groupUsers = await SpendWiseDbContextSUT.GroupUsers
                 .Where(gu => gu.GroupId == groupId)
                 .ToListAsync();
-            
+
             var groupUserIds = groupUsers.Select(gu => gu.Id).ToList();
-            
+
             var transactionGroupUsers = await SpendWiseDbContextSUT.TransactionGroupUsers
                 .Where(tgu => groupUserIds.Contains(tgu.GroupUserId))
                 .ToListAsync();
@@ -225,7 +225,7 @@ namespace SpendWise.DAL.Tests
             Assert.NotNull(transactionGroupUser);
             Assert.NotNull(transactionGroupUser.Transaction);
             Assert.NotNull(transactionGroupUser.GroupUser);
-            DeepAssert.Equal(existingTransactionGroupUser.Transaction, transactionGroupUser.Transaction, propertiesToIgnore: new[] { "TransactionGroupUsers", "Category"});
+            DeepAssert.Equal(existingTransactionGroupUser.Transaction, transactionGroupUser.Transaction, propertiesToIgnore: new[] { "TransactionGroupUsers", "Category" });
             DeepAssert.Equal(existingTransactionGroupUser.GroupUser, transactionGroupUser.GroupUser, propertiesToIgnore: new[] { "Limit", "Group", "TransactionGroupUsers", "User" });
         }
 

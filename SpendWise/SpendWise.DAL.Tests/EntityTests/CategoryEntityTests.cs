@@ -65,6 +65,7 @@ namespace SpendWise.DAL.Tests
             // Assert
             await using var dbx = await DbContextFactory.CreateDbContextAsync();
             var actualCategory = await dbx.Categories.FindAsync(category.Id);
+
             Assert.NotNull(actualCategory);
             DeepAssert.Equal(category, actualCategory, propertiesToIgnore: new[] { "Transactions" });
         }
@@ -203,8 +204,17 @@ namespace SpendWise.DAL.Tests
             // Deep assert to compare each expected transaction within the Transactions navigation property
             foreach (var expectedTransaction in expectedTransactions)
             {
-                DeepAssert.Contains(expectedTransaction, category.Transactions, propertiesToIgnore: new[] { "Category", "TransactionGroupUsers" });
+                DeepAssert.Contains(
+                    expectedTransaction,
+                    category.Transactions,
+                    propertiesToIgnore: new[]
+                    {
+                        "Category",
+                        "TransactionGroupUsers"
+                    }
+                );
             }
+
         }
         /// <summary>
         /// Tests that adding multiple categories concurrently persists all categories correctly in the database.
@@ -289,12 +299,27 @@ namespace SpendWise.DAL.Tests
         {
             // Arrange
             var initialCount = await SpendWiseDbContextSUT.Categories.CountAsync();
-            
+
             var newCategories = new[]
             {
-                new CategoryEntity { Id = Guid.NewGuid(), Name = "CategoryA", Description = "Desc A", Color = "#ff0000", Icon = null },
-                new CategoryEntity { Id = Guid.NewGuid(), Name = "CategoryB", Description = "Desc B", Color = "#00ff00", Icon = null }
+                new CategoryEntity
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "CategoryA",
+                    Description = "Desc A",
+                    Color = "#ff0000",
+                    Icon = null
+                },
+                new CategoryEntity
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "CategoryB",
+                    Description = "Desc B",
+                    Color = "#00ff00",
+                    Icon = null
+                }
             };
+
 
             // Act
             SpendWiseDbContextSUT.Categories.AddRange(newCategories);
@@ -323,21 +348,21 @@ namespace SpendWise.DAL.Tests
 
             var testCategories = new[]
             {
-                new CategoryEntity 
-                { 
-                    Id = Guid.NewGuid(), 
-                    Name = "B Category", 
-                    Description = "Desc B", 
-                    Color = "#ff0000", 
-                    Icon = null 
+                new CategoryEntity
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "B Category",
+                    Description = "Desc B",
+                    Color = "#ff0000",
+                    Icon = null
                 },
-                new CategoryEntity 
-                { 
-                    Id = Guid.NewGuid(), 
-                    Name = "A Category", 
-                    Description = "Desc A", 
-                    Color = "#00ff00", 
-                    Icon = null 
+                new CategoryEntity
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "A Category",
+                    Description = "Desc A",
+                    Color = "#00ff00",
+                    Icon = null
                 }
             };
 
@@ -428,8 +453,10 @@ namespace SpendWise.DAL.Tests
             Assert.Equal(expectedOrder, actualOrder);
         }
         /// <summary>
-        /// Tests that deleting a category properly maintains database integrity by verifying that associated transactions are handled correctly.
-        /// Specifically, it ensures that the category is removed, transactions previously linked to the deleted category have their CategoryId set to null, and no transactions still reference the deleted category's ID.
+        /// Tests that deleting a category properly maintains database integrity by verifying that associated 
+        /// transactions are handled correctly.
+        /// Specifically, it ensures that the category is removed, transactions previously linked to the deleted 
+        /// category have their CategoryId set to null, and no transactions still reference the deleted category's ID.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
@@ -444,7 +471,7 @@ namespace SpendWise.DAL.Tests
                 .Where(c => c.Id == existingCategoryId)
                 .Include(c => c.Transactions)
                 .SingleOrDefaultAsync();
-            
+
             // Check if the category exists before deleting
             Assert.NotNull(categoryToDelete);
 
@@ -481,7 +508,8 @@ namespace SpendWise.DAL.Tests
 
         /// <summary>
         /// Tests that categories with descriptions containing a specific substring are returned correctly.
-        /// Verifies that categories with descriptions matching the search substring are included in the results, while others are not.
+        /// Verifies that categories with descriptions matching the search substring are included 
+        /// in the results, while others are not.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
@@ -512,16 +540,33 @@ namespace SpendWise.DAL.Tests
                 .ToListAsync();
 
             // Assert
-            Assert.Contains(result, c => c.Id == categoryFood.Id && c.Description?.Contains(searchDescriptionPart) == true); 
-            Assert.Contains(result, c => c.Id == additionalCategory.Id && c.Description?.Contains(searchDescriptionPart) == true);
-            Assert.DoesNotContain(result, c => c.Id == categoryTransport.Id && c.Description?.Contains(searchDescriptionPart) == true);
+            Assert.Contains(
+                result,
+                c => c.Id == categoryFood.Id &&
+                    c.Description?.Contains(searchDescriptionPart) == true
+            );
+
+            Assert.Contains(
+                result,
+                c => c.Id == additionalCategory.Id &&
+                    c.Description?.Contains(searchDescriptionPart) == true
+            );
+
+            Assert.DoesNotContain(
+                result,
+                c => c.Id == categoryTransport.Id &&
+                    c.Description?.Contains(searchDescriptionPart) == true
+            );
+
 
             Assert.Equal(2, result.Count);
         }
 
         /// <summary>
-        /// Tests that adding a category with the maximum allowed length for fields correctly stores the data in the database.
-        /// Verifies that categories with maximum field lengths are stored correctly and can be retrieved with the correct values.
+        /// Tests that adding a category with the maximum allowed length for fields correctly stores the data 
+        /// in the database.
+        /// Verifies that categories with maximum field lengths are stored correctly and can be retrieved with 
+        /// the correct values.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
@@ -554,7 +599,8 @@ namespace SpendWise.DAL.Tests
 
         /// <summary>
         /// Tests that categories are returned correctly when searching by a partial name.
-        /// Verifies that categories whose names contain the search substring are included in the results, while those that do not are excluded.
+        /// Verifies that categories whose names contain the search substring are included 
+        /// in the results, while those that do not are excluded.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
@@ -591,15 +637,16 @@ namespace SpendWise.DAL.Tests
                 .ToListAsync();
 
             // Assert
-            Assert.Contains(result, c => c.Id == additionalCategory1.Id); // "Catering"
-            Assert.Contains(result, c => c.Id == additionalCategory2.Id); // "Cathedral Services"
-            Assert.DoesNotContain(result, c => c.Id == CategorySeeds.CategoryFood.Id); // "Food" should not match
-            Assert.DoesNotContain(result, c => c.Id == CategorySeeds.CategoryTransport.Id); // "Transport" should not match
+            Assert.Contains(result, c => c.Id == additionalCategory1.Id);
+            Assert.Contains(result, c => c.Id == additionalCategory2.Id);
+            Assert.DoesNotContain(result, c => c.Id == CategorySeeds.CategoryFood.Id);
+            Assert.DoesNotContain(result, c => c.Id == CategorySeeds.CategoryTransport.Id);
         }
 
         /// <summary>
         /// Tests that categories are returned correctly when searching by a range of colors.
-        /// Verifies that categories whose colors fall within the specified range are included in the results, while others are excluded.
+        /// Verifies that categories whose colors fall within the specified range are included in the results, while 
+        /// others are excluded.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
@@ -628,7 +675,7 @@ namespace SpendWise.DAL.Tests
                 Icon = null
             };
 
-            await SpendWiseDbContextSUT.Categories.AddRangeAsync(new[] { category1, category2});
+            await SpendWiseDbContextSUT.Categories.AddRangeAsync(new[] { category1, category2 });
             await SpendWiseDbContextSUT.SaveChangesAsync();
 
             // Act

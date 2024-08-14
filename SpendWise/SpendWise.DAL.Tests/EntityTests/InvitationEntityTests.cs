@@ -49,7 +49,7 @@ namespace SpendWise.DAL.Tests
         {
             var baseTime = DateTime.UtcNow;
             baseTime = new DateTime(
-                baseTime.Ticks - (baseTime.Ticks % TimeSpan.TicksPerMillisecond), 
+                baseTime.Ticks - (baseTime.Ticks % TimeSpan.TicksPerMillisecond),
                 DateTimeKind.Utc
             );
             // Arrange
@@ -87,7 +87,7 @@ namespace SpendWise.DAL.Tests
         {
             var baseTime = DateTime.UtcNow;
             baseTime = new DateTime(
-                baseTime.Ticks - (baseTime.Ticks % TimeSpan.TicksPerMillisecond), 
+                baseTime.Ticks - (baseTime.Ticks % TimeSpan.TicksPerMillisecond),
                 DateTimeKind.Utc
             );
             // Arrange
@@ -233,7 +233,7 @@ namespace SpendWise.DAL.Tests
             // Arrange
             var baseTime = DateTime.UtcNow;
             baseTime = new DateTime(
-                baseTime.Ticks - (baseTime.Ticks % TimeSpan.TicksPerMillisecond), 
+                baseTime.Ticks - (baseTime.Ticks % TimeSpan.TicksPerMillisecond),
                 DateTimeKind.Utc
             );
             var invitations = Enumerable.Range(0, 10).Select(_ => new InvitationEntity

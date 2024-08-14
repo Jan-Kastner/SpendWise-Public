@@ -8,14 +8,17 @@ namespace SpendWise.DAL.Tests
 {
     /// <summary>
     /// Unit tests for operations related to the <see cref="GroupUserEntity"/> class.
-    /// This class inherits from <see cref="DbContextTestsBase"/> to utilize shared database context setup and teardown functionality.
+    /// This class inherits from <see cref="DbContextTestsBase"/> to utilize shared database context setup 
+    /// and teardown functionality.
     /// </summary>
     public class GroupUserEntityTests : DbContextTestsBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="GroupUserEntityTests"/> class.
         /// </summary>
-        /// <param name="output">An <see cref="ITestOutputHelper"/> instance for capturing and displaying test output.</param>
+        /// <param name="output">
+        /// An <see cref="ITestOutputHelper"/> instance for capturing and displaying test output.
+        /// </param>
         public GroupUserEntityTests(ITestOutputHelper output) : base(output)
         {
         }
@@ -38,7 +41,16 @@ namespace SpendWise.DAL.Tests
 
             // Assert
             Assert.NotNull(groupUser);
-            DeepAssert.Equal(expectedGroupUser, groupUser, propertiesToIgnore: new[] { "Group", "User", "Limit"});
+            DeepAssert.Equal(
+                expectedGroupUser,
+                groupUser,
+                propertiesToIgnore: new[]
+                {
+                    "Group",
+                    "User",
+                    "Limit"
+                }
+            );
         }
 
         /// <summary>
@@ -65,10 +77,20 @@ namespace SpendWise.DAL.Tests
             // Assert
             await using var dbx = await DbContextFactory.CreateDbContextAsync();
             var actualGroupUser = await dbx.GroupUsers.FindAsync(groupUser.Id);
+
             Assert.NotNull(actualGroupUser);
-            DeepAssert.Equal(groupUser, actualGroupUser, propertiesToIgnore: new[] { "User", "Group", "Limit" });
+            DeepAssert.Equal(
+                groupUser,
+                actualGroupUser,
+                propertiesToIgnore: new[]
+                {
+                    "User",
+                    "Group",
+                    "Limit"
+                }
+            );
         }
-        
+
         /// <summary>
         /// Tests that updating an existing group user entity with new values persists the changes correctly.
         /// </summary>
@@ -167,20 +189,43 @@ namespace SpendWise.DAL.Tests
 
             // Act
             var fetchedGroupUser = await SpendWiseDbContextSUT.GroupUsers
-                .Include(gu => gu.User) 
-                .Include(gu => gu.Group) 
-                .Include(gu => gu.Limit) 
+                .Include(gu => gu.User)
+                .Include(gu => gu.Group)
+                .Include(gu => gu.Limit)
                 .FirstOrDefaultAsync(gu => gu.Id == groupUser.Id);
 
             // Assert
             Assert.NotNull(fetchedGroupUser);
             Assert.NotNull(fetchedGroupUser.User);
-            Assert.NotNull(fetchedGroupUser.Group); 
-            Assert.NotNull(fetchedGroupUser.Limit); 
-            Assert.NotNull(groupUser.Limit); 
-            DeepAssert.Equal(groupUser.User, fetchedGroupUser.User, propertiesToIgnore: new[] { "SentInvitations", "ReceivedInvitations", "GroupUsers" });
-            DeepAssert.Equal(groupUser.Group, fetchedGroupUser.Group, propertiesToIgnore: new[] { "GroupUsers", "Invitations" });
-            Assert.Equal(groupUser.Limit.Id, fetchedGroupUser.Limit.Id); 
+            Assert.NotNull(fetchedGroupUser.Group);
+            Assert.NotNull(fetchedGroupUser.Limit);
+            Assert.NotNull(groupUser.Limit);
+
+            DeepAssert.Equal(
+                groupUser.User,
+                fetchedGroupUser.User,
+                propertiesToIgnore: new[]
+                {
+                    "SentInvitations",
+                    "ReceivedInvitations",
+                    "GroupUsers"
+                }
+            );
+
+            DeepAssert.Equal(
+                groupUser.Group,
+                fetchedGroupUser.Group,
+                propertiesToIgnore: new[]
+                {
+                    "GroupUsers",
+                    "Invitations"
+                }
+            );
+
+            Assert.Equal(
+                groupUser.Limit.Id,
+                fetchedGroupUser.Limit.Id
+            );
         }
 
         /// <summary>
@@ -200,8 +245,27 @@ namespace SpendWise.DAL.Tests
 
             // Assert
             Assert.NotNull(groupUsers);
-            DeepAssert.Contains(GroupUserSeeds.GroupUserJohnDoeInFriendsWithRelations, groupUsers, propertiesToIgnore: new[] { "User", "Group", "Limit"});
-            DeepAssert.DoesNotContain(GroupUserSeeds.GroupUserAliceBrownInWorkWithRelations, groupUsers, propertiesToIgnore: new[] { "User", "Group", "Limit" });
+            DeepAssert.Contains(
+                GroupUserSeeds.GroupUserJohnDoeInFriendsWithRelations,
+                groupUsers,
+                propertiesToIgnore: new[]
+                {
+                    "User",
+                    "Group",
+                    "Limit"
+                }
+            );
+
+            DeepAssert.DoesNotContain(
+                GroupUserSeeds.GroupUserAliceBrownInWorkWithRelations,
+                groupUsers,
+                propertiesToIgnore: new[]
+                {
+                    "User",
+                    "Group",
+                    "Limit"
+                }
+            );
         }
 
         /// <summary>
@@ -221,9 +285,38 @@ namespace SpendWise.DAL.Tests
 
             // Assert
             Assert.NotNull(groupUsers);
-            DeepAssert.Contains(GroupUserSeeds.GroupUserJohnDoeInFriendsWithRelations, groupUsers, propertiesToIgnore: new[] { "User", "Group", "Limit" });
-            DeepAssert.Contains(GroupUserSeeds.GroupUserJohnDoeInFamilyWithRelations, groupUsers, propertiesToIgnore: new[] { "User", "Group", "Limit" });
-            DeepAssert.DoesNotContain(GroupUserSeeds.GroupUserAliceBrownInWorkWithRelations, groupUsers, propertiesToIgnore: new[] { "User", "Group", "Limit" });
+            DeepAssert.Contains(
+                GroupUserSeeds.GroupUserJohnDoeInFriendsWithRelations,
+                groupUsers,
+                propertiesToIgnore: new[]
+                {
+                    "User",
+                    "Group",
+                    "Limit"
+                }
+            );
+
+            DeepAssert.Contains(
+                GroupUserSeeds.GroupUserJohnDoeInFamilyWithRelations,
+                groupUsers,
+                propertiesToIgnore: new[]
+                {
+                    "User",
+                    "Group",
+                    "Limit"
+                }
+            );
+
+            DeepAssert.DoesNotContain(
+                GroupUserSeeds.GroupUserAliceBrownInWorkWithRelations,
+                groupUsers,
+                propertiesToIgnore: new[]
+                {
+                    "User",
+                    "Group",
+                    "Limit"
+                }
+            );
         }
 
         /// <summary>
@@ -236,9 +329,30 @@ namespace SpendWise.DAL.Tests
             // Arrange
             var groupUsers = new List<GroupUserEntity>
             {
-                new GroupUserEntity { Id = Guid.NewGuid(), UserId = UserSeeds.UserAdmin.Id, GroupId = GroupSeeds.GroupWork.Id, User = null!, Group = null! },
-                new GroupUserEntity { Id = Guid.NewGuid(), UserId = UserSeeds.UserAdmin.Id, GroupId = GroupSeeds.GroupFriends.Id, User = null!, Group = null! },
-                new GroupUserEntity { Id = Guid.NewGuid(), UserId = UserSeeds.UserAliceBrown.Id, GroupId = GroupSeeds.GroupFamily.Id, User = null!, Group = null! },
+                new GroupUserEntity
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = UserSeeds.UserAdmin.Id,
+                    GroupId = GroupSeeds.GroupWork.Id,
+                    User = null!,
+                    Group = null!
+                },
+                new GroupUserEntity
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = UserSeeds.UserAdmin.Id,
+                    GroupId = GroupSeeds.GroupFriends.Id,
+                    User = null!,
+                    Group = null!
+                },
+                new GroupUserEntity
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = UserSeeds.UserAliceBrown.Id,
+                    GroupId = GroupSeeds.GroupFamily.Id,
+                    User = null!,
+                    Group = null!
+                }
             };
 
             // Act
@@ -251,7 +365,16 @@ namespace SpendWise.DAL.Tests
             {
                 var actualGroupUser = await dbx.GroupUsers.FindAsync(groupUser.Id);
                 Assert.NotNull(actualGroupUser);
-                DeepAssert.Equal(groupUser, actualGroupUser, propertiesToIgnore: new[] { "User", "Group", "Limit" });
+                DeepAssert.Equal(
+                    groupUser,
+                    actualGroupUser,
+                    propertiesToIgnore: new[]
+                    {
+                        "User",
+                        "Group",
+                        "Limit"
+                    }
+                );
             }
         }
 
@@ -275,7 +398,9 @@ namespace SpendWise.DAL.Tests
 
             // Act & Assert
             SpendWiseDbContextSUT.GroupUsers.Update(invalidGroupUser);
-            var exception = await Assert.ThrowsAsync<DbUpdateException>(async () => await SpendWiseDbContextSUT.SaveChangesAsync());
+            var exception = await Assert.ThrowsAsync<DbUpdateException>(async () =>
+                await SpendWiseDbContextSUT.SaveChangesAsync()
+            );
             Assert.NotNull(exception);
         }
 
@@ -299,7 +424,9 @@ namespace SpendWise.DAL.Tests
 
             // Act & Assert
             SpendWiseDbContextSUT.GroupUsers.Update(invalidGroupUser);
-            var exception = await Assert.ThrowsAsync<DbUpdateException>(async () => await SpendWiseDbContextSUT.SaveChangesAsync());
+            var exception = await Assert.ThrowsAsync<DbUpdateException>(async () =>
+                await SpendWiseDbContextSUT.SaveChangesAsync()
+            );
             Assert.NotNull(exception);
         }
 
@@ -351,33 +478,33 @@ namespace SpendWise.DAL.Tests
             await SpendWiseDbContextSUT.SaveChangesAsync();
 
             // Assert: Check that the GroupUserEntity has been removed
-            using (var dbx = await DbContextFactory.CreateDbContextAsync())
-            {
-                var removedGroupUser = await dbx.GroupUsers.FindAsync(existingGroupUser.Id);
-                Assert.Null(removedGroupUser);
+            await using var dbx = await DbContextFactory.CreateDbContextAsync();
 
-                // Assert: Verify the group and user still exist
-                var remainingGroup = await dbx.Groups
-                    .Include(g => g.GroupUsers)
-                    .FirstOrDefaultAsync(g => g.Id == existingGroupUser.GroupId);
-                Assert.NotNull(remainingGroup);
-                Assert.Single(remainingGroup.GroupUsers); // Ensure only one user left
+            var removedGroupUser = await dbx.GroupUsers.FindAsync(existingGroupUser.Id);
+            Assert.Null(removedGroupUser);
 
-                var remainingUser = await dbx.Users
-                    .FirstOrDefaultAsync(u => u.Id == existingGroupUser.UserId);
-                Assert.NotNull(remainingUser);
+            // Assert: Verify the group and user still exist
+            var remainingGroup = await dbx.Groups
+                .Include(g => g.GroupUsers)
+                .FirstOrDefaultAsync(g => g.Id == existingGroupUser.GroupId);
+            Assert.NotNull(remainingGroup);
+            Assert.Single(remainingGroup.GroupUsers); // Ensure only one user left
 
-                // Assert: Verify the limit has been removed
-                var removedLimit = await dbx.Limits
-                    .FirstOrDefaultAsync(l => l.GroupUserId == existingGroupUser.Id);
-                Assert.Null(removedLimit);
+            var remainingUser = await dbx.Users
+                .FirstOrDefaultAsync(u => u.Id == existingGroupUser.UserId);
+            Assert.NotNull(remainingUser);
 
-                // Assert: Verify all related TransactionGroupUserEntities are removed
-                var transactionGroupUsers = await dbx.TransactionGroupUsers
-                    .Where(tgu => tgu.GroupUserId == existingGroupUser.Id)
-                    .ToListAsync();
-                Assert.Empty(transactionGroupUsers); // All should be removed
-            }
+            // Assert: Verify the limit has been removed
+            var removedLimit = await dbx.Limits
+                .FirstOrDefaultAsync(l => l.GroupUserId == existingGroupUser.Id);
+            Assert.Null(removedLimit);
+
+            // Assert: Verify all related TransactionGroupUserEntities are removed
+            var transactionGroupUsers = await dbx.TransactionGroupUsers
+                .Where(tgu => tgu.GroupUserId == existingGroupUser.Id)
+                .ToListAsync();
+            Assert.Empty(transactionGroupUsers); // All should be removed
         }
+
     }
 }

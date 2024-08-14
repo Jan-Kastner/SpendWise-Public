@@ -37,15 +37,19 @@ namespace SpendWise.DAL.Configurations
                     tb.HasCheckConstraint("CK_InvitationEntity_SentDate", "\"SentDate\" <= NOW()");
 
                     // Ensures ResponseDate is either null or greater than or equal to SentDate
-                    tb.HasCheckConstraint("CK_InvitationEntity_ResponseDate", "\"ResponseDate\" IS NULL OR \"ResponseDate\" >= \"SentDate\"");
+                    tb.HasCheckConstraint(
+                        "CK_InvitationEntity_ResponseDate",
+                        "\"ResponseDate\" IS NULL OR \"ResponseDate\" >= \"SentDate\"");
 
                     // Ensures IsAccepted is either true, false, or null
-                    tb.HasCheckConstraint("CK_InvitationEntity_IsAccepted", "\"IsAccepted\" IS NULL OR \"IsAccepted\" IN (true, false)");
+                    tb.HasCheckConstraint(
+                        "CK_InvitationEntity_IsAccepted",
+                        "\"IsAccepted\" IS NULL OR \"IsAccepted\" IN (true, false)");
                 });
             });
 
             // Configuration for the LimitEntity
-            modelBuilder.Entity<LimitEntity>(entity => 
+            modelBuilder.Entity<LimitEntity>(entity =>
             {
                 entity.ToTable(tb =>
                 {
@@ -63,7 +67,9 @@ namespace SpendWise.DAL.Configurations
                 entity.ToTable(tb =>
                 {
                     // Ensures Date_of_registration is less than or equal to the current date and time
-                    tb.HasCheckConstraint("CK_UserEntity_Date_of_registration", "\"Date_of_registration\" <= NOW()");
+                    tb.HasCheckConstraint(
+                        "CK_UserEntity_Date_of_registration",
+                        "\"Date_of_registration\" <= NOW()");
                 });
             });
 
@@ -73,7 +79,9 @@ namespace SpendWise.DAL.Configurations
                 entity.ToTable(tb =>
                 {
                     // Ensures Name is not null and has a length greater than 0
-                    tb.HasCheckConstraint("CK_GroupEntity_Name", "\"Name\" IS NOT NULL AND LENGTH(\"Name\") > 0");
+                    tb.HasCheckConstraint(
+                        "CK_GroupEntity_Name",
+                        "\"Name\" IS NOT NULL AND LENGTH(\"Name\") > 0");
                 });
             });
         }

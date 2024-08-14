@@ -57,7 +57,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="GroupUserEntity"/> representing an admin user in the family group with related entities.
+        /// A seed instance of <see cref="GroupUserEntity"/> representing an admin user in the family group 
+        /// with related entities.
         /// </summary>
         public static readonly GroupUserEntity GroupUserAdminInFamilyWithRelations = GroupUserAdminInFamily with
         {
@@ -67,7 +68,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="GroupUserEntity"/> representing John Doe as a user in the friends group with related entities.
+        /// A seed instance of <see cref="GroupUserEntity"/> representing John Doe as a user in the friends group 
+        /// with related entities.
         /// </summary>
         public static readonly GroupUserEntity GroupUserJohnDoeInFriendsWithRelations = GroupUserJohnDoeInFriends with
         {
@@ -76,7 +78,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="GroupUserEntity"/> representing John Doe as a user in the family group with related entities.
+        /// A seed instance of <see cref="GroupUserEntity"/> representing John Doe as a user in the family group 
+        /// with related entities.
         /// </summary>
         public static readonly GroupUserEntity GroupUserJohnDoeInFamilyWithRelations = GroupUserJohnDoeInFamily with
         {
@@ -85,7 +88,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="GroupUserEntity"/> representing Alice Brown as a user in the work group with related entities.
+        /// A seed instance of <see cref="GroupUserEntity"/> representing Alice Brown as a user in the work group 
+        /// with related entities.
         /// </summary>
         public static readonly GroupUserEntity GroupUserAliceBrownInWorkWithRelations = GroupUserAliceBrownInWork with
         {

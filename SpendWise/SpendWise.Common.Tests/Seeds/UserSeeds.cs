@@ -85,7 +85,7 @@ namespace SpendWise.Common.Tests.Seeds
         /// </summary>
         public static readonly UserEntity UserAdminWithRelations = UserAdmin with
         {
-            ReceivedInvitations = new List<InvitationEntity>()            
+            ReceivedInvitations = new List<InvitationEntity>()
             {
                 InvitationSeeds.InvitationJohnDoeToAdminIntoFriends
             },

@@ -6,16 +6,20 @@ using SpendWise.DAL.dbContext;
 namespace SpendWise.Common.Tests.Factories
 {
     /// <summary>
-    /// Factory class for creating instances of <see cref="SpendWiseDbContext"/> configured for PostgreSQL with a specified database name.
+    /// Factory class for creating instances of <see cref="SpendWiseDbContext"/> 
+    /// configured for PostgreSQL with a specified database name.
     /// </summary>
-    public class DbContextPostgresTestingFactory : IDbContextFactory<SpendWiseTestDbContext>
+    public class DbContextPostgresTestingFactory :
+        IDbContextFactory<SpendWiseTestDbContext>
     {
         private readonly string _databaseName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DbContextPostgresTestingFactory"/> class.
         /// </summary>
-        /// <param name="databaseName">The name of the PostgreSQL database to connect to.</param>
+        /// <param name="databaseName">
+        /// The name of the PostgreSQL database to connect to.
+        /// </param>
         public DbContextPostgresTestingFactory(string databaseName)
         {
             _databaseName = databaseName;
@@ -24,7 +28,9 @@ namespace SpendWise.Common.Tests.Factories
         /// <summary>
         /// Creates and configures a new instance of <see cref="SpendWiseDbContext"/> with the specified database name.
         /// </summary>
-        /// <returns>A new instance of <see cref="SpendWiseDbContext"/>.</returns>
+        /// <returns>
+        /// A new instance of <see cref="SpendWiseDbContext"/>.
+        /// </returns>
         public SpendWiseTestDbContext CreateDbContext()
         {
             var configuration = new ConfigurationBuilder()

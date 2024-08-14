@@ -11,7 +11,8 @@ namespace SpendWise.Common.Tests.Seeds
     public static class TransactionGroupUserSeeds
     {
         /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for Admin in the family group for Admin Food.
+        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for Admin 
+        /// in the family group for Admin Food.
         /// </summary>
         public static readonly TransactionGroupUserEntity TransactionGroupUserAdminInFamilyForAdminFood = new()
         {
@@ -23,7 +24,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe in the friends group for John Doe Transport.
+        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe 
+        /// in the friends group for John Doe Transport.
         /// </summary>
         public static readonly TransactionGroupUserEntity TransactionGroupUserJohnDoeInFriendsForJohnDoeTransport = new()
         {
@@ -35,7 +37,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe in the family group for John Doe Transport.
+        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe 
+        /// in the family group for John Doe Transport.
         /// </summary>
         public static readonly TransactionGroupUserEntity TransactionGroupUserJohnDoeInFamilyForJohnDoeTransport = new()
         {
@@ -47,7 +50,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe in the family group for Minus 30 Hours.
+        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe 
+        /// in the family group for Minus 30 Hours.
         /// </summary>
         public static readonly TransactionGroupUserEntity TransactionGroupUserJohnDoeInFamilyForMinus30Hours = new()
         {
@@ -59,7 +63,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe in the family group for Minus 28 Hours.
+        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe 
+        /// in the family group for Minus 28 Hours.
         /// </summary>
         public static readonly TransactionGroupUserEntity TransactionGroupUserJohnDoeInFamilyForMinus28Hours = new()
         {
@@ -71,7 +76,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe in the family group for Minus 26 Hours.
+        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe 
+        /// in the family group for Minus 26 Hours.
         /// </summary>
         public static readonly TransactionGroupUserEntity TransactionGroupUserJohnDoeInFamilyForMinus26Hours = new()
         {
@@ -83,7 +89,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for Admin in the family group for Minus 24 Hours.
+        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for Admin 
+        /// in the family group for Minus 24 Hours.
         /// </summary>
         public static readonly TransactionGroupUserEntity TransactionGroupUserAdminInFamilyForMinus24Hours = new()
         {
@@ -95,7 +102,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for Admin in the family group for Minus 22 Hours.
+        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for Admin 
+        /// in the family group for Minus 22 Hours.
         /// </summary>
         public static readonly TransactionGroupUserEntity TransactionGroupUserAdminInFamilyForMinus22Hours = new()
         {
@@ -107,7 +115,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for Admin in the family group for Deletion.
+        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for Admin 
+        /// in the family group for Deletion.
         /// </summary>
         public static readonly TransactionGroupUserEntity TransactionGroupUserAdminInFamilyForDelete = new()
         {
@@ -119,7 +128,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for Admin in the family group for Admin Food with related entities.
+        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for Admin 
+        /// in the family group for Admin Food with related entities.
         /// </summary>
         public static readonly TransactionGroupUserEntity TransactionGroupUserAdminInFamilyForAdminFoodWithRelations = TransactionGroupUserAdminInFamilyForAdminFood with
         {
@@ -128,7 +138,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe in the friends group for John Doe Transport with related entities.
+        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe 
+        /// in the friends group for John Doe Transport with related entities.
         /// </summary>
         public static readonly TransactionGroupUserEntity TransactionGroupUserJohnDoeInFriendsForJohnDoeTransportWithRelations = TransactionGroupUserJohnDoeInFriendsForJohnDoeTransport with
         {
@@ -137,7 +148,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe in the family group for Minus 30 Hours with related entities.
+        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe 
+        /// in the family group for Minus 30 Hours with related entities.
         /// </summary>
         public static readonly TransactionGroupUserEntity TransactionGroupUserJohnDoeInFamilyForMinus30HoursWithRelations = TransactionGroupUserJohnDoeInFamilyForMinus30Hours with
         {
@@ -146,7 +158,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe in the family group for Minus 28 Hours with related entities.
+        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe 
+        /// in the family group for Minus 28 Hours with related entities.
         /// </summary>
         public static readonly TransactionGroupUserEntity TransactionGroupUserJohnDoeInFamilyForMinus28HoursWithRelations = TransactionGroupUserJohnDoeInFamilyForMinus28Hours with
         {
@@ -155,7 +168,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe in the family group for Minus 26 Hours with related entities.
+        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe 
+        /// in the family group for Minus 26 Hours with related entities.
         /// </summary>
         public static readonly TransactionGroupUserEntity TransactionGroupUserJohnDoeInFamilyForMinus26HoursWithRelations = TransactionGroupUserJohnDoeInFamilyForMinus26Hours with
         {
@@ -164,7 +178,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for Admin in the family group for Minus 24 Hours with related entities.
+        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for Admin 
+        /// in the family group for Minus 24 Hours with related entities.
         /// </summary>
         public static readonly TransactionGroupUserEntity TransactionGroupUserAdminInFamilyForMinus24HoursWithRelations = TransactionGroupUserAdminInFamilyForMinus24Hours with
         {
@@ -173,7 +188,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for Admin in the family group for Minus 22 Hours with related entities.
+        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for Admin 
+        /// in the family group for Minus 22 Hours with related entities.
         /// </summary>
         public static readonly TransactionGroupUserEntity TransactionGroupUserAdminInFamilyForMinus22HoursWithRelations = TransactionGroupUserAdminInFamilyForMinus22Hours with
         {
@@ -182,7 +198,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for Admin in the family group for Deletion with related entities.
+        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for Admin 
+        /// in the family group for Deletion with related entities.
         /// </summary>
         public static readonly TransactionGroupUserEntity TransactionGroupUserAdminInFamilyForDeleteWithRelations = TransactionGroupUserAdminInFamilyForDelete with
         {
@@ -191,7 +208,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe in the family group for John Doe Transport with related entities.
+        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe 
+        /// in the family group for John Doe Transport with related entities.
         /// </summary>
         public static readonly TransactionGroupUserEntity TransactionGroupUserJohnDoeInFamilyForJohnDoeTransportWithRelations = TransactionGroupUserJohnDoeInFamilyForJohnDoeTransport with
         {

@@ -61,6 +61,6 @@ namespace SpendWise.DAL.Configurations
                 entity.HasIndex(i => i.SentDate)
                     .HasDatabaseName("IX_InvitationEntity_SentDate");
             });
-        } 
+        }
     }
 }

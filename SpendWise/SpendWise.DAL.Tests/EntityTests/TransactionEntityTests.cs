@@ -29,7 +29,7 @@ namespace SpendWise.DAL.Tests
             // Arrange
             var baseTime = DateTime.UtcNow;
             baseTime = new DateTime(
-                baseTime.Ticks - (baseTime.Ticks % TimeSpan.TicksPerMillisecond), 
+                baseTime.Ticks - (baseTime.Ticks % TimeSpan.TicksPerMillisecond),
                 DateTimeKind.Utc
             );
 
@@ -67,11 +67,11 @@ namespace SpendWise.DAL.Tests
                 .SingleAsync(t => t.Id == transaction.Id);
 
             // Verify all properties except Category if necessary
-            DeepAssert.Equal(transaction, actualTransaction, propertiesToIgnore: new[] { "Category", "TransactionGroupUsers"});
+            DeepAssert.Equal(transaction, actualTransaction, propertiesToIgnore: new[] { "Category", "TransactionGroupUsers" });
             Assert.NotEmpty(actualTransaction.TransactionGroupUsers);
-            DeepAssert.Contains(transactionGroupUser, actualTransaction.TransactionGroupUsers, propertiesToIgnore: new[] { "Transaction", "GroupUser"});
+            DeepAssert.Contains(transactionGroupUser, actualTransaction.TransactionGroupUsers, propertiesToIgnore: new[] { "Transaction", "GroupUser" });
             Assert.NotNull(actualTransaction.Category);
-            DeepAssert.Equal(CategorySeeds.CategoryTransport, actualTransaction.Category, propertiesToIgnore: new[] {"Transactions"});
+            DeepAssert.Equal(CategorySeeds.CategoryTransport, actualTransaction.Category, propertiesToIgnore: new[] { "Transactions" });
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace SpendWise.DAL.Tests
             var relatedTransactionGroupUsers = await SpendWiseDbContextSUT.TransactionGroupUsers
                 .Where(tgu => tgu.TransactionId == baseEntity.Id)
                 .ToListAsync();
-            
+
             Assert.NotEmpty(relatedTransactionGroupUsers);
 
             // Act
@@ -101,7 +101,7 @@ namespace SpendWise.DAL.Tests
             // Assert
             // Verify that the transaction has been removed
             Assert.False(await SpendWiseDbContextSUT.Transactions.AnyAsync(i => i.Id == baseEntity.Id));
-            
+
             // Verify that all associated TransactionGroupUserEntities have been removed
             var deletedTransactionGroupUsers = await SpendWiseDbContextSUT.TransactionGroupUsers
                 .Where(tgu => tgu.TransactionId == baseEntity.Id)
@@ -311,7 +311,7 @@ namespace SpendWise.DAL.Tests
 
                 var actualTransactionGroupUser = actualTransaction.TransactionGroupUsers.SingleOrDefault(tgu => tgu.Id == expectedTransactionGroupUser.Id);
                 Assert.NotNull(actualTransactionGroupUser);
-                
+
                 DeepAssert.Equal(expectedTransaction, actualTransaction, propertiesToIgnore: new[] { "Category", "TransactionGroupUsers" });
                 DeepAssert.Equal(expectedTransactionGroupUser, actualTransactionGroupUser, propertiesToIgnore: new[] { "Transaction", "GroupUser" });
             }

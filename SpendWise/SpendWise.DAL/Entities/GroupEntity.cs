@@ -11,13 +11,13 @@ namespace SpendWise.DAL.Entities
         /// Gets or sets the unique identifier for the group.
         /// </summary>
         public required Guid Id { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the name of the group. Must be at least 2 characters long.
         /// </summary>
         [MinLength(2)]
         public required string Name { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the description of the group. Can be null.
         /// </summary>

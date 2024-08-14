@@ -157,7 +157,7 @@ namespace SpendWise.DAL.Configurations
                     .WithOne(gu => gu.Limit)
                     .HasForeignKey<LimitEntity>(l => l.GroupUserId)
                     .OnDelete(DeleteBehavior.Cascade);
-            });   
+            });
         }
     }
 }

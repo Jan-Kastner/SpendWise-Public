@@ -14,19 +14,23 @@ namespace SpendWise.Common.Tests.Helpers
         /// <summary>
         /// Creates and configures an <see cref="IServiceProvider"/> for use in unit tests.
         /// </summary>
-        /// <returns>An <see cref="IServiceProvider"/> configured with the necessary services for testing.</returns>
+        /// <returns>
+        /// An <see cref="IServiceProvider"/> configured with the necessary services for testing.
+        /// </returns>
         public static IServiceProvider CreateServiceProvider()
         {
             var services = new ServiceCollection();
 
             // Configure the database context factory with a test database.
             services.AddScoped<IDbContextFactory<SpendWiseTestDbContext>>(provider =>
-                new DbContextPostgresTestingFactory($"TestDatabase_{Guid.NewGuid()}"));
+                new DbContextPostgresTestingFactory(
+                    $"TestDatabase_{Guid.NewGuid()}"));
 
             // Register the DbContext using the factory.
             services.AddScoped<IDbContext>(provider =>
             {
-                var factory = provider.GetRequiredService<IDbContextFactory<SpendWiseTestDbContext>>();
+                var factory = provider.GetRequiredService<
+                    IDbContextFactory<SpendWiseTestDbContext>>();
                 return factory.CreateDbContext();
             });
 

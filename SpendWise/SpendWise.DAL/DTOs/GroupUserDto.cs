@@ -9,7 +9,7 @@ namespace SpendWise.DAL.DTOs
         /// Gets or sets the unique identifier for the group-user relationship.
         /// </summary>
         public required Guid Id { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the unique identifier for the user.
         /// </summary>

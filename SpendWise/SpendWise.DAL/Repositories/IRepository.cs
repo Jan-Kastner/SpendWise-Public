@@ -1,5 +1,6 @@
 using SpendWise.DAL.DTOs;
 using SpendWise.DAL.Entities;
+using System.Linq.Expressions;
 namespace SpendWise.DAL.Repositories
 {
     /// <summary>
@@ -16,7 +17,7 @@ namespace SpendWise.DAL.Repositories
         /// Retrieves all entities from the database as DTOs.
         /// </summary>
         /// <returns>A queryable collection of DTOs representing all entities.</returns>
-        IQueryable<TDto> Get();
+        public IQueryable<TDto> Get(Expression<Func<TEntity, bool>>? predicate = null);
 
         /// <summary>
         /// Retrieves an entity by its unique identifier and returns it as a DTO.

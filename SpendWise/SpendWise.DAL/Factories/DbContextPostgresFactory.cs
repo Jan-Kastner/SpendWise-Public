@@ -20,12 +20,12 @@ namespace SpendWise.DAL.Factories
         public DbContextPostgresFactory(bool seedTestingData = false)
         {
             _seedTestingData = seedTestingData;
-            
+
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
                 .Build();
-                
+
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             _contextOptionsBuilder.UseNpgsql(connectionString);
         }

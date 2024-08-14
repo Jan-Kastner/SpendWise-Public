@@ -11,24 +11,24 @@ namespace SpendWise.DAL.Entities
         /// Gets or sets the unique identifier for the category.
         /// </summary>
         public required Guid Id { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the name of the category. Must be at least 2 characters long.
         /// </summary>
         [MinLength(2)]
         public required string Name { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the description of the category. Can be null.
         /// </summary>
         public string? Description { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the color associated with the category. Must be at most 9 characters long.
         /// </summary>
         [MaxLength(9)]
         public required string Color { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the icon for the category. Can be null.
         /// </summary>

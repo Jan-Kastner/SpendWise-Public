@@ -3,6 +3,8 @@ using SpendWise.DAL.Entities;
 using SpendWise.DAL.DTOs;
 using Microsoft.EntityFrameworkCore;
 using SpendWise.DAL.dbContext;
+using System.Linq.Expressions;
+
 
 namespace SpendWise.DAL.Repositories
 {
@@ -31,15 +33,18 @@ namespace SpendWise.DAL.Repositories
             _mapper = mapper;
         }
 
-        /// <summary>
-        /// Retrieves all entities from the database as DTOs.
-        /// </summary>
-        /// <returns>A queryable collection of DTOs representing all entities.</returns>
-        public IQueryable<TDto> Get()
+        public IQueryable<TDto> Get(Expression<Func<TEntity, bool>>? predicate = null)
         {
-            // Map entities to DTOs
-            return _dbSet.Select(entity => _mapper.Map<TDto>(entity));
+            IQueryable<TEntity> query = _dbSet;
+
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+
+            return query.Select(entity => _mapper.Map<TDto>(entity));
         }
+
 
         /// <summary>
         /// Retrieves an entity by its unique identifier and returns it as a DTO.
@@ -74,7 +79,7 @@ namespace SpendWise.DAL.Repositories
             // Map DTO to entity
             var entity = _mapper.Map<TEntity>(dto);
             _dbSet.Add(entity);
-            
+
             // Return the inserted DTO
             return Task.FromResult(_mapper.Map<TDto>(entity));
         }
@@ -103,8 +108,11 @@ namespace SpendWise.DAL.Repositories
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task DeleteAsync(Guid entityId)
         {
-            // Find the entity to delete
-            var entity = await _dbSet.SingleAsync(i => i.Id == entityId).ConfigureAwait(false);
+            var entity = await _dbSet.FirstOrDefaultAsync(i => i.Id == entityId).ConfigureAwait(false);
+            if (entity == null)
+            {
+                throw new KeyNotFoundException($"Entity with ID {entityId} not found.");
+            }
             _dbSet.Remove(entity);
         }
     }

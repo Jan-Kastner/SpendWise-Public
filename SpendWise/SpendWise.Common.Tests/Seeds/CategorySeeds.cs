@@ -49,7 +49,8 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="CategoryEntity"/> with related transactions for transportation-related expenses.
+        /// A seed instance of <see cref="CategoryEntity"/> with related transactions for 
+        /// transportation-related expenses.
         /// </summary>
         public static readonly CategoryEntity CategoryTransportWithRelations = CategoryTransport with
         {

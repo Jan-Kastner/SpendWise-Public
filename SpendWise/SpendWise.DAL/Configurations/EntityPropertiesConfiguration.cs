@@ -134,7 +134,7 @@ namespace SpendWise.DAL.Configurations
             });
 
             // Configuration for LimitEntity
-            modelBuilder.Entity<LimitEntity>(entity => 
+            modelBuilder.Entity<LimitEntity>(entity =>
             {
                 // Configures Id property: required and stored as UUID
                 entity.Property(l => l.Id)

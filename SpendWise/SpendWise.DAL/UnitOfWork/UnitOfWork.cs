@@ -105,9 +105,8 @@ namespace SpendWise.DAL.UnitOfWork
             {
                 return await _dbContext.SaveChangesAsync().ConfigureAwait(false);
             }
-            catch (Exception ex)
+            catch
             {
-                _logger.LogError(ex, "Error occurred while saving changes to the database.");
                 throw;
             }
         }
@@ -124,9 +123,8 @@ namespace SpendWise.DAL.UnitOfWork
                 {
                     await DisposeAsyncCore().ConfigureAwait(false);
                 }
-                catch (Exception ex)
+                catch
                 {
-                    _logger.LogError(ex, "Error occurred during asynchronous disposal.");
                     throw;
                 }
                 finally
@@ -149,9 +147,8 @@ namespace SpendWise.DAL.UnitOfWork
                 {
                     await _dbContext.DisposeAsync().ConfigureAwait(false);
                 }
-                catch (Exception ex)
+                catch
                 {
-                    _logger.LogError(ex, "Error occurred during asynchronous disposal of DbContext.");
                     throw;
                 }
             }
