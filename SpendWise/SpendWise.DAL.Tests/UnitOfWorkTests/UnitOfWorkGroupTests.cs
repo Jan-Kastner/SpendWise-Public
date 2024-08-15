@@ -20,6 +20,10 @@ namespace SpendWise.DAL.Tests
         {
         }
 
+        // ====================================
+        // CRUD Operations Tests
+        // ====================================
+
         /// <summary>
         /// Tests if inserting a new group with valid data correctly adds the group to the database.
         /// </summary>
@@ -28,7 +32,7 @@ namespace SpendWise.DAL.Tests
         public async Task InsertGroup_AddsGroupToDatabase()
         {
             // Arrange
-            var newGroup = new GroupDto
+            var newGroupDto = new GroupDto
             {
                 Id = Guid.NewGuid(),
                 Name = "Test Group",
@@ -36,13 +40,13 @@ namespace SpendWise.DAL.Tests
             };
 
             // Act
-            await _unitOfWork.Groups.InsertAsync(newGroup);
+            await _unitOfWork.Groups.InsertAsync(newGroupDto);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var groupInDb = await _unitOfWork.Groups.GetByIdAsync(newGroup.Id);
+            var groupInDb = await _unitOfWork.Groups.GetByIdAsync(newGroupDto.Id);
             Assert.NotNull(groupInDb);
-            DeepAssert.Equal(newGroup, groupInDb);
+            DeepAssert.Equal(newGroupDto, groupInDb);
         }
 
         /// <summary>
@@ -109,6 +113,10 @@ namespace SpendWise.DAL.Tests
             Assert.Null(deletedGroup);
         }
 
+        // ====================================
+        // Error Handling Tests
+        // ====================================
+
         /// <summary>
         /// Tests if updating a non-existent group fails as expected.
         /// </summary>
@@ -151,6 +159,10 @@ namespace SpendWise.DAL.Tests
             });
         }
 
+        // ====================================
+        // Data Retrieval Tests
+        // ====================================
+
         /// <summary>
         /// Tests if fetching all groups returns the correct number of groups and includes all seeded groups.
         /// </summary>
@@ -191,6 +203,33 @@ namespace SpendWise.DAL.Tests
             Assert.NotNull(fetchedGroupDto);
             DeepAssert.Equal(expectedGroupDto, fetchedGroupDto);
         }
+
+        /// <summary>
+        /// Tests if fetching a group by its description returns the correct group.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Fact]
+        public async Task GetGroupByDescription_ReturnsCorrectGroup()
+        {
+            // Arrange
+            var descriptionToSearch = "Family group"; // Use the description from your seed data
+
+            // Assuming that the seed data is already applied to your test database
+            var expectedGroupDto = _mapper.Map<GroupDto>(GroupSeeds.GroupFamily);
+
+            // Act
+            var fetchedGroupDto = await _unitOfWork.Groups
+                .Get(g => g.Description != null && g.Description.Contains(descriptionToSearch))
+                .FirstOrDefaultAsync();
+
+            // Assert
+            Assert.NotNull(fetchedGroupDto);
+            DeepAssert.Equal(expectedGroupDto, fetchedGroupDto);
+        }
+
+        // ====================================
+        // Update and Special Cases Tests
+        // ====================================
 
         /// <summary>
         /// Tests if updating a group with new name and description correctly updates both fields in the database.
@@ -271,6 +310,10 @@ namespace SpendWise.DAL.Tests
             DeepAssert.Equal(newGroup, groupInDb);
         }
 
+        // ====================================
+        // Related Entities Handling Tests
+        // ====================================
+
         /// <summary>
         /// Tests if deleting a group with active invitations is handled properly by removing the group and its related invitations.
         /// </summary>
@@ -322,28 +365,9 @@ namespace SpendWise.DAL.Tests
             Assert.Empty(deletedGroupUsers);
         }
 
-        /// <summary>
-        /// Tests if fetching a group by its description returns the correct group.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task GetGroupByDescription_ReturnsCorrectGroup()
-        {
-            // Arrange
-            var descriptionToSearch = "Family group"; // Use the description from your seed data
-
-            // Assuming that the seed data is already applied to your test database
-            var expectedGroupDto = _mapper.Map<GroupDto>(GroupSeeds.GroupFamily);
-
-            // Act
-            var fetchedGroupDto = await _unitOfWork.Groups
-                .Get(g => g.Description != null && g.Description.Contains(descriptionToSearch))
-                .FirstOrDefaultAsync();
-
-            // Assert
-            Assert.NotNull(fetchedGroupDto);
-            DeepAssert.Equal(expectedGroupDto, fetchedGroupDto);
-        }
+        // ====================================
+        // Consistency Tests
+        // ====================================
 
         /// <summary>
         /// Tests if a group remains consistent after multiple updates.

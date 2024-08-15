@@ -1,7 +1,4 @@
 using Xunit.Abstractions;
-using Microsoft.Extensions.DependencyInjection;
-using AutoMapper;
-using SpendWise.DAL.UnitOfWork;
 using SpendWise.DAL.DTOs;
 using Microsoft.EntityFrameworkCore;
 using SpendWise.Common.Tests.Seeds;
@@ -10,7 +7,8 @@ using SpendWise.Common.Tests.Helpers;
 namespace SpendWise.DAL.Tests
 {
     /// <summary>
-    /// Contains tests for operations related to categories using the Unit of Work pattern.
+    /// Contains tests for operations related to categories using the 
+    /// Unit of Work pattern.
     /// </summary>
     public class UnitOfWorkCategoryTests : UnitOfWorkTestsBase
     {
@@ -21,6 +19,11 @@ namespace SpendWise.DAL.Tests
         public UnitOfWorkCategoryTests(ITestOutputHelper output) : base(output)
         {
         }
+
+        // ====================================
+        // CRUD Operations Tests
+        // ====================================
+
         /// <summary>
         /// Tests if creating a category with valid data correctly adds the category to the database.
         /// </summary>
@@ -29,7 +32,7 @@ namespace SpendWise.DAL.Tests
         public async Task CreateCategory_ValidData_ShouldCreateNewCategory()
         {
             // Arrange
-            var newCategory = new CategoryDto
+            var newCategoryDto = new CategoryDto
             {
                 Id = Guid.NewGuid(),
                 Name = "New Category",
@@ -39,13 +42,13 @@ namespace SpendWise.DAL.Tests
             };
 
             // Act
-            await _unitOfWork.Categories.InsertAsync(newCategory);
+            await _unitOfWork.Categories.InsertAsync(newCategoryDto);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var categoryInDb = await _unitOfWork.Categories.GetByIdAsync(newCategory.Id);
+            var categoryInDb = await _unitOfWork.Categories.GetByIdAsync(newCategoryDto.Id);
             Assert.NotNull(categoryInDb);
-            DeepAssert.Equal(newCategory, categoryInDb);
+            DeepAssert.Equal(newCategoryDto, categoryInDb);
         }
 
         /// <summary>
@@ -113,6 +116,10 @@ namespace SpendWise.DAL.Tests
             var deletedCategory = await _unitOfWork.Categories.GetByIdAsync(categoryDto.Id);
             Assert.Null(deletedCategory);
         }
+
+        // ====================================
+        // Error Handling Tests
+        // ====================================
 
         /// <summary>
         /// Tests if creating a category with an invalid color format fails as expected.
@@ -182,6 +189,10 @@ namespace SpendWise.DAL.Tests
             });
         }
 
+        // ====================================
+        // Data Retrieval Tests
+        // ====================================
+
         /// <summary>
         /// Tests if fetching all categories returns the correct number and content of categories.
         /// </summary>
@@ -225,6 +236,10 @@ namespace SpendWise.DAL.Tests
             Assert.NotNull(fetchedCategoryDto);
             DeepAssert.Equal(seedCategoryDto, fetchedCategoryDto);
         }
+
+        // ====================================
+        // Update and Special Cases Tests
+        // ====================================
 
         /// <summary>
         /// Tests if creating a category with an icon correctly saves the icon in the database.
@@ -307,7 +322,6 @@ namespace SpendWise.DAL.Tests
             }
         }
 
-
         /// <summary>
         /// Tests if updating a category with a null description correctly updates the description to null in the database.
         /// </summary>
@@ -328,7 +342,6 @@ namespace SpendWise.DAL.Tests
             Assert.NotNull(resultCategoryDto);
             Assert.Null(resultCategoryDto.Description);
         }
-
 
         /// <summary>
         /// Tests if updating the name of an existing category correctly updates the name in the database.

@@ -540,24 +540,24 @@ namespace SpendWise.DAL.Tests
         public async Task UpdateTransaction_WhenTransactionIsUpdated_ChangesArePersisted()
         {
             // Arrange
-            var transaction = TransactionSeeds.TransactionAdminFood;
+            var newTransaction = TransactionSeeds.TransactionAdminFood with
+            {
+                Amount = 500m,
+                Description = "Updated Transaction",
+                Type = 2
+            };
 
-            // Act - Update transaction
-            transaction.Amount = 300.00m;
-            transaction.Description = "Updated Description";
-            transaction.Date = DateTime.UtcNow.AddDays(-1);
-
-            SpendWiseDbContextSUT.Transactions.Update(transaction);
+            SpendWiseDbContextSUT.Transactions.Update(newTransaction);
             await SpendWiseDbContextSUT.SaveChangesAsync();
 
             // Assert
             var updatedTransaction = await SpendWiseDbContextSUT.Transactions
                 .Include(t => t.TransactionGroupUsers)
-                .SingleAsync(t => t.Id == transaction.Id);
+                .SingleAsync(t => t.Id == newTransaction.Id);
 
-            Assert.Equal(300.00m, updatedTransaction.Amount);
-            Assert.Equal("Updated Description", updatedTransaction.Description);
-            Assert.Equal(transaction.Date, updatedTransaction.Date);
+            Assert.Equal(500.00m, updatedTransaction.Amount);
+            Assert.Equal("Updated Transaction", updatedTransaction.Description);
+            Assert.Equal(newTransaction.Date, updatedTransaction.Date);
             Assert.NotEmpty(updatedTransaction.TransactionGroupUsers);
         }
 
