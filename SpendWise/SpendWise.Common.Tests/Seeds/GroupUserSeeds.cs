@@ -1,5 +1,7 @@
 using SpendWise.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 
 namespace SpendWise.Common.Tests.Seeds
 {
@@ -8,107 +10,164 @@ namespace SpendWise.Common.Tests.Seeds
     /// </summary>
     public static class GroupUserSeeds
     {
+        private static bool _relationsInitialized = false;
         /// <summary>
-        /// A seed instance of <see cref="GroupUserEntity"/> representing an admin user in the family group.
+        /// Gets the seed data for Bob in the family group.
         /// </summary>
-        public static readonly GroupUserEntity GroupUserAdminInFamily = new()
+        public static GroupUserEntity GroupUserBobInFamily = new()
         {
             Id = Guid.NewGuid(),
-            UserId = UserSeeds.UserAdmin.Id,
+            UserId = UserSeeds.UserBobBrown.Id,
             GroupId = GroupSeeds.GroupFamily.Id,
-            User = null!,
-            Group = null!
+            User = UserSeeds.UserBobBrown, // Set User directly
+            Group = GroupSeeds.GroupFamily // Set Group directly
         };
 
         /// <summary>
-        /// A seed instance of <see cref="GroupUserEntity"/> representing John Doe as a user in the friends group.
+        /// Gets the seed data for Charlie in the family group.
         /// </summary>
-        public static readonly GroupUserEntity GroupUserJohnDoeInFriends = new()
+        public static GroupUserEntity GroupUserCharlieInFamily = new()
+        {
+            Id = Guid.NewGuid(),
+            UserId = UserSeeds.UserCharlieBlack.Id,
+            GroupId = GroupSeeds.GroupFamily.Id,
+            User = UserSeeds.UserCharlieBlack, // Set User directly
+            Group = GroupSeeds.GroupFamily // Set Group directly
+        };
+
+        /// <summary>
+        /// Gets the seed data for Diana in the family group.
+        /// </summary>
+        public static GroupUserEntity GroupUserDianaInFamily = new()
+        {
+            Id = Guid.NewGuid(),
+            UserId = UserSeeds.UserDianaGreen.Id,
+            GroupId = GroupSeeds.GroupFamily.Id,
+            User = UserSeeds.UserDianaGreen, // Set User directly
+            Group = GroupSeeds.GroupFamily // Set Group directly
+        };
+
+        /// <summary>
+        /// Gets the seed data for John in the family group.
+        /// </summary>
+        public static GroupUserEntity GroupUserJohnInFamily = new()
+        {
+            Id = Guid.NewGuid(),
+            UserId = UserSeeds.UserJohnDoe.Id,
+            GroupId = GroupSeeds.GroupFamily.Id,
+            User = UserSeeds.UserJohnDoe, // Set User directly
+            Group = GroupSeeds.GroupFamily // Set Group directly
+        };
+
+        /// <summary>
+        /// Gets the seed data for John in the friends group.
+        /// </summary>
+        public static GroupUserEntity GroupUserJohnInFriends = new()
         {
             Id = Guid.NewGuid(),
             UserId = UserSeeds.UserJohnDoe.Id,
             GroupId = GroupSeeds.GroupFriends.Id,
-            User = null!,
-            Group = null!
+            User = UserSeeds.UserJohnDoe, // Set User directly
+            Group = GroupSeeds.GroupFriends // Set Group directly
         };
 
         /// <summary>
-        /// A seed instance of <see cref="GroupUserEntity"/> representing John Doe as a user in the family group.
+        /// Gets the seed data for John in the work group.
         /// </summary>
-        public static readonly GroupUserEntity GroupUserJohnDoeInFamily = new()
+        public static GroupUserEntity GroupUserJohnInWork = new()
         {
             Id = Guid.NewGuid(),
             UserId = UserSeeds.UserJohnDoe.Id,
-            GroupId = GroupSeeds.GroupFamily.Id,
-            User = null!,
-            Group = null!
-        };
-
-        /// <summary>
-        /// A seed instance of <see cref="GroupUserEntity"/> representing Alice Brown as a user in the work group.
-        /// </summary>
-        public static readonly GroupUserEntity GroupUserAliceBrownInWork = new()
-        {
-            Id = Guid.NewGuid(),
-            UserId = UserSeeds.UserAliceBrown.Id,
             GroupId = GroupSeeds.GroupWork.Id,
-            User = null!,
-            Group = null!
+            User = UserSeeds.UserJohnDoe, // Set User directly
+            Group = GroupSeeds.GroupWork // Set Group directly
         };
 
         /// <summary>
-        /// A seed instance of <see cref="GroupUserEntity"/> representing an admin user in the family group 
-        /// with related entities.
+        /// Initializes the relationships between group users and their associated transaction group users.
         /// </summary>
-        public static readonly GroupUserEntity GroupUserAdminInFamilyWithRelations = GroupUserAdminInFamily with
+        public static void InitializeRelations()
         {
-            User = UserSeeds.UserAdmin,
-            Group = GroupSeeds.GroupFamily,
-            Limit = LimitSeeds.LimitAdminFamily
-        };
+            if (!_relationsInitialized)
+            {
+                // Initialize TransactionGroupUsers collections
+                GroupUserDianaInFamily.TransactionGroupUsers.Add(TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana);
+                GroupUserJohnInFamily.TransactionGroupUsers.Add(TransactionGroupUserSeeds.TransactionGroupUserFoodFamilyJohn);
+                GroupUserJohnInFriends.TransactionGroupUsers.Add(TransactionGroupUserSeeds.TransactionGroupUserTaxiFriendsJohn);
+                GroupUserJohnInFriends.TransactionGroupUsers.Add(TransactionGroupUserSeeds.TransactionGroupUserTransportFriendsJohn);
+                GroupUserJohnInWork.TransactionGroupUsers.Add(TransactionGroupUserSeeds.TransactionGroupUserTransportWorkJohn);
 
-        /// <summary>
-        /// A seed instance of <see cref="GroupUserEntity"/> representing John Doe as a user in the friends group 
-        /// with related entities.
-        /// </summary>
-        public static readonly GroupUserEntity GroupUserJohnDoeInFriendsWithRelations = GroupUserJohnDoeInFriends with
-        {
-            User = UserSeeds.UserJohnDoe,
-            Group = GroupSeeds.GroupFriends
-        };
+                GroupUserCharlieInFamily.LimitId = LimitSeeds.LimitCharlieFamily.Id;
+                GroupUserDianaInFamily.LimitId = LimitSeeds.LimitDianaFamily.Id;
+                GroupUserJohnInWork.LimitId = LimitSeeds.LimitJohnWork.Id;
 
-        /// <summary>
-        /// A seed instance of <see cref="GroupUserEntity"/> representing John Doe as a user in the family group 
-        /// with related entities.
-        /// </summary>
-        public static readonly GroupUserEntity GroupUserJohnDoeInFamilyWithRelations = GroupUserJohnDoeInFamily with
-        {
-            User = UserSeeds.UserJohnDoe,
-            Group = GroupSeeds.GroupFamily
-        };
+                GroupUserCharlieInFamily.Limit = LimitSeeds.LimitCharlieFamily;
+                GroupUserDianaInFamily.Limit = LimitSeeds.LimitDianaFamily;
+                GroupUserJohnInWork.Limit = LimitSeeds.LimitJohnWork;
 
-        /// <summary>
-        /// A seed instance of <see cref="GroupUserEntity"/> representing Alice Brown as a user in the work group 
-        /// with related entities.
-        /// </summary>
-        public static readonly GroupUserEntity GroupUserAliceBrownInWorkWithRelations = GroupUserAliceBrownInWork with
-        {
-            User = UserSeeds.UserAliceBrown,
-            Group = GroupSeeds.GroupWork
-        };
+                _relationsInitialized = true;
+            }
+        }
 
         /// <summary>
         /// Seeds the <see cref="GroupUserEntity"/> data into the provided <see cref="ModelBuilder"/>.
         /// </summary>
-        /// <param name="modelBuilder">The model builder used to seed data.</param>
+        /// <param name="modelBuilder">The model builder to configure the entity.</param>
         public static void Seed(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<GroupUserEntity>().HasData(
-                GroupUserAdminInFamily,
-                GroupUserJohnDoeInFriends,
-                GroupUserJohnDoeInFamily,
-                GroupUserAliceBrownInWork
+                GroupUserBobInFamily with
+                {
+                    TransactionGroupUsers = Array.Empty<TransactionGroupUserEntity>(),
+                    User = null!,
+                    Group = null!,
+                    Limit = null
+                },
+
+                GroupUserCharlieInFamily with
+                {
+                    TransactionGroupUsers = Array.Empty<TransactionGroupUserEntity>(),
+                    User = null!,
+                    Group = null!,
+                    LimitId = LimitSeeds.LimitCharlieFamily.Id,
+                    Limit = null
+                },
+
+                GroupUserDianaInFamily with
+                {
+                    TransactionGroupUsers = Array.Empty<TransactionGroupUserEntity>(),
+                    User = null!,
+                    Group = null!,
+                    LimitId = LimitSeeds.LimitDianaFamily.Id,
+                    Limit = null
+                },
+
+                GroupUserJohnInFamily with
+                {
+                    TransactionGroupUsers = Array.Empty<TransactionGroupUserEntity>(),
+                    User = null!,
+                    Group = null!,
+                    Limit = null
+                },
+
+                GroupUserJohnInFriends with
+                {
+                    TransactionGroupUsers = Array.Empty<TransactionGroupUserEntity>(),
+                    User = null!,
+                    Group = null!,
+                    Limit = null
+                },
+
+                GroupUserJohnInWork with
+                {
+                    TransactionGroupUsers = Array.Empty<TransactionGroupUserEntity>(),
+                    User = null!,
+                    Group = null!,
+                    LimitId = LimitSeeds.LimitJohnWork.Id,
+                    Limit = null
+                }
             );
+            InitializeRelations();
         }
     }
 }

@@ -1,4 +1,6 @@
-
+using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using SpendWise.DAL.Entities;
 using SpendWise.DAL.DTOs;
 using SpendWise.DAL.Repositories;
@@ -11,44 +13,12 @@ namespace SpendWise.DAL.UnitOfWork
     public interface IUnitOfWork : IAsyncDisposable
     {
         /// <summary>
-        /// Repository for <see cref="CategoryEntity"/>.
+        /// Get the repository for a specific entity type.
         /// </summary>
-        IRepository<CategoryEntity, CategoryDto> Categories { get; }
-
-        /// <summary>
-        /// Repository for <see cref="GroupUserEntity"/>.
-        /// </summary>
-        IRepository<GroupUserEntity, GroupUserDto> GroupUsers { get; }
-
-        /// <summary>
-        /// Repository for <see cref="InvitationEntity"/>.
-        /// </summary>
-        IRepository<InvitationEntity, InvitationDto> Invitations { get; }
-
-        /// <summary>
-        /// Repository for <see cref="TransactionEntity"/>.
-        /// </summary>
-        IRepository<TransactionEntity, TransactionDto> Transactions { get; }
-
-        /// <summary>
-        /// Repository for <see cref="UserEntity"/>.
-        /// </summary>
-        IRepository<UserEntity, UserDto> Users { get; }
-
-        /// <summary>
-        /// Repository for <see cref="GroupEntity"/>.
-        /// </summary>
-        IRepository<GroupEntity, GroupDto> Groups { get; }
-
-        /// <summary>
-        /// Repository for <see cref="LimitEntity"/>.
-        /// </summary>
-        IRepository<LimitEntity, LimitDto> Limits { get; }
-
-        /// <summary>
-        /// Repository for <see cref="TransactionGroupUserEntity"/>.
-        /// </summary>
-        IRepository<TransactionGroupUserEntity, TransactionGroupUserDto> TransactionGroupUsers { get; }
+        /// <typeparam name="TEntity">The entity type.</typeparam>
+        /// <typeparam name="TDto">The DTO type.</typeparam>
+        /// <returns>An instance of the repository.</returns>
+        IRepository<TEntity, TDto> Repository<TEntity, TDto>() where TEntity : class, IEntity where TDto : class, IDto;
 
         /// <summary>
         /// Asynchronously saves changes to the database.

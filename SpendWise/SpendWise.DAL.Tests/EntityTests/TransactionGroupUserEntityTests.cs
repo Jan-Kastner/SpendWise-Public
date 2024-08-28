@@ -19,65 +19,53 @@ namespace SpendWise.DAL.Tests
         {
         }
 
-        /// <summary>
-        /// Tests that no transaction group users are returned for a non-existing user.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task GetTransactionGroupUsers_ForNonExistingUser_ReturnsEmptyList()
-        {
-            // Arrange
-            var nonExistingUserId = Guid.NewGuid();
-
-            // Act
-            var transactionGroupUsers = await SpendWiseDbContextSUT.TransactionGroupUsers
-                .Where(tgu => tgu.GroupUserId == nonExistingUserId)
-                .ToListAsync();
-
-            // Assert
-            Assert.Empty(transactionGroupUsers); // Ensure that the result is an empty list
-        }
+        #region CRUD Operations Tests
 
         /// <summary>
-        /// Tests that a valid transaction group user is added to the database and persisted correctly.
+        /// Tests the CRUD (Create, Read, Update, Delete) operations for the <see cref="TransactionGroupUserEntity"/> entity.
+        /// These tests verify that the database operations work as expected for transaction group users.
+        /// </summary>
+
+        [Fact]
+        /// <summary>
+        /// Verifies that adding a valid transaction group user successfully persists the user in the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task AddTransactionGroupUser_WhenValidTransactionGroupUserIsAdded_TransactionGroupUserIsPersisted()
+        public async Task AddTransactionGroupUser_ValidData_SuccessfullyPersists()
         {
             // Arrange
-            var entity = new TransactionGroupUserEntity
+            var transactionGroupUserToAdd = new TransactionGroupUserEntity
             {
                 Id = Guid.NewGuid(),
-                TransactionId = TransactionSeeds.TransactionMinus30Hours.Id,
-                GroupUserId = GroupUserSeeds.GroupUserJohnDoeInFriends.Id,
+                TransactionId = TransactionSeeds.TransactionJohnTaxi.Id,
+                GroupUserId = GroupUserSeeds.GroupUserJohnInWork.Id,
                 Transaction = null!,
                 GroupUser = null!
             };
 
             // Act
-            SpendWiseDbContextSUT.TransactionGroupUsers.Add(entity);
+            SpendWiseDbContextSUT.TransactionGroupUsers.Add(transactionGroupUserToAdd);
             await SpendWiseDbContextSUT.SaveChangesAsync();
 
             // Assert
             await using var dbx = await DbContextFactory.CreateDbContextAsync();
-            var actualEntity = await dbx.TransactionGroupUsers.SingleOrDefaultAsync(tgu => tgu.Id == entity.Id);
+            var actualTransactionGroupUser = await dbx.TransactionGroupUsers.SingleOrDefaultAsync(tgu => tgu.Id == transactionGroupUserToAdd.Id);
 
-            Assert.NotNull(actualEntity);
-            DeepAssert.Equal(entity, actualEntity);
+            Assert.NotNull(actualTransactionGroupUser);
+            DeepAssert.Equal(transactionGroupUserToAdd, actualTransactionGroupUser);
         }
 
+        [Fact]
         /// <summary>
-        /// Tests that changes to an existing transaction group user are persisted correctly.
+        /// Verifies that updating an existing transaction group user successfully persists the changes in the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task UpdateTransactionGroupUser_WhenExistingTransactionGroupUserIsUpdated_ChangesArePersisted()
+        public async Task UpdateTransactionGroupUser_ExistingUser_SuccessfullyPersistsChanges()
         {
             // Arrange
-            var existingTransactionGroupUser = TransactionGroupUserSeeds.TransactionGroupUserJohnDoeInFamilyForMinus26Hours;
-            var newTransactionId = TransactionSeeds.TransactionMinus26Hours.Id;
-            var newGroupUserId = GroupUserSeeds.GroupUserJohnDoeInFriends.Id;
+            var existingTransactionGroupUser = TransactionGroupUserSeeds.TransactionGroupUserTransportWorkJohn;
+            var newTransactionId = TransactionSeeds.TransactionJohnTaxi.Id;
+            var newGroupUserId = GroupUserSeeds.GroupUserJohnInWork.Id;
 
             var updatedTransactionGroupUser = new TransactionGroupUserEntity
             {
@@ -97,64 +85,215 @@ namespace SpendWise.DAL.Tests
             var actualTransactionGroupUser = await dbx.TransactionGroupUsers
                 .FirstOrDefaultAsync(tgu => tgu.Id == existingTransactionGroupUser.Id);
 
-            Assert.NotNull(actualTransactionGroupUser); // Ensure that the entity is not null
-            Assert.Equal(newTransactionId, actualTransactionGroupUser.TransactionId); // Check the updated transaction ID
-            Assert.Equal(newGroupUserId, actualTransactionGroupUser.GroupUserId); // Check the updated group user ID
+            Assert.NotNull(actualTransactionGroupUser);
+            Assert.Equal(newTransactionId, actualTransactionGroupUser.TransactionId);
+            Assert.Equal(newGroupUserId, actualTransactionGroupUser.GroupUserId);
         }
 
+        [Fact]
         /// <summary>
-        /// Tests that a transaction group user is removed from the database when deleted.
+        /// Verifies that deleting an existing transaction group user successfully removes it from the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task DeleteTransactionGroupUser_WhenTransactionGroupUserIsDeleted_TransactionGroupUserIsRemoved()
+        public async Task DeleteTransactionGroupUser_ExistingUser_SuccessfullyRemoves()
         {
             // Arrange
-            var baseEntity = TransactionGroupUserSeeds.TransactionGroupUserJohnDoeInFamilyForJohnDoeTransport;
+            var transactionGroupUserToRemove = await SpendWiseDbContextSUT.TransactionGroupUsers
+                .AsNoTracking()
+                .FirstAsync(l => l.Id == TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana.Id);
 
-            Assert.True(await SpendWiseDbContextSUT.TransactionGroupUsers.AnyAsync(tgu => tgu.Id == baseEntity.Id)); // Ensure that the entity exists before deletion
+            Assert.NotNull(transactionGroupUserToRemove);
 
             // Act
-            SpendWiseDbContextSUT.TransactionGroupUsers.Remove(baseEntity);
+            SpendWiseDbContextSUT.TransactionGroupUsers.Remove(transactionGroupUserToRemove);
             await SpendWiseDbContextSUT.SaveChangesAsync();
 
             // Assert
-            Assert.False(await SpendWiseDbContextSUT.TransactionGroupUsers.AnyAsync(tgu => tgu.Id == baseEntity.Id)); // Ensure that the entity has been removed
-
-            var transactionExists = await SpendWiseDbContextSUT.Transactions.AnyAsync(t => t.Id == baseEntity.TransactionId);
-            var groupUserExists = await SpendWiseDbContextSUT.GroupUsers.AnyAsync(g => g.Id == baseEntity.GroupUserId);
-
-            Assert.True(transactionExists); // Ensure that the transaction still exists
-            Assert.True(groupUserExists); // Ensure that the group user still exists
+            Assert.False(await SpendWiseDbContextSUT.TransactionGroupUsers.AnyAsync(tgu => tgu.Id == transactionGroupUserToRemove.Id));
         }
 
+        #endregion
+
+        #region Error Handling Tests
+
         /// <summary>
-        /// Tests that transaction group users are retrieved correctly based on the group ID.
+        /// Tests the error handling for the <see cref="TransactionGroupUserEntity"/> entity.
+        /// These tests verify that the database throws the appropriate exceptions when invalid operations are attempted.
+        /// </summary>
+
+        [Fact]
+        /// <summary>
+        /// Verifies that adding a transaction group user with a duplicate TransactionId and GroupUserId throws a <see cref="DbUpdateException"/>.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task AddTransactionGroupUser_WithDuplicateTransactionIdAndGroupUserId_ThrowsDbUpdateException()
+        {
+            // Arrange
+            var existingTransactionGroupUser = TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana;
+            var duplicateTransactionGroupUser = new TransactionGroupUserEntity
+            {
+                Id = Guid.NewGuid(),
+                TransactionId = existingTransactionGroupUser.TransactionId,
+                GroupUserId = existingTransactionGroupUser.GroupUserId,
+                Transaction = null!,
+                GroupUser = null!
+            };
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            {
+                SpendWiseDbContextSUT.TransactionGroupUsers.Add(duplicateTransactionGroupUser);
+                await SpendWiseDbContextSUT.SaveChangesAsync();
+            });
+
+            Assert.NotNull(exception);
+        }
+
         [Fact]
-        public async Task GetTransactionGroupUsers_ByGroupId_ReturnsCorrectTransactionGroupUsers()
+        /// <summary>
+        /// Verifies that adding a transaction group user with a non-existing GroupUserId throws a <see cref="DbUpdateException"/>.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task AddTransactionGroupUser_WithNonExistingGroupUser_ThrowsDbUpdateException()
+        {
+            // Arrange
+            var nonExistingGroupUserId = Guid.NewGuid();
+            var transactionId = TransactionSeeds.TransactionDianaDinner.Id;
+
+            var invalidTransactionGroupUser = new TransactionGroupUserEntity
+            {
+                Id = Guid.NewGuid(),
+                TransactionId = transactionId,
+                GroupUserId = nonExistingGroupUserId,
+                Transaction = null!,
+                GroupUser = null!
+            };
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            {
+                SpendWiseDbContextSUT.TransactionGroupUsers.Add(invalidTransactionGroupUser);
+                await SpendWiseDbContextSUT.SaveChangesAsync();
+            });
+
+            Assert.NotNull(exception);
+        }
+
+        [Fact]
+        /// <summary>
+        /// Verifies that adding a transaction group user with a non-existing TransactionId throws a <see cref="DbUpdateException"/>.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task AddTransactionGroupUser_WithNonExistingTransaction_ThrowsDbUpdateException()
+        {
+            // Arrange
+            var groupUserId = GroupUserSeeds.GroupUserBobInFamily.Id;
+            var nonExistingTransactionId = Guid.NewGuid();
+
+            var invalidTransactionGroupUser = new TransactionGroupUserEntity
+            {
+                Id = Guid.NewGuid(),
+                TransactionId = nonExistingTransactionId,
+                GroupUserId = groupUserId,
+                Transaction = null!,
+                GroupUser = null!
+            };
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            {
+                SpendWiseDbContextSUT.TransactionGroupUsers.Add(invalidTransactionGroupUser);
+                await SpendWiseDbContextSUT.SaveChangesAsync();
+            });
+
+            Assert.NotNull(exception);
+        }
+
+        [Fact]
+        /// <summary>
+        /// Verifies that updating a transaction group user with a non-existing GroupUserId throws a <see cref="DbUpdateException"/>.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task UpdateTransactionGroupUser_WithNonExistentGroupUser_ThrowsDbUpdateException()
+        {
+            // Arrange
+            var existingTransactionGroupUser = await SpendWiseDbContextSUT.TransactionGroupUsers
+                .AsNoTracking()
+                .FirstAsync(l => l.Id == TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana.Id);
+
+            var nonExistentGroupUserId = Guid.NewGuid();
+
+            var updatedTransactionGroupUser = existingTransactionGroupUser with
+            {
+                GroupUserId = nonExistentGroupUserId
+            };
+
+            // Act
+            SpendWiseDbContextSUT.TransactionGroupUsers.Update(updatedTransactionGroupUser);
+
+            // Assert
+            var exception = await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            {
+                await SpendWiseDbContextSUT.SaveChangesAsync();
+            });
+
+            Assert.NotNull(exception);
+        }
+
+        [Fact]
+        /// <summary>
+        /// Verifies that updating a transaction group user with a non-existing TransactionId throws a <see cref="DbUpdateException"/>.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task UpdateTransactionGroupUser_WithNonExistentTransaction_ThrowsDbUpdateException()
+        {
+            // Arrange
+            var existingTransactionGroupUser = await SpendWiseDbContextSUT.TransactionGroupUsers
+                .AsNoTracking()
+                .FirstAsync(l => l.Id == TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana.Id);
+
+            var nonExistentTransactionId = Guid.NewGuid();
+
+            var updatedTransactionGroupUser = existingTransactionGroupUser with
+            {
+                TransactionId = nonExistentTransactionId
+            };
+
+            // Act
+            SpendWiseDbContextSUT.TransactionGroupUsers.Update(updatedTransactionGroupUser);
+
+            // Assert
+            var exception = await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            {
+                await SpendWiseDbContextSUT.SaveChangesAsync();
+            });
+
+            Assert.NotNull(exception);
+        }
+
+        #endregion
+
+        #region Data Retrieval Tests
+
+        /// <summary>
+        /// Tests the data retrieval operations for the <see cref="TransactionGroupUserEntity"/> entity.
+        /// These tests ensure that queries return the correct and expected data from the database.
+        /// </summary>
+
+        [Fact]
+        /// <summary>
+        /// Verifies that fetching transaction group users by a specific group ID returns the correct data.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task FetchTransactionGroupUsers_ByGroupId_ReturnsCorrectData()
         {
             // Arrange
             var groupId = GroupSeeds.GroupFamily.Id;
-            var expectedGroupUsers = new List<GroupUserEntity>
-            {
-                GroupUserSeeds.GroupUserAdminInFamily,
-                GroupUserSeeds.GroupUserJohnDoeInFamily
-            };
-
             var expectedTransactionGroupUsers = new List<TransactionGroupUserEntity>
-            {
-                TransactionGroupUserSeeds.TransactionGroupUserAdminInFamilyForMinus22Hours,
-                TransactionGroupUserSeeds.TransactionGroupUserAdminInFamilyForMinus24Hours,
-                TransactionGroupUserSeeds.TransactionGroupUserAdminInFamilyForAdminFood,
-                TransactionGroupUserSeeds.TransactionGroupUserAdminInFamilyForDelete,
-
-                TransactionGroupUserSeeds.TransactionGroupUserJohnDoeInFamilyForMinus26Hours,
-                TransactionGroupUserSeeds.TransactionGroupUserJohnDoeInFamilyForMinus28Hours,
-                TransactionGroupUserSeeds.TransactionGroupUserJohnDoeInFamilyForMinus30Hours,
-                TransactionGroupUserSeeds.TransactionGroupUserJohnDoeInFamilyForJohnDoeTransport
-            };
+    {
+        TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana,
+        TransactionGroupUserSeeds.TransactionGroupUserFoodFamilyJohn
+    };
 
             // Act
             var groupUsers = await SpendWiseDbContextSUT.GroupUsers
@@ -168,27 +307,27 @@ namespace SpendWise.DAL.Tests
                 .ToListAsync();
 
             // Assert
-            Assert.Equal(expectedTransactionGroupUsers.Count, transactionGroupUsers.Count); // Ensure that the number of retrieved users matches expected
+            Assert.Equal(expectedTransactionGroupUsers.Count, transactionGroupUsers.Count);
             foreach (var expectedTgu in expectedTransactionGroupUsers)
             {
-                Assert.Contains(transactionGroupUsers, tgu => tgu.Id == expectedTgu.Id); // Ensure that each expected user is in the result
+                Assert.Contains(transactionGroupUsers, tgu => tgu.Id == expectedTgu.Id);
             }
         }
 
+        [Fact]
         /// <summary>
-        /// Tests that transaction group users are retrieved correctly based on the transaction ID.
+        /// Verifies that fetching transaction group users by a specific transaction ID returns the correct data.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task GetTransactionGroupUsers_ByTransactionId_ReturnsCorrectTransactionGroupUsers()
+        public async Task FetchTransactionGroupUsers_ByTransactionId_ReturnsCorrectData()
         {
             // Arrange
-            var transactionId = TransactionSeeds.TransactionJohnDoeTransport.Id;
+            var transactionId = TransactionSeeds.TransactionJohnTransport.Id;
             var expectedTransactionGroupUsers = new List<TransactionGroupUserEntity>
-            {
-                TransactionGroupUserSeeds.TransactionGroupUserJohnDoeInFamilyForJohnDoeTransport,
-                TransactionGroupUserSeeds.TransactionGroupUserJohnDoeInFriendsForJohnDoeTransport
-            };
+    {
+        TransactionGroupUserSeeds.TransactionGroupUserTransportFriendsJohn,
+        TransactionGroupUserSeeds.TransactionGroupUserTransportWorkJohn
+    };
 
             // Act
             var transactionGroupUsers = await SpendWiseDbContextSUT.TransactionGroupUsers
@@ -196,45 +335,19 @@ namespace SpendWise.DAL.Tests
                 .ToListAsync();
 
             // Assert
-            Assert.Equal(expectedTransactionGroupUsers.Count, transactionGroupUsers.Count); // Ensure that the number of retrieved users matches expected
+            Assert.Equal(expectedTransactionGroupUsers.Count, transactionGroupUsers.Count);
             foreach (var expectedTgu in expectedTransactionGroupUsers)
             {
-                Assert.Contains(transactionGroupUsers, tgu => tgu.Id == expectedTgu.Id); // Ensure that each expected user is in the result
+                Assert.Contains(transactionGroupUsers, tgu => tgu.Id == expectedTgu.Id);
             }
         }
 
+        [Fact]
         /// <summary>
-        /// Verifies that when a transaction group user is fetched, its relationships with transaction and group user are loaded correctly.
+        /// Verifies that fetching transaction group users ordered by transaction ID returns them in the correct order.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task VerifyTransactionGroupUserRelationships_WhenTransactionGroupUsersAreFetched_RelationshipsAreLoaded()
-        {
-            // Arrange
-            var existingTransactionGroupUser = TransactionGroupUserSeeds.TransactionGroupUserJohnDoeInFamilyForMinus26HoursWithRelations;
-            var expectedGroupUser = existingTransactionGroupUser.GroupUser;
-            var expectedTransaction = existingTransactionGroupUser.Transaction;
-
-            // Act
-            var transactionGroupUser = await SpendWiseDbContextSUT.TransactionGroupUsers
-                .Include(tgu => tgu.Transaction)
-                .Include(tgu => tgu.GroupUser)
-                .FirstOrDefaultAsync(tgu => tgu.Id == existingTransactionGroupUser.Id);
-
-            // Assert
-            Assert.NotNull(transactionGroupUser);
-            Assert.NotNull(transactionGroupUser.Transaction);
-            Assert.NotNull(transactionGroupUser.GroupUser);
-            DeepAssert.Equal(existingTransactionGroupUser.Transaction, transactionGroupUser.Transaction, propertiesToIgnore: new[] { "TransactionGroupUsers", "Category" });
-            DeepAssert.Equal(existingTransactionGroupUser.GroupUser, transactionGroupUser.GroupUser, propertiesToIgnore: new[] { "Limit", "Group", "TransactionGroupUsers", "User" });
-        }
-
-        /// <summary>
-        /// Tests that transaction group users are returned in the correct order when ordered by transaction ID.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task GetTransactionGroupUsers_OrderedByTransactionId_ReturnsTransactionGroupUsersInCorrectOrder()
+        public async Task FetchTransactionGroupUsers_OrderedByTransactionId_ReturnsInCorrectOrder()
         {
             // Arrange
             var groupId = GroupSeeds.GroupFamily.Id;
@@ -255,125 +368,16 @@ namespace SpendWise.DAL.Tests
             }
         }
 
+        [Fact]
         /// <summary>
-        /// Tests that adding a transaction group user with a duplicate transaction ID and group user ID throws a <see cref="DbUpdateException"/>.
+        /// Verifies that fetching transaction group users with specific filters returns the expected results.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task AddTransactionGroupUser_WithDuplicateTransactionIdAndGroupUserId_ThrowsException()
+        public async Task FetchTransactionGroupUsers_WithFilters_ReturnsExpectedResults()
         {
             // Arrange
-            var existingTransactionGroupUser = TransactionGroupUserSeeds.TransactionGroupUserJohnDoeInFamilyForMinus26Hours;
-            var duplicateTransactionGroupUser = new TransactionGroupUserEntity
-            {
-                Id = Guid.NewGuid(),
-                TransactionId = existingTransactionGroupUser.TransactionId,
-                GroupUserId = existingTransactionGroupUser.GroupUserId,
-                Transaction = null!,
-                GroupUser = null!
-            };
-
-            // Act & Assert
-            await Assert.ThrowsAsync<DbUpdateException>(async () =>
-            {
-                SpendWiseDbContextSUT.TransactionGroupUsers.Add(duplicateTransactionGroupUser);
-                await SpendWiseDbContextSUT.SaveChangesAsync();
-            });
-        }
-
-        /// <summary>
-        /// Tests that adding a transaction group user with a non-existing group user ID throws a <see cref="DbUpdateException"/>.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task AddTransactionGroupUser_WithNonExistingGroupUser_ThrowsException()
-        {
-            // Arrange
-            var nonExistingGroupUserId = Guid.NewGuid();
-            var transactionId = TransactionSeeds.TransactionJohnDoeTransport.Id;
-
-            var invalidTransactionGroupUser = new TransactionGroupUserEntity
-            {
-                Id = Guid.NewGuid(),
-                TransactionId = transactionId,
-                GroupUserId = nonExistingGroupUserId,
-                Transaction = null!,
-                GroupUser = null!
-            };
-
-            // Act & Assert
-            await Assert.ThrowsAsync<DbUpdateException>(async () =>
-            {
-                SpendWiseDbContextSUT.TransactionGroupUsers.Add(invalidTransactionGroupUser);
-                await SpendWiseDbContextSUT.SaveChangesAsync();
-            });
-        }
-
-        /// <summary>
-        /// Tests that adding a transaction group user with a non-existing transaction ID throws a <see cref="DbUpdateException"/>.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task AddTransactionGroupUser_WithNonExistingTransaction_ThrowsException()
-        {
-            // Arrange
-            var groupUserId = GroupUserSeeds.GroupUserJohnDoeInFriends.Id;
-            var nonExistingTransactionId = Guid.NewGuid();
-
-            var invalidTransactionGroupUser = new TransactionGroupUserEntity
-            {
-                Id = Guid.NewGuid(),
-                TransactionId = nonExistingTransactionId,
-                GroupUserId = groupUserId,
-                Transaction = null!,
-                GroupUser = null!
-            };
-
-            // Act & Assert
-            await Assert.ThrowsAsync<DbUpdateException>(async () =>
-            {
-                SpendWiseDbContextSUT.TransactionGroupUsers.Add(invalidTransactionGroupUser);
-                await SpendWiseDbContextSUT.SaveChangesAsync();
-            });
-        }
-
-        /// <summary>
-        /// Tests that a transaction group user entity remains unchanged after being saved to the database.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task AddTransactionGroupUser_WhenSaved_EntityStateIsUnchanged()
-        {
-            // Arrange
-            var entity = new TransactionGroupUserEntity
-            {
-                Id = Guid.NewGuid(),
-                TransactionId = TransactionSeeds.TransactionMinus30Hours.Id,
-                GroupUserId = GroupUserSeeds.GroupUserJohnDoeInFriends.Id,
-                Transaction = null!,
-                GroupUser = null!
-            };
-
-            SpendWiseDbContextSUT.TransactionGroupUsers.Add(entity);
-            await SpendWiseDbContextSUT.SaveChangesAsync();
-
-            // Act
-            var entityEntry = SpendWiseDbContextSUT.Entry(entity);
-
-            // Assert
-            Assert.Equal(EntityState.Unchanged, entityEntry.State);
-        }
-
-        /// <summary>
-        /// Tests that transaction group users are correctly filtered based on group user ID and transaction ID.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task GetTransactionGroupUsers_WithFilters_ReturnsCorrectResults()
-        {
-            // Arrange
-            var groupUserId = GroupUserSeeds.GroupUserJohnDoeInFriends.Id;
-            var transactionId = TransactionSeeds.TransactionJohnDoeTransport.Id;
+            var groupUserId = GroupUserSeeds.GroupUserDianaInFamily.Id;
+            var transactionId = TransactionSeeds.TransactionDianaDinner.Id;
 
             // Act
             var filteredTransactionGroupUsers = await SpendWiseDbContextSUT.TransactionGroupUsers
@@ -388,58 +392,180 @@ namespace SpendWise.DAL.Tests
             }
         }
 
+        #endregion
+
+        #region Update and Special Cases Tests
+
         /// <summary>
-        /// Tests that updating a transaction group user with a non-existent group user ID throws a <see cref="DbUpdateException"/>.
+        /// Tests for handling update operations and special cases for the <see cref="TransactionGroupUserEntity"/> entity.
+        /// These tests cover scenarios such as verifying the entity state after saving and handling non-existing entities.
+        /// </summary>
+
+        [Fact]
+        /// <summary>
+        /// Verifies that when a <see cref="TransactionGroupUserEntity"/> is added and saved, its entity state is set to Unchanged.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task UpdateTransactionGroupUser_WithNonExistentGroupUser_ThrowsException()
+        public async Task AddTransactionGroupUser_WhenSaved_EntityStateIsUnchanged()
         {
             // Arrange
-            var existingTransactionGroupUser = TransactionGroupUserSeeds.TransactionGroupUserJohnDoeInFamilyForMinus26Hours;
-            var nonExistentGroupUserId = Guid.NewGuid();
-
-            var updatedTransactionGroupUser = existingTransactionGroupUser with
+            var entity = new TransactionGroupUserEntity
             {
-                GroupUserId = nonExistentGroupUserId
+                Id = Guid.NewGuid(),
+                TransactionId = TransactionSeeds.TransactionJohnTaxi.Id,
+                GroupUserId = GroupUserSeeds.GroupUserJohnInWork.Id,
+                Transaction = null!,
+                GroupUser = null!
             };
 
             // Act
-            SpendWiseDbContextSUT.TransactionGroupUsers.Update(updatedTransactionGroupUser);
+            SpendWiseDbContextSUT.TransactionGroupUsers.Add(entity);
+            await SpendWiseDbContextSUT.SaveChangesAsync();
 
             // Assert
-            await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            var entry = SpendWiseDbContextSUT.Entry(entity);
+            Assert.Equal(EntityState.Unchanged, entry.State);
+        }
+
+        [Fact]
+        /// <summary>
+        /// Verifies that updating a <see cref="TransactionGroupUserEntity"/> with a non-existing ID throws a <see cref="DbUpdateConcurrencyException"/>.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task UpdateTransactionGroupUser_NonExistingId_ThrowsDbUpdateConcurrencyException()
+        {
+            // Arrange
+            var nonExistingId = Guid.NewGuid();
+            var updatedTransactionGroupUser = new TransactionGroupUserEntity
             {
+                Id = nonExistingId,
+                TransactionId = TransactionSeeds.TransactionJohnTaxi.Id,
+                GroupUserId = GroupUserSeeds.GroupUserJohnInWork.Id,
+                Transaction = null!,
+                GroupUser = null!
+            };
+
+            // Act & Assert
+            await Assert.ThrowsAsync<DbUpdateConcurrencyException>(async () =>
+            {
+                SpendWiseDbContextSUT.TransactionGroupUsers.Update(updatedTransactionGroupUser);
                 await SpendWiseDbContextSUT.SaveChangesAsync();
             });
         }
 
+        #endregion
+
+        #region Related Entities Handling Tests
+
         /// <summary>
-        /// Tests that updating a transaction group user with a non-existent transaction ID throws a <see cref="DbUpdateException"/>.
+        /// Tests for handling related entities in <see cref="TransactionGroupUserEntity"/>.
+        /// These tests ensure that related entities such as <see cref="TransactionEntity"/> and <see cref="GroupUserEntity"/> are correctly loaded and associated.
+        /// </summary>
+
+        [Fact]
+        /// <summary>
+        /// Verifies that fetching a <see cref="TransactionGroupUserEntity"/> with an included <see cref="TransactionEntity"/> returns the correct transaction.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task UpdateTransactionGroupUser_WithNonExistentTransaction_ThrowsException()
+        public async Task FetchTransactionGroupUser_WithTransaction_ReturnsCorrectTransaction()
         {
             // Arrange
-            var existingTransactionGroupUser = TransactionGroupUserSeeds.TransactionGroupUserJohnDoeInFamilyForMinus26Hours;
-            var nonExistentTransactionId = Guid.NewGuid();
-
-            var updatedTransactionGroupUser = existingTransactionGroupUser with
-            {
-                TransactionId = nonExistentTransactionId
-            };
+            var transactionGroupUserId = TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana.Id;
 
             // Act
-            SpendWiseDbContextSUT.TransactionGroupUsers.Update(updatedTransactionGroupUser);
+            var transactionGroupUser = await SpendWiseDbContextSUT.TransactionGroupUsers
+                .Include(tgu => tgu.Transaction)
+                .FirstOrDefaultAsync(tgu => tgu.Id == transactionGroupUserId);
 
             // Assert
-            await Assert.ThrowsAsync<DbUpdateException>(async () =>
-            {
-                await SpendWiseDbContextSUT.SaveChangesAsync();
-            });
+            Assert.NotNull(transactionGroupUser);
+            Assert.NotNull(transactionGroupUser.Transaction);
         }
 
+        [Fact]
+        /// <summary>
+        /// Verifies that fetching a <see cref="TransactionGroupUserEntity"/> with an included <see cref="GroupUserEntity"/> returns the correct group user.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task FetchTransactionGroupUser_WithGroupUser_ReturnsCorrectGroupUser()
+        {
+            // Arrange
+            var transactionGroupUserId = TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana.Id;
+
+            // Act
+            var transactionGroupUser = await SpendWiseDbContextSUT.TransactionGroupUsers
+                .Include(tgu => tgu.GroupUser)
+                .FirstOrDefaultAsync(tgu => tgu.Id == transactionGroupUserId);
+
+            // Assert
+            Assert.NotNull(transactionGroupUser);
+            Assert.NotNull(transactionGroupUser.GroupUser);
+        }
+
+        [Fact]
+        /// <summary>
+        /// Verifies that navigation properties in a <see cref="TransactionGroupUserEntity"/> are correctly loaded, including both <see cref="TransactionEntity"/> and <see cref="GroupUserEntity"/>.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task FetchTransactionGroupUser_NavigationPropertiesAreCorrectlyLoaded()
+        {
+            // Arrange
+            var existingTransactionGroupUser = TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana;
+            var expectedGroupUser = GroupUserSeeds.GroupUserDianaInFamily;
+            var expectedTransaction = TransactionSeeds.TransactionDianaDinner;
+
+            // Act
+            var transactionGroupUser = await SpendWiseDbContextSUT.TransactionGroupUsers
+                .Include(tgu => tgu.Transaction)
+                .Include(tgu => tgu.GroupUser)
+                .FirstOrDefaultAsync(tgu => tgu.Id == existingTransactionGroupUser.Id);
+
+            // Assert
+            Assert.NotNull(transactionGroupUser);
+            Assert.NotNull(transactionGroupUser.Transaction);
+            Assert.NotNull(transactionGroupUser.GroupUser);
+            DeepAssert.Equal(expectedTransaction, transactionGroupUser.Transaction);
+            DeepAssert.Equal(expectedGroupUser, transactionGroupUser.GroupUser);
+        }
+
+        #endregion
+
+        #region Consistency Tests
+
+        /// <summary>
+        /// Tests for ensuring consistency in <see cref="TransactionGroupUserEntity"/>.
+        /// These tests verify that the related transaction and group user exist in the database, ensuring data integrity.
+        /// </summary>
+
+        [Fact]
+        /// <summary>
+        /// Verifies that deleting an existing transaction group user successfully removes it from the database.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task DeleteTransactionGroupUser_CheckIntegrityConstraints_AfterDeletion()
+        {
+            // Arrange
+            var transactionGroupUserToRemove = await SpendWiseDbContextSUT.TransactionGroupUsers
+                .AsNoTracking()
+                .FirstAsync(l => l.Id == TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana.Id);
+
+            Assert.NotNull(transactionGroupUserToRemove);
+
+            // Act
+            SpendWiseDbContextSUT.TransactionGroupUsers.Remove(transactionGroupUserToRemove);
+            await SpendWiseDbContextSUT.SaveChangesAsync();
+
+            // Assert
+            Assert.False(await SpendWiseDbContextSUT.TransactionGroupUsers.AnyAsync(tgu => tgu.Id == transactionGroupUserToRemove.Id));
+
+            var transactionExists = await SpendWiseDbContextSUT.Transactions.AnyAsync(t => t.Id == transactionGroupUserToRemove.TransactionId);
+            var groupUserExists = await SpendWiseDbContextSUT.GroupUsers.AnyAsync(g => g.Id == transactionGroupUserToRemove.GroupUserId);
+
+            Assert.True(transactionExists);
+            Assert.True(groupUserExists);
+        }
+
+        #endregion
 
     }
 }

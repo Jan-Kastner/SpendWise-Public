@@ -18,6 +18,6 @@ namespace SpendWise.DAL.DTOs
         /// <summary>
         /// Gets or sets the description of the group. Can be null.
         /// </summary>
-        public string? Description { get; set; }
+        public required string? Description { get; set; }
     }
 }

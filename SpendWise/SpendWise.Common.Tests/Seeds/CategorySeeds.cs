@@ -1,5 +1,7 @@
 using SpendWise.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 
 namespace SpendWise.Common.Tests.Seeds
 {
@@ -8,8 +10,10 @@ namespace SpendWise.Common.Tests.Seeds
     /// </summary>
     public static class CategorySeeds
     {
+        private static bool _relationsInitialized = false;
+
         /// <summary>
-        /// A seed instance of <see cref="CategoryEntity"/> representing food-related expenses.
+        /// Gets the seed data for the food category.
         /// </summary>
         public static readonly CategoryEntity CategoryFood = new()
         {
@@ -21,7 +25,7 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="CategoryEntity"/> representing transportation-related expenses.
+        /// Gets the seed data for the transport category.
         /// </summary>
         public static readonly CategoryEntity CategoryTransport = new()
         {
@@ -33,44 +37,39 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="CategoryEntity"/> with related transactions for food-related expenses.
+        /// Initializes the relationships between categories and their associated transactions.
         /// </summary>
-        public static readonly CategoryEntity CategoryFoodWithRelations = CategoryFood with
+        public static void InitializeRelations()
         {
-            Transactions = new List<TransactionEntity>
+            if (!_relationsInitialized)
             {
-                TransactionSeeds.TransactionAdminFood,
-                TransactionSeeds.TransactionMinus30Hours,
-                TransactionSeeds.TransactionMinus28Hours,
-                TransactionSeeds.TransactionMinus26Hours,
-                TransactionSeeds.TransactionMinus24Hours,
-                TransactionSeeds.TransactionMinus22Hours
-            }
-        };
+                CategoryFood.Transactions.Add(TransactionSeeds.TransactionJohnFood);
 
-        /// <summary>
-        /// A seed instance of <see cref="CategoryEntity"/> with related transactions for 
-        /// transportation-related expenses.
-        /// </summary>
-        public static readonly CategoryEntity CategoryTransportWithRelations = CategoryTransport with
-        {
-            Transactions = new List<TransactionEntity>
-            {
-                TransactionSeeds.TransactionJohnDoeTransport,
-                TransactionSeeds.TransactionDelete
+                CategoryTransport.Transactions.Add(TransactionSeeds.TransactionJohnTaxi);
+                CategoryTransport.Transactions.Add(TransactionSeeds.TransactionJohnTransport);
+
+                _relationsInitialized = true;
             }
-        };
+        }
 
         /// <summary>
         /// Seeds the <see cref="CategoryEntity"/> data into the provided <see cref="ModelBuilder"/>.
         /// </summary>
-        /// <param name="modelBuilder">The model builder used to seed data.</param>
+        /// <param name="modelBuilder">The model builder to configure the entity.</param>
         public static void Seed(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<CategoryEntity>().HasData(
-                CategoryFood,
-                CategoryTransport
+                CategoryFood with
+                {
+                    Transactions = Array.Empty<TransactionEntity>()
+                },
+
+                CategoryTransport with
+                {
+                    Transactions = Array.Empty<TransactionEntity>()
+                }
             );
+            InitializeRelations();
         }
     }
 }

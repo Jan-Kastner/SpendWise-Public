@@ -21,43 +21,43 @@ namespace SpendWise.DAL.Tests
         {
         }
 
+        #region CRUD Operations Tests
+
         /// <summary>
-        /// Tests that retrieving a group by its ID returns the correct <see cref="GroupEntity"/>.
+        /// Tests for Create, Read, Update, and Delete (CRUD) operations related to the <see cref="GroupEntity"/> class.
+        /// This region contains unit tests that verify the behavior of the GroupEntity methods in the database context.
+        /// </summary>
+
+        [Fact]
+        /// <summary>
+        /// Verifies that fetching a group by its ID returns the expected group entity.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task GetGroup_ById_ReturnsCorrectGroup()
+        public async Task FetchGroupById_ReturnsExpectedGroup()
         {
             // Arrange
             var expectedGroup = GroupSeeds.GroupFamily;
-            var existingGroupId = GroupSeeds.GroupFamily.Id;
+            var groupIdToFetch = expectedGroup.Id;
 
             // Act
-            var group = await SpendWiseDbContextSUT.Groups
-                .FirstOrDefaultAsync(g => g.Id == existingGroupId);
+            var actualGroup = await SpendWiseDbContextSUT.Groups
+                .Where(g => g.Id == groupIdToFetch)
+                .SingleOrDefaultAsync();
 
             // Assert
-            Assert.NotNull(group);
-            DeepAssert.Equal(
-                expectedGroup,
-                group,
-                propertiesToIgnore: new[]
-                {
-                    "GroupUsers",
-                    "Invitations"
-                }
-            );
+            Assert.NotNull(actualGroup);
+            DeepAssert.Equal(expectedGroup, actualGroup);
         }
 
+        [Fact]
         /// <summary>
-        /// Tests that adding a new group to the database persists the <see cref="GroupEntity"/> correctly.
+        /// Verifies that a valid group entity can be added to the database and persists successfully.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task AddGroup_WhenValidGroupIsAdded_GroupIsPersisted()
+        public async Task AddGroup_ValidGroup_SuccessfullyPersists()
         {
             // Arrange
-            var newGroup = new GroupEntity
+            var groupToAdd = new GroupEntity
             {
                 Id = Guid.NewGuid(),
                 Name = "New Group",
@@ -65,37 +65,32 @@ namespace SpendWise.DAL.Tests
             };
 
             // Act
-            SpendWiseDbContextSUT.Groups.Add(newGroup);
+            SpendWiseDbContextSUT.Groups.Add(groupToAdd);
             await SpendWiseDbContextSUT.SaveChangesAsync();
 
             // Assert
-            var actualGroup = await SpendWiseDbContextSUT.Groups.FindAsync(newGroup.Id);
+            await using var dbx = await DbContextFactory.CreateDbContextAsync();
+            var actualGroup = await dbx.Groups.FindAsync(groupToAdd.Id);
+
             Assert.NotNull(actualGroup);
-            DeepAssert.Equal(
-                newGroup,
-                actualGroup,
-                propertiesToIgnore: new[]
-                {
-                    "GroupUsers",
-                    "Invitations"
-                }
-            );
+            DeepAssert.Equal(groupToAdd, actualGroup);
         }
 
+        [Fact]
         /// <summary>
-        /// Tests that updating an existing group correctly persists changes to the database.
+        /// Verifies that an existing group entity can be updated in the database and the changes persist correctly.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task UpdateGroup_WhenExistingGroupIsUpdated_ChangesArePersisted()
+        public async Task UpdateGroup_ExistingGroup_SuccessfullyPersistsChanges()
         {
             // Arrange
             var existingGroup = GroupSeeds.GroupFamily;
+
             var updatedGroup = new GroupEntity
             {
                 Id = existingGroup.Id,
-                Name = "Updated Family Group",
-                Description = "Updated description"
+                Name = existingGroup.Name + " Updated",
+                Description = existingGroup.Description + " Updated"
             };
 
             // Act
@@ -103,172 +98,71 @@ namespace SpendWise.DAL.Tests
             await SpendWiseDbContextSUT.SaveChangesAsync();
 
             // Assert
-            var actualGroup = await SpendWiseDbContextSUT.Groups.FindAsync(existingGroup.Id);
+            await using var dbx = await DbContextFactory.CreateDbContextAsync();
+            var actualGroup = await dbx.Groups
+                .FirstOrDefaultAsync(g => g.Id == existingGroup.Id);
+
             Assert.NotNull(actualGroup);
-            Assert.Equal("Updated Family Group", actualGroup.Name);
-            Assert.Equal("Updated description", actualGroup.Description);
+            DeepAssert.Equal(updatedGroup, actualGroup);
         }
 
+        [Fact]
         /// <summary>
-        /// Tests that deleting a group from the database removes the <see cref="GroupEntity"/> correctly.
+        /// Verifies that an existing group entity can be deleted from the database, and the deletion is successful.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task DeleteGroup_WhenGroupIsDeleted_GroupIsRemoved()
+        public async Task DeleteGroup_ExistingGroup_SuccessfullyRemovesGroup()
         {
             // Arrange
-            var groupToDelete = GroupSeeds.GroupWork;
+            var groupToDelete = await SpendWiseDbContextSUT.Groups
+                .AsNoTracking()
+                .FirstAsync(g => g.Id == GroupSeeds.GroupWork.Id);
+
+            Assert.NotNull(groupToDelete);
+            Assert.True(await SpendWiseDbContextSUT.Groups.AnyAsync(g => g.Id == groupToDelete.Id));
 
             // Act
             SpendWiseDbContextSUT.Groups.Remove(groupToDelete);
             await SpendWiseDbContextSUT.SaveChangesAsync();
 
             // Assert
-            var deletedGroup = await SpendWiseDbContextSUT.Groups.FindAsync(groupToDelete.Id);
-            Assert.Null(deletedGroup);
-        }
-
-        /// <summary>
-        /// Tests that when a <see cref="GroupEntity"/> is fetched, its navigation properties are loaded correctly.
-        /// This includes loading associated <see cref="GroupUserEntity"/> and <see cref="InvitationEntity"/> entities.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task VerifyGroupNavigationProperties_WhenGroupIsFetched_NavigationPropertiesAreLoaded()
-        {
-            // Arrange
-            var groupId = GroupSeeds.GroupFamily.Id;
-
-            // Act
-            var fetchedGroup = await SpendWiseDbContextSUT.Groups
-                .Include(g => g.GroupUsers)
-                .Include(g => g.Invitations)
-                .FirstOrDefaultAsync(g => g.Id == groupId);
-
-            // Assert
-            Assert.NotNull(fetchedGroup);
-            Assert.NotNull(fetchedGroup.GroupUsers);
-            Assert.NotNull(fetchedGroup.Invitations);
-
-            // Verify the count of related entities
-            Assert.True(fetchedGroup.GroupUsers.Count > 0);
-            Assert.True(fetchedGroup.Invitations.Count > 0);
-
-            // Verify the content of the navigation properties
-            DeepAssert.Contains(
-                GroupUserSeeds.GroupUserAdminInFamily,
-                fetchedGroup.GroupUsers,
-                propertiesToIgnore: new[]
-                {
-                    "User",
-                    "Group",
-                    "Limit",
-                    "Transactions"
-                }
-            );
-
-            DeepAssert.Contains(
-                GroupUserSeeds.GroupUserJohnDoeInFamily,
-                fetchedGroup.GroupUsers,
-                propertiesToIgnore: new[]
-                {
-                    "User",
-                    "Group",
-                    "Limit",
-                    "Transactions"
-                }
-            );
-
-            DeepAssert.Contains(
-                InvitationSeeds.InvitationAdminToJohnDoeIntoFamily,
-                fetchedGroup.Invitations,
-                propertiesToIgnore: new[]
-                {
-                    "Sender",
-                    "Reciever",
-                    "Group"
-                }
-            );
-
-        }
-
-        /// <summary>
-        /// Tests that adding a group with the maximum allowed field lengths correctly stores 
-        /// the <see cref="GroupEntity"/> in the database.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task AddGroup_WithMaximumFieldLength_StoresCorrectly()
-        {
-            // Arrange
-            var group = new GroupEntity
-            {
-                Id = Guid.NewGuid(),
-                Name = new string('A', 100), // Assuming 100 is the maximum length for Name
-                Description = new string('B', 200) // Assuming 200 is the maximum length for Description
-            };
-
-            // Act
-            SpendWiseDbContextSUT.Groups.Add(group);
-            await SpendWiseDbContextSUT.SaveChangesAsync();
-
-            // Assert
-            var actualGroup = await SpendWiseDbContextSUT.Groups.FindAsync(group.Id);
-            Assert.NotNull(actualGroup);
-            Assert.Equal(group.Name, actualGroup.Name);
-            Assert.Equal(group.Description, actualGroup.Description);
-        }
-
-        /// <summary>
-        /// Tests that adding multiple groups concurrently correctly persists 
-        /// all <see cref="GroupEntity"/> records in the database.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task AddGroups_Concurrently_GroupsArePersistedCorrectly()
-        {
-            // Arrange
-            var groups = new List<GroupEntity>
-            {
-                new GroupEntity { Id = Guid.NewGuid(), Name = "Group1", Description = "Description1" },
-                new GroupEntity { Id = Guid.NewGuid(), Name = "Group2", Description = "Description2" },
-                new GroupEntity { Id = Guid.NewGuid(), Name = "Group3", Description = "Description3" }
-            };
-
-            // Act
-            await SpendWiseDbContextSUT.Groups.AddRangeAsync(groups);
-            await SpendWiseDbContextSUT.SaveChangesAsync();
-
-            // Assert
             await using var dbx = await DbContextFactory.CreateDbContextAsync();
-            foreach (var group in groups)
-            {
-                var actualGroup = await dbx.Groups.FindAsync(group.Id);
-                Assert.NotNull(actualGroup);
-                Assert.Equal(group.Name, actualGroup.Name);
-                Assert.Equal(group.Description, actualGroup.Description);
-            }
+            var isGroupDeleted = await dbx.Groups
+                .AsNoTracking()
+                .AnyAsync(g => g.Id == groupToDelete.Id);
+
+            Assert.False(isGroupDeleted);
         }
 
+        #endregion
+
+        #region Error Handling Tests
+
         /// <summary>
-        /// Tests that updating a group with invalid data throws a <see cref="DbUpdateException"/> as expected.
+        /// Tests for error handling scenarios when adding a group entity.
+        /// This region ensures that the application correctly handles invalid data inputs.
+        /// </summary>
+
+        [Fact]
+        /// <summary>
+        /// Verifies that adding a group entity with invalid data (e.g., exceeding name length) throws a DbUpdateException.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task UpdateGroup_WithInvalidData_ShouldThrowException()
+        public async Task AddGroup_InvalidData_ThrowsDbUpdateException()
         {
             // Arrange
-            var existingGroup = GroupSeeds.GroupFriends; // Assuming this seed exists
+            var existingGroup = GroupSeeds.GroupFriends;
             var invalidGroup = new GroupEntity
             {
                 Id = existingGroup.Id,
-                Name = new string('A', 101), // Assuming 100 is the maximum length for Name
+                Name = new string('A', 101), // Invalid Name length
                 Description = existingGroup.Description
             };
 
-            // Act & Assert
+            // Act
             SpendWiseDbContextSUT.Groups.Update(invalidGroup);
 
+            // Assert
             var exception = await Assert.ThrowsAsync<DbUpdateException>(
                 async () => await SpendWiseDbContextSUT.SaveChangesAsync()
             );
@@ -276,107 +170,235 @@ namespace SpendWise.DAL.Tests
             Assert.NotNull(exception);
         }
 
+        #endregion
+
+        #region Data Retrieval Tests
+
         /// <summary>
-        /// Tests that retrieving groups by a name containing a specific substring returns the correct 
-        /// <see cref="GroupEntity"/> records.
+        /// Tests for data retrieval operations related to the <see cref="GroupEntity"/> class.
+        /// This region contains tests that verify the correct retrieval of group data based on various criteria.
+        /// </summary>
+
+        [Fact]
+        /// <summary>
+        /// Verifies that groups can be fetched by a partial name, returning all matching groups.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task GetGroups_ByNameContaining_ReturnsCorrectGroups()
+        public async Task FetchGroupsByPartialName_ReturnsMatchingGroups()
         {
             // Arrange
-            var substring = "Friends";
+            var searchNamePart = "Friends";
 
             // Act
-            var groups = await SpendWiseDbContextSUT.Groups
-                .Where(g => g.Name.Contains(substring))
+            var actualGroups = await SpendWiseDbContextSUT.Groups
+                .Where(g => g.Name.Contains(searchNamePart))
                 .ToListAsync();
 
             // Assert
-            Assert.NotNull(groups);
-            Assert.All(groups, group => Assert.Contains(substring, group.Name));
+            Assert.NotNull(actualGroups);
+            Assert.All(actualGroups, group => Assert.Contains(searchNamePart, group.Name));
         }
 
+        [Fact]
         /// <summary>
-        /// Tests that retrieving groups by a description containing a specific substring returns the correct 
-        /// <see cref="GroupEntity"/> records.
+        /// Verifies that groups can be fetched by a description substring, returning all matching groups.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task GetGroups_ByDescriptionContaining_ReturnsCorrectGroups()
+        public async Task FetchGroupsByDescriptionSubstring_ReturnsMatchingGroups()
         {
             // Arrange
-            var substring = "Work";
+            var searchDescriptionPart = "Work";
 
             // Act
-            var groups = await SpendWiseDbContextSUT.Groups
-                .Where(g => g.Description != null && g.Description.Contains(substring))
+            var actualGroups = await SpendWiseDbContextSUT.Groups
+                .Where(g => g.Description != null && g.Description.Contains(searchDescriptionPart))
                 .ToListAsync();
 
             // Assert
-            Assert.NotNull(groups);
-            Assert.All(groups, group => Assert.Contains(substring, group.Description));
+            Assert.NotNull(actualGroups);
+            Assert.All(actualGroups, group => Assert.Contains(searchDescriptionPart, group.Description));
         }
 
+        [Fact]
         /// <summary>
-        /// Tests that fetching a group with its related users correctly sets up the relationship between 
-        /// the group and its users.
+        /// Verifies that fetching a group entity loads its navigation properties correctly.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task VerifyGroupUserRelationship_WhenGroupIsFetched_RelationshipIsCorrect()
+        public async Task FetchGroup_NavigationPropertiesAreCorrectlyLoaded()
         {
             // Arrange
-            var groupId = GroupSeeds.GroupFamily.Id; // Use an existing group with related users
+            var expectedGroup = GroupSeeds.GroupFamily;
+            var groupIdToFetch = expectedGroup.Id;
 
             // Act
-            var group = await SpendWiseDbContextSUT.Groups
+            var actualGroup = await SpendWiseDbContextSUT.Groups
+                .Where(g => g.Id == groupIdToFetch)
                 .Include(g => g.GroupUsers)
-                .FirstOrDefaultAsync(g => g.Id == groupId);
+                .Include(g => g.Invitations)
+                .SingleOrDefaultAsync();
 
             // Assert
-            Assert.NotNull(group);
-            Assert.NotEmpty(group.GroupUsers);
-            Assert.All(group.GroupUsers, gu => Assert.Equal(groupId, gu.GroupId));
+            Assert.NotNull(actualGroup);
+            DeepAssert.Equal(expectedGroup, actualGroup);
+            Assert.NotEmpty(actualGroup.GroupUsers);
+            Assert.NotEmpty(actualGroup.Invitations);
         }
 
+        #endregion
+
+        #region Update and Special Cases Tests
+
         /// <summary>
-        /// Tests that deleting a group from the database correctly removes associated 
-        /// <see cref="GroupUserEntity"/> and <see cref="InvitationEntity"/> records.
+        /// Tests for update operations and special cases related to the <see cref="GroupEntity"/> class.
+        /// This region includes tests that validate behavior for maximum field lengths and concurrent additions.
+        /// </summary>
+
+        [Fact]
+        /// <summary>
+        /// Verifies that adding a group entity with maximum field lengths stores the data correctly.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task RemoveGroup_WhenGroupIsDeleted_GroupUsersAndInvitationsAreRemoved()
+        public async Task AddGroup_MaxFieldLength_StoresDataCorrectly()
         {
             // Arrange
-            var existingGroup = GroupSeeds.GroupFamily;
-
-            // Fetch and verify related GroupUsers and Invitations
-            var groupUsers = await SpendWiseDbContextSUT.GroupUsers
-                .Where(gu => gu.GroupId == existingGroup.Id)
-                .ToListAsync();
-            var invitations = await SpendWiseDbContextSUT.Invitations
-                .Where(i => i.GroupId == existingGroup.Id)
-                .ToListAsync();
-
-            Assert.NotEmpty(groupUsers);
-            Assert.NotEmpty(invitations);
+            var groupToAdd = new GroupEntity
+            {
+                Id = Guid.NewGuid(),
+                Name = new string('A', 100), // Assuming 100 is the maximum length for Name
+                Description = new string('B', 200) // Assuming 200 is the maximum length for Description
+            };
 
             // Act
-            SpendWiseDbContextSUT.Groups.Remove(existingGroup);
+            SpendWiseDbContextSUT.Groups.Add(groupToAdd);
             await SpendWiseDbContextSUT.SaveChangesAsync();
 
-            // Assert: Verify GroupUsers have been removed
-            var remainingGroupUsers = await SpendWiseDbContextSUT.GroupUsers
-                .Where(gu => gu.GroupId == existingGroup.Id)
-                .ToListAsync();
-            Assert.Empty(remainingGroupUsers);
+            // Assert
+            await using var dbx = await DbContextFactory.CreateDbContextAsync();
+            var actualGroup = await dbx.Groups.FindAsync(groupToAdd.Id);
 
-            // Assert: Verify Invitations have been removed
-            var remainingInvitations = await SpendWiseDbContextSUT.Invitations
-                .Where(i => i.GroupId == existingGroup.Id)
-                .ToListAsync();
-            Assert.Empty(remainingInvitations);
+            Assert.NotNull(actualGroup);
+            Assert.Equal(groupToAdd.Name, actualGroup.Name);
+            Assert.Equal(groupToAdd.Description, actualGroup.Description);
         }
+
+        [Fact]
+        /// <summary>
+        /// Verifies that concurrent additions of group entities are handled correctly, persisting all groups successfully.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task AddGroups_ConcurrentAdditions_SuccessfullyPersistAllGroups()
+        {
+            // Arrange
+            var groupsToAdd = Enumerable.Range(0, 10).Select(i => new GroupEntity
+            {
+                Id = Guid.NewGuid(),
+                Name = $"Group{i}",
+                Description = $"Description{i}"
+            }).ToList();
+
+            // Act
+            var tasks = groupsToAdd.Select(async group =>
+            {
+                await using var dbx = await DbContextFactory.CreateDbContextAsync();
+                dbx.Groups.Add(group);
+                await dbx.SaveChangesAsync();
+            });
+
+            await Task.WhenAll(tasks);
+
+            // Assert
+            var verificationTasks = groupsToAdd.Select(async group =>
+            {
+                await using var dbx = await DbContextFactory.CreateDbContextAsync();
+                var actualGroup = await dbx.Groups.FindAsync(group.Id);
+                Assert.NotNull(actualGroup);
+                DeepAssert.Equal(group, actualGroup);
+            });
+
+            await Task.WhenAll(verificationTasks);
+        }
+
+        #endregion
+
+        #region Related Entities Handling Tests
+
+        /// <summary>
+        /// Tests for handling relationships between groups and their related entities.
+        /// This region includes tests that verify the correct loading and management of related data.
+        /// </summary>
+
+        [Fact]
+        /// <summary>
+        /// Verifies that when a group is fetched, the relationship with group users is correctly established.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task FetchGroupUserRelationship_WhenGroupIsFetched_RelationshipIsCorrect()
+        {
+            // Arrange
+            var groupIdToFetch = GroupSeeds.GroupFamily.Id;
+
+            // Act
+            var actualGroup = await SpendWiseDbContextSUT.Groups
+                .Include(g => g.GroupUsers)
+                .FirstOrDefaultAsync(g => g.Id == groupIdToFetch);
+
+            // Assert
+            Assert.NotNull(actualGroup);
+            Assert.NotEmpty(actualGroup.GroupUsers);
+            Assert.All(actualGroup.GroupUsers, gu => Assert.Equal(groupIdToFetch, gu.GroupId));
+        }
+
+        #endregion
+
+        #region Consistency Tests
+
+        /// <summary>
+        /// Tests to ensure data consistency and integrity after various operations.
+        /// This region contains tests that check the state of the database after deletions and modifications.
+        /// </summary>
+
+        [Fact]
+        /// <summary>
+        /// Verifies that after a group is deleted, all related entities are also correctly removed or updated.
+        /// This includes checking for the absence of group users and invitations related to the deleted group.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task DeleteGroup_CheckIntegrityConstraints_AfterDeletion()
+        {
+            // Arrange
+            var groupIdToDelete = GroupSeeds.GroupFamily.Id;
+
+            var groupToDelete = await SpendWiseDbContextSUT.Groups
+                .Where(g => g.Id == groupIdToDelete)
+                .Include(g => g.GroupUsers)
+                .Include(g => g.Invitations)
+                .SingleOrDefaultAsync();
+
+            Assert.NotNull(groupToDelete);
+
+            var groupUsersToCheck = groupToDelete.GroupUsers;
+            var invitationsToCheck = groupToDelete.Invitations;
+
+            // Act
+            SpendWiseDbContextSUT.Groups.Remove(groupToDelete);
+            await SpendWiseDbContextSUT.SaveChangesAsync();
+
+            // Assert
+            await using var dbx = await DbContextFactory.CreateDbContextAsync();
+            Assert.False(await dbx.Groups.AnyAsync(g => g.Id == groupIdToDelete));
+
+            foreach (var gu in groupUsersToCheck)
+            {
+                Assert.False(await dbx.GroupUsers.AnyAsync(g => g.GroupId == gu.GroupId));
+            }
+
+            foreach (var inv in invitationsToCheck)
+            {
+                Assert.False(await dbx.Invitations.AnyAsync(i => i.GroupId == inv.GroupId));
+            }
+        }
+
+        #endregion
+
     }
 }

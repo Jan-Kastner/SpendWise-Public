@@ -13,22 +13,22 @@ namespace SpendWise.DAL.DTOs
         /// <summary>
         /// Gets or sets the unique identifier for the sender of the invitation.
         /// </summary>
-        public required Guid SenderId { get; set; }
+        public required Guid SenderId { get; init; }
 
         /// <summary>
         /// Gets or sets the unique identifier for the receiver of the invitation.
         /// </summary>
-        public required Guid ReceiverId { get; set; }
+        public required Guid ReceiverId { get; init; }
 
         /// <summary>
         /// Gets or sets the unique identifier for the group associated with the invitation.
         /// </summary>
-        public required Guid GroupId { get; set; }
+        public required Guid GroupId { get; init; }
 
         /// <summary>
         /// Gets or sets the date and time when the invitation was sent.
         /// </summary>
-        public required DateTime SentDate { get; set; }
+        public required DateTime SentDate { get; init; }
 
         /// <summary>
         /// Gets or sets the date and time when the invitation was responded to. Can be null.
@@ -38,6 +38,6 @@ namespace SpendWise.DAL.DTOs
         /// <summary>
         /// Gets or sets a value indicating whether the invitation was accepted. Can be null.
         /// </summary>
-        public bool? IsAccepted { get; set; }
+        public required bool? IsAccepted { get; set; }
     }
 }

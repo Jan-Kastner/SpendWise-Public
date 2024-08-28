@@ -13,17 +13,16 @@ namespace SpendWise.DAL.DTOs
         /// <summary>
         /// Gets or sets the unique identifier for the user.
         /// </summary>
-        public required Guid UserId { get; set; }
+        public required Guid UserId { get; init; }
 
         /// <summary>
         /// Gets or sets the unique identifier for the group.
         /// </summary>
-        public required Guid GroupId { get; set; }
+        public required Guid GroupId { get; init; }
 
         /// <summary>
-        /// Gets or sets the unique identifier for the limit. Can be null.
+        /// Gets or sets the unique identifier for the associated limit, if any.
         /// </summary>
         public Guid? LimitId { get; set; }
     }
 }
-

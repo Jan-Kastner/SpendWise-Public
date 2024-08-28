@@ -88,6 +88,9 @@ namespace SpendWise.DAL.Migrations
                     b.Property<Guid>("GroupId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("LimitId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
@@ -98,6 +101,10 @@ namespace SpendWise.DAL.Migrations
 
                     b.HasIndex("UserId")
                         .HasDatabaseName("IX_GroupUserEntity_UserId");
+
+                    b.HasIndex("UserId", "GroupId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_TGroupUserEntity_Unique_UserId_GroupId");
 
                     b.ToTable("GroupUsers");
                 });
@@ -328,13 +335,11 @@ namespace SpendWise.DAL.Migrations
 
             modelBuilder.Entity("SpendWise.DAL.Entities.LimitEntity", b =>
                 {
-                    b.HasOne("SpendWise.DAL.Entities.GroupUserEntity", "GroupUser")
+                    b.HasOne("SpendWise.DAL.Entities.GroupUserEntity", null)
                         .WithOne("Limit")
                         .HasForeignKey("SpendWise.DAL.Entities.LimitEntity", "GroupUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("GroupUser");
                 });
 
             modelBuilder.Entity("SpendWise.DAL.Entities.TransactionEntity", b =>

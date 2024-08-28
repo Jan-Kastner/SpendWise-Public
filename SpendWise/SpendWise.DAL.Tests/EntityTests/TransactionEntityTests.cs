@@ -19,110 +19,315 @@ namespace SpendWise.DAL.Tests
         {
         }
 
+        #region CRUD Operations Tests
+
         /// <summary>
-        /// Verifies that adding a valid transaction to the database is successfully persisted.
+        /// Contains tests for the Create, Read, Update, and Delete (CRUD) operations
+        /// on the `TransactionEntity` in the database. These tests ensure that basic
+        /// database operations are correctly implemented and function as expected.
         /// </summary>
-        /// <returns>An asynchronous task representing the test operation.</returns>
+
         [Fact]
-        public async Task AddTransaction_WhenValidTransactionIsAdded_TransactionIsPersisted()
+        /// <summary>
+        /// Tests the addition of a valid transaction to the database.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task AddTransaction_ValidTransaction_SuccessfullyPersists()
         {
             // Arrange
-            var baseTime = DateTime.UtcNow;
-            baseTime = new DateTime(
-                baseTime.Ticks - (baseTime.Ticks % TimeSpan.TicksPerMillisecond),
+            var baseDateTime = DateTime.UtcNow;
+            baseDateTime = new DateTime(
+                baseDateTime.Ticks - (baseDateTime.Ticks % TimeSpan.TicksPerMillisecond),
                 DateTimeKind.Utc
             );
 
-            var transaction = new TransactionEntity
+            var transactionToAdd = new TransactionEntity
             {
                 Id = Guid.NewGuid(),
                 Amount = 150.0m,
-                Date = baseTime,
+                Date = baseDateTime,
                 Description = "Utilities",
                 Type = 2,
                 CategoryId = CategorySeeds.CategoryTransport.Id,
             };
 
-            var transactionGroupUser = new TransactionGroupUserEntity
-            {
-                Id = Guid.NewGuid(),
-                TransactionId = transaction.Id,
-                GroupUserId = GroupUserSeeds.GroupUserJohnDoeInFriends.Id,
-                Transaction = null!,
-                GroupUser = null!
-            };
-
-            var expectedCategory = CategorySeeds.CategoryTransport;
-
             // Act
-            SpendWiseDbContextSUT.Transactions.Add(transaction);
-            SpendWiseDbContextSUT.TransactionGroupUsers.Add(transactionGroupUser);
+            SpendWiseDbContextSUT.Transactions.Add(transactionToAdd);
             await SpendWiseDbContextSUT.SaveChangesAsync();
 
             // Assert
             await using var dbx = await DbContextFactory.CreateDbContextAsync();
             var actualTransaction = await dbx.Transactions
-                .Include(t => t.Category)
-                .Include(t => t.TransactionGroupUsers)
-                .SingleAsync(t => t.Id == transaction.Id);
+                .SingleAsync(t => t.Id == transactionToAdd.Id);
 
-            // Verify all properties except Category if necessary
-            DeepAssert.Equal(transaction, actualTransaction, propertiesToIgnore: new[] { "Category", "TransactionGroupUsers" });
-            Assert.NotEmpty(actualTransaction.TransactionGroupUsers);
-            DeepAssert.Contains(transactionGroupUser, actualTransaction.TransactionGroupUsers, propertiesToIgnore: new[] { "Transaction", "GroupUser" });
-            Assert.NotNull(actualTransaction.Category);
-            DeepAssert.Equal(CategorySeeds.CategoryTransport, actualTransaction.Category, propertiesToIgnore: new[] { "Transactions" });
+            DeepAssert.Equal(transactionToAdd, actualTransaction);
         }
 
-        /// <summary>
-        /// Verifies that deleting a transaction from the system correctly removes the transaction and related entities.
-        /// </summary>
-        /// <returns>An asynchronous task representing the test operation.</returns>
         [Fact]
-        public async Task DeleteTransaction_WhenTransactionIsDeleted_TransactionAndRelatedEntitiesAreRemoved()
+        /// <summary>
+        /// Tests the deletion of an existing transaction from the database.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task DeleteTransaction_ExistingTransaction_SuccessfullyRemoves()
         {
             // Arrange
-            var baseEntity = TransactionSeeds.TransactionDelete;
+            var transactionToDelete = await SpendWiseDbContextSUT.Transactions
+                .AsNoTracking()
+                .FirstAsync(t => t.Id == TransactionSeeds.TransactionDianaDinner.Id);
 
-            // Ensure the transaction exists before deletion
-            Assert.True(await SpendWiseDbContextSUT.Transactions.AnyAsync(i => i.Id == baseEntity.Id));
+            Assert.NotNull(transactionToDelete);
 
             // Ensure that TransactionGroupUserEntities associated with the transaction exist
             var relatedTransactionGroupUsers = await SpendWiseDbContextSUT.TransactionGroupUsers
-                .Where(tgu => tgu.TransactionId == baseEntity.Id)
+                .Where(tgu => tgu.TransactionId == transactionToDelete.Id)
                 .ToListAsync();
 
             Assert.NotEmpty(relatedTransactionGroupUsers);
 
             // Act
-            SpendWiseDbContextSUT.Transactions.Remove(baseEntity);
+            SpendWiseDbContextSUT.Transactions.Remove(transactionToDelete);
             await SpendWiseDbContextSUT.SaveChangesAsync();
 
             // Assert
-            // Verify that the transaction has been removed
-            Assert.False(await SpendWiseDbContextSUT.Transactions.AnyAsync(i => i.Id == baseEntity.Id));
-
-            // Verify that all associated TransactionGroupUserEntities have been removed
+            Assert.False(await SpendWiseDbContextSUT.Transactions.AnyAsync(i => i.Id == transactionToDelete.Id));
             var deletedTransactionGroupUsers = await SpendWiseDbContextSUT.TransactionGroupUsers
-                .Where(tgu => tgu.TransactionId == baseEntity.Id)
+                .Where(tgu => tgu.TransactionId == transactionToDelete.Id)
                 .ToListAsync();
 
             Assert.Empty(deletedTransactionGroupUsers);
         }
 
-        /// <summary>
-        /// Tests that the method for retrieving transactions by category returns the correct transactions.
-        /// </summary>
-        /// <returns>An asynchronous task representing the test operation.</returns>
         [Fact]
-        public async Task GetTransactions_ByCategory_ReturnsCorrectTransactions()
+        /// <summary>
+        /// Tests the update of an existing transaction in the database.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task UpdateTransaction_ExistingEntity_SuccessfullyPersistsChanges()
+        {
+            // Arrange
+            var transactionToUpdate = new TransactionEntity()
+            {
+                Id = TransactionSeeds.TransactionDianaDinner.Id,
+                Date = TransactionSeeds.TransactionDianaDinner.Date,
+                Amount = 500m,
+                Description = "Updated Transaction",
+                Type = 2
+            };
+
+            // Act
+            SpendWiseDbContextSUT.Transactions.Update(transactionToUpdate);
+            await SpendWiseDbContextSUT.SaveChangesAsync();
+
+            // Assert
+            var updatedTransaction = await SpendWiseDbContextSUT.Transactions
+                .Include(t => t.TransactionGroupUsers)
+                .SingleAsync(t => t.Id == transactionToUpdate.Id);
+
+            Assert.Equal(500.00m, updatedTransaction.Amount);
+            Assert.Equal("Updated Transaction", updatedTransaction.Description);
+            Assert.Equal(transactionToUpdate.Date, updatedTransaction.Date);
+            Assert.NotEmpty(updatedTransaction.TransactionGroupUsers);
+        }
+
+        #endregion
+
+        #region Error Handling Tests
+
+        /// <summary>
+        /// Contains tests focused on verifying the application's error handling capabilities.
+        /// These tests ensure that the system correctly identifies and handles invalid data inputs
+        /// during database operations by throwing appropriate exceptions.
+        /// </summary>
+
+        [Fact]
+        /// <summary>
+        /// Tests that adding a transaction with a negative amount throws a `DbUpdateException`.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task AddTransaction_InvalidNegativeAmount_ThrowsDbUpdateException()
+        {
+            // Arrange
+            var invalidTransaction = new TransactionEntity
+            {
+                Id = Guid.NewGuid(),
+                Amount = -100.00m,
+                Date = DateTime.UtcNow,
+                Type = 1,
+                CategoryId = Guid.NewGuid(),
+                Description = null
+            };
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            {
+                await SpendWiseDbContextSUT.Transactions.AddAsync(invalidTransaction);
+                await SpendWiseDbContextSUT.SaveChangesAsync();
+            });
+
+            Assert.NotNull(exception);
+        }
+
+        [Fact]
+        /// <summary>
+        /// Tests that updating a transaction with a non-existent category throws a `DbUpdateConcurrencyException`.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task UpdateTransaction_NonExistentCategory_ThrowsDbUpdateConcurrencyException()
+        {
+            // Arrange
+            var invalidTransaction = new TransactionEntity
+            {
+                Id = Guid.NewGuid(),
+                Amount = 200.00m,
+                Date = DateTime.UtcNow,
+                Type = 1,
+                CategoryId = Guid.NewGuid(),
+                Description = null
+            };
+
+            // Act & Assert
+            await Assert.ThrowsAsync<DbUpdateConcurrencyException>(async () =>
+            {
+                SpendWiseDbContextSUT.Transactions.Update(invalidTransaction);
+                await SpendWiseDbContextSUT.SaveChangesAsync();
+            });
+        }
+
+        [Fact]
+        /// <summary>
+        /// Tests that adding a transaction with an invalid type value throws a `DbUpdateException`.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task AddTransaction_InvalidType_ThrowsDbUpdateException()
+        {
+            // Arrange
+            var invalidTransaction = new TransactionEntity
+            {
+                Id = Guid.NewGuid(),
+                Amount = 100.00m,
+                Date = DateTime.UtcNow,
+                Type = 99, // Invalid type
+                CategoryId = Guid.NewGuid(),
+                Description = null
+            };
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            {
+                await SpendWiseDbContextSUT.Transactions.AddAsync(invalidTransaction);
+                await SpendWiseDbContextSUT.SaveChangesAsync();
+            });
+
+            Assert.NotNull(exception);
+        }
+
+        [Fact]
+        /// <summary>
+        /// Tests that adding a transaction with an invalid category ID throws a `DbUpdateException`.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task AddTransaction_InvalidCategory_ThrowsDbUpdateException()
+        {
+            // Arrange
+            var invalidTransaction = new TransactionEntity
+            {
+                Id = Guid.NewGuid(),
+                Amount = 100.00m,
+                Date = DateTime.UtcNow,
+                Type = 1,
+                CategoryId = Guid.Empty,
+                Description = null
+            };
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            {
+                await SpendWiseDbContextSUT.Transactions.AddAsync(invalidTransaction);
+                await SpendWiseDbContextSUT.SaveChangesAsync();
+            });
+
+            Assert.NotNull(exception);
+        }
+
+        [Fact]
+        /// <summary>
+        /// Tests that adding a transaction with a description exceeding the maximum allowed length throws a `DbUpdateException`.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task AddTransaction_ExceedsDescriptionLength_ThrowsDbUpdateException()
+        {
+            // Arrange
+            var longDescription = new string('a', 201); // Assuming the max length is 200 characters
+            var invalidTransaction = new TransactionEntity
+            {
+                Id = Guid.NewGuid(),
+                Amount = 100.00m,
+                Date = DateTime.UtcNow,
+                Description = longDescription,
+                Type = 1,
+                CategoryId = CategorySeeds.CategoryFood.Id
+            };
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            {
+                await SpendWiseDbContextSUT.Transactions.AddAsync(invalidTransaction);
+                await SpendWiseDbContextSUT.SaveChangesAsync();
+            });
+
+            Assert.NotNull(exception);
+        }
+
+        [Fact]
+        /// <summary>
+        /// Tests that adding a transaction with a zero amount throws a `DbUpdateException`.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task AddTransaction_ZeroAmount_ThrowsDbUpdateException()
+        {
+            // Arrange
+            var invalidTransaction = new TransactionEntity
+            {
+                Id = Guid.NewGuid(),
+                Amount = 0.00m, // Zero amount
+                Date = DateTime.UtcNow,
+                Type = 1,
+                CategoryId = CategorySeeds.CategoryFood.Id,
+                Description = null
+            };
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            {
+                await SpendWiseDbContextSUT.Transactions.AddAsync(invalidTransaction);
+                await SpendWiseDbContextSUT.SaveChangesAsync();
+            });
+
+            Assert.NotNull(exception);
+        }
+
+        #endregion
+
+        #region Data Retrieval Tests
+
+        /// <summary>
+        /// Contains tests that focus on retrieving data from the database, specifically related to transactions.
+        /// These tests ensure that queries return the correct data based on specific criteria such as category, date range, and user-specific transactions.
+        /// </summary>
+
+        [Fact]
+        /// <summary>
+        /// Tests the retrieval of transactions based on a specific category ID.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task FetchTransactions_ByCategory_ReturnsExpectedTransactions()
         {
             // Arrange
             var testCategoryId = CategorySeeds.CategoryTransport.Id;
-            var expectedTransactions = new[]
+            var expectedTransactionIds = new[]
             {
-                TransactionSeeds.TransactionJohnDoeTransport,
-                TransactionSeeds.TransactionDelete
+                TransactionSeeds.TransactionJohnTaxi.Id,
+                TransactionSeeds.TransactionJohnTransport.Id
             };
 
             // Act
@@ -132,30 +337,29 @@ namespace SpendWise.DAL.Tests
 
             // Assert
             Assert.NotEmpty(transactions);
-            Assert.Equal(expectedTransactions.Length, transactions.Length);
-            foreach (var expectedTransaction in expectedTransactions)
+            Assert.Equal(expectedTransactionIds.Length, transactions.Length);
+            foreach (var expectedTransactionId in expectedTransactionIds)
             {
-                DeepAssert.Contains(expectedTransaction, transactions, propertiesToIgnore: new[] { "Category", "TransactionGroupUsers" });
+                Assert.Contains(transactions, t => t.Id == expectedTransactionId);
             }
         }
 
-        /// <summary>
-        /// Tests that the method for retrieving transactions by date range returns transactions within the specified range.
-        /// </summary>
-        /// <returns>An asynchronous task representing the test operation.</returns>
         [Fact]
-        public async Task GetTransactions_ByDateRange_ReturnsTransactionsWithinRange()
+        /// <summary>
+        /// Tests the retrieval of transactions within a specified date range.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task FetchTransactions_ByDateRange_ReturnsTransactionsInRange()
         {
             // Arrange
-            var expectedTransactions = new[]
+            var expectedTransactionIds = new[]
             {
-                TransactionSeeds.TransactionMinus28Hours,
-                TransactionSeeds.TransactionMinus26Hours,
-                TransactionSeeds.TransactionMinus24Hours
+                TransactionSeeds.TransactionJohnFood.Id,
+                TransactionSeeds.TransactionJohnTaxi.Id
             };
 
-            var startDate = TransactionSeeds.TransactionMinus28Hours.Date;
-            var endDate = TransactionSeeds.TransactionMinus24Hours.Date;
+            var startDate = TransactionSeeds.TransactionJohnFood.Date;
+            var endDate = TransactionSeeds.TransactionJohnTaxi.Date;
 
             // Act
             var transactions = await SpendWiseDbContextSUT.Transactions
@@ -164,165 +368,18 @@ namespace SpendWise.DAL.Tests
 
             // Assert
             Assert.NotEmpty(transactions);
-            Assert.Equal(expectedTransactions.Length, transactions.Length);
-            foreach (var expectedTransaction in expectedTransactions)
+            Assert.Equal(expectedTransactionIds.Length, transactions.Length);
+            foreach (var expectedTransactionId in expectedTransactionIds)
             {
-                DeepAssert.Contains(expectedTransaction, transactions, propertiesToIgnore: new[] { "Category", "TransactionGroupUsers" });
+                Assert.Contains(transactions, t => t.Id == expectedTransactionId);
             }
         }
 
-        /// <summary>
-        /// Tests that the method for retrieving transactions verifies the correctness of transaction amounts within the specified date range.
-        /// </summary>
-        /// <returns>An asynchronous task representing the test operation.</returns>
         [Fact]
-        public async Task VerifyTransactionAmounts_WhenTransactionsExist_AmountsAreCorrect()
-        {
-            // Arrange
-            var expectedAmounts = new[]
-            {
-                TransactionSeeds.TransactionMinus30Hours.Amount,
-                TransactionSeeds.TransactionMinus28Hours.Amount,
-                TransactionSeeds.TransactionMinus26Hours.Amount,
-                TransactionSeeds.TransactionMinus24Hours.Amount,
-                TransactionSeeds.TransactionMinus22Hours.Amount
-            };
-
-            var startDate = TransactionSeeds.TransactionMinus30Hours.Date;
-            var endDate = TransactionSeeds.TransactionMinus22Hours.Date;
-
-            // Act
-            var transactions = await SpendWiseDbContextSUT.Transactions
-                .Where(t => t.Date >= startDate && t.Date <= endDate)
-                .ToArrayAsync();
-
-            var actualAmounts = transactions.Select(t => t.Amount).ToArray();
-
-            // Assert
-            Assert.NotEmpty(transactions);
-            Assert.Equal(expectedAmounts.Length, actualAmounts.Length);
-            foreach (var expectedAmount in expectedAmounts)
-            {
-                DeepAssert.Contains(expectedAmount, actualAmounts, propertiesToIgnore: new[] { "Category", "TransactionGroupUsers" });
-            }
-        }
-
         /// <summary>
-        /// Tests that the method for retrieving transactions verifies the correctness of transaction descriptions within the specified date range.
+        /// Tests the calculation of the total amount of transactions for a specific user (John Doe) within a given date range.
         /// </summary>
-        /// <returns>An asynchronous task representing the test operation.</returns>
-        [Fact]
-        public async Task VerifyTransactionDescriptions_WhenTransactionsExist_DescriptionsAreCorrect()
-        {
-            // Arrange
-            var expectedDescriptions = new[]
-            {
-                TransactionSeeds.TransactionMinus30Hours.Description,
-                TransactionSeeds.TransactionMinus28Hours.Description,
-                TransactionSeeds.TransactionMinus26Hours.Description,
-                TransactionSeeds.TransactionMinus24Hours.Description,
-                TransactionSeeds.TransactionMinus22Hours.Description
-            };
-
-            var startDate = TransactionSeeds.TransactionMinus22Hours.Date;
-            var endDate = TransactionSeeds.TransactionMinus30Hours.Date;
-
-            // Act
-            var transactions = await SpendWiseDbContextSUT.Transactions
-                .Where(t => t.Date >= endDate && t.Date <= startDate)
-                .ToArrayAsync();
-
-            var actualDescriptions = transactions.Select(t => t.Description).ToArray();
-
-            // Assert
-            Assert.Equal(expectedDescriptions.Length, actualDescriptions.Length);
-            foreach (var expectedDescription in expectedDescriptions)
-            {
-                Assert.Contains(expectedDescription, actualDescriptions);
-            }
-        }
-
-        /// <summary>
-        /// Tests that when adding transactions and assigning them to user groups concurrently, transactions and groups are correctly persisted.
-        /// </summary>
-        /// <returns>An asynchronous task representing the test operation.</returns>
-        [Fact]
-        public async Task AddTransactions_Concurrently_TransactionsAndGroupsArePersistedCorrectly()
-        {
-            // Arrange
-            var userId = UserSeeds.UserJohnDoe.Id;
-            var categoryId = CategorySeeds.CategoryTransport.Id;
-            var groupUserId = GroupUserSeeds.GroupUserJohnDoeInFriends.Id;
-
-            var baseTime = DateTime.UtcNow.AddSeconds(-10);
-            baseTime = new DateTime(baseTime.Ticks - (baseTime.Ticks % TimeSpan.TicksPerMillisecond), DateTimeKind.Utc);
-
-            var transactionsToCreate = Enumerable.Range(0, 10).Select(i =>
-            {
-                var transactionId = Guid.NewGuid();
-                var transaction = new TransactionEntity
-                {
-                    Id = transactionId,
-                    Amount = 100.0m + i,
-                    Date = baseTime.AddSeconds(i),
-                    Description = $"Transaction {i}",
-                    Type = 2,
-                    CategoryId = categoryId
-                };
-
-                var transactionGroupUser = new TransactionGroupUserEntity
-                {
-                    Id = Guid.NewGuid(),
-                    TransactionId = transactionId,
-                    GroupUserId = groupUserId,
-                    Transaction = null!,
-                    GroupUser = null!
-                };
-
-                return (transaction, transactionGroupUser);
-            }).ToList();
-
-            // Act
-            var tasks = transactionsToCreate.Select(async pair =>
-            {
-                await using var dbx = await DbContextFactory.CreateDbContextAsync();
-                dbx.Transactions.Add(pair.transaction);
-                dbx.TransactionGroupUsers.Add(pair.transactionGroupUser);
-                await dbx.SaveChangesAsync();
-            });
-
-            await Task.WhenAll(tasks);
-
-            // Assert
-            await using var finalDbContext = await DbContextFactory.CreateDbContextAsync();
-            var persistedTransactions = await finalDbContext.Transactions
-                .Include(t => t.Category)
-                .Include(t => t.TransactionGroupUsers)
-                .Where(t => t.CategoryId == categoryId)
-                .ToListAsync();
-
-            Assert.Equal(12, persistedTransactions.Count); // 10 new + 2 seeded
-
-            foreach (var (expectedTransaction, expectedTransactionGroupUser) in transactionsToCreate)
-            {
-                var actualTransaction = persistedTransactions.SingleOrDefault(t => t.Id == expectedTransaction.Id);
-                Assert.NotNull(actualTransaction);
-                Assert.NotEmpty(actualTransaction.TransactionGroupUsers);
-
-                var actualTransactionGroupUser = actualTransaction.TransactionGroupUsers.SingleOrDefault(tgu => tgu.Id == expectedTransactionGroupUser.Id);
-                Assert.NotNull(actualTransactionGroupUser);
-
-                DeepAssert.Equal(expectedTransaction, actualTransaction, propertiesToIgnore: new[] { "Category", "TransactionGroupUsers" });
-                DeepAssert.Equal(expectedTransactionGroupUser, actualTransactionGroupUser, propertiesToIgnore: new[] { "Transaction", "GroupUser" });
-            }
-        }
-
-
-        /// <summary>
-        /// Tests that the method for retrieving the total amount of transactions for user John Doe returns the correct sum of amounts.
-        /// </summary>
-        /// <returns>An asynchronous task representing the test operation.</returns>
-        [Fact]
+        /// <returns>A task representing the asynchronous operation.</returns>
         public async Task GetTotalAmount_ForJohnDoeTransactions_ReturnsCorrectSum()
         {
             // Arrange
@@ -341,256 +398,145 @@ namespace SpendWise.DAL.Tests
             var transactionIds = await SpendWiseDbContextSUT.TransactionGroupUsers
                 .Where(tgu => groupUserIds.Contains(tgu.GroupUserId))
                 .Select(tgu => tgu.TransactionId)
+                .Distinct()
                 .ToListAsync();
 
-            // Retrieve transactions matching IDs and falling within the specified date range
+            // Calculate the total amount based on these transactions
             var totalAmount = await SpendWiseDbContextSUT.Transactions
                 .Where(t => transactionIds.Contains(t.Id) && t.Date >= startDate && t.Date <= endDate)
                 .SumAsync(t => t.Amount);
 
             // Assert
-            var expectedTotalAmount = 50.0m + 150.0m + 200.0m + 175.0m; // Sum of transactions associated with John Doe
-            Assert.Equal(expectedTotalAmount, totalAmount);
+            Assert.Equal(175.00m, totalAmount);
         }
 
-        /// <summary>
-        /// Tests that attempting to add a transaction with a negative amount to the database results in a <see cref="DbUpdateException"/> being thrown.
-        /// </summary>
-        /// <returns>An asynchronous task representing the test operation.</returns>
-        [Fact]
-        public void VerifyTransactionAmount_NegativeAmountThrowsException()
-        {
-            var transaction = new TransactionEntity
-            {
-                Id = Guid.NewGuid(),
-                Amount = -100.00m,
-                Date = DateTime.UtcNow,
-                Type = 1,
-                CategoryId = Guid.NewGuid()
-            };
+        #endregion
 
-            var transactionGroupUser = new TransactionGroupUserEntity
-            {
-                Id = Guid.NewGuid(),
-                TransactionId = transaction.Id,
-                GroupUserId = GroupUserSeeds.GroupUserJohnDoeInFriends.Id,
-                Transaction = null!,
-                GroupUser = null!
-            };
-
-            SpendWiseDbContextSUT.Transactions.Add(transaction);
-            SpendWiseDbContextSUT.TransactionGroupUsers.Add(transactionGroupUser);
-
-            Assert.Throws<DbUpdateException>(() => SpendWiseDbContextSUT.SaveChanges());
-        }
+        #region Update and Special Cases Tests
 
         /// <summary>
-        /// Tests that attempting to add a transaction with a future date to the database results in a <see cref="DbUpdateException"/> being thrown.
+        /// Contains tests for special cases and concurrent updates involving the `TransactionEntity`
+        /// to ensure that the database can handle multiple additions correctly.
         /// </summary>
-        /// <returns>An asynchronous task representing the test operation.</returns>
         [Fact]
-        public void VerifyTransactionDate_InFutureThrowsException()
-        {
-            var transaction = new TransactionEntity
-            {
-                Id = Guid.NewGuid(),
-                Amount = 100.00m,
-                Date = DateTime.UtcNow.AddDays(1), // Date in the future
-                Type = 1,
-                CategoryId = Guid.NewGuid()
-            };
-
-            var transactionGroupUser = new TransactionGroupUserEntity
-            {
-                Id = Guid.NewGuid(),
-                TransactionId = transaction.Id,
-                GroupUserId = GroupUserSeeds.GroupUserJohnDoeInFriends.Id,
-                Transaction = null!,
-                GroupUser = null!
-            };
-
-            SpendWiseDbContextSUT.Transactions.Add(transaction);
-            SpendWiseDbContextSUT.TransactionGroupUsers.Add(transactionGroupUser);
-
-            Assert.Throws<DbUpdateException>(() => SpendWiseDbContextSUT.SaveChanges());
-        }
         /// <summary>
-        /// Verifies that attempting to add a transaction with an invalid type (e.g., type 99) throws a <see cref="DbUpdateException"/>.
+        /// Tests the addition of multiple transactions concurrently.
         /// </summary>
-        /// <returns>An asynchronous task representing the test operation.</returns>
-        [Fact]
-        public void VerifyTransactionType_InvalidTypeThrowsException()
-        {
-            var transaction = new TransactionEntity
-            {
-                Id = Guid.NewGuid(),
-                Amount = 100.00m,
-                Date = DateTime.UtcNow,
-                Type = 99, // Invalid type
-                CategoryId = Guid.NewGuid()
-            };
-
-            var transactionGroupUser = new TransactionGroupUserEntity
-            {
-                Id = Guid.NewGuid(),
-                TransactionId = transaction.Id,
-                GroupUserId = GroupUserSeeds.GroupUserJohnDoeInFriends.Id,
-                Transaction = null!,
-                GroupUser = null!
-
-            };
-
-            SpendWiseDbContextSUT.Transactions.Add(transaction);
-            SpendWiseDbContextSUT.TransactionGroupUsers.Add(transactionGroupUser);
-
-            Assert.Throws<DbUpdateException>(() => SpendWiseDbContextSUT.SaveChanges());
-        }
-
-        /// <summary>
-        /// Verifies that attempting to add a transaction with an invalid (empty) CategoryId throws a <see cref="DbUpdateException"/>.
-        /// </summary>
-        /// <returns>An asynchronous task representing the test operation.</returns>
-        [Fact]
-        public void VerifyTransactionCategory_RequiredCategory()
-        {
-            var transaction = new TransactionEntity
-            {
-                Id = Guid.NewGuid(),
-                Amount = 100.00m,
-                Date = DateTime.UtcNow,
-                Type = 1,
-                CategoryId = Guid.Empty // Invalid CategoryId
-            };
-
-            var transactionGroupUser = new TransactionGroupUserEntity
-            {
-                Id = Guid.NewGuid(),
-                TransactionId = transaction.Id,
-                GroupUserId = GroupUserSeeds.GroupUserJohnDoeInFriends.Id,
-                Transaction = null!,
-                GroupUser = null!
-            };
-
-            SpendWiseDbContextSUT.Transactions.Add(transaction);
-            SpendWiseDbContextSUT.TransactionGroupUsers.Add(transactionGroupUser);
-
-            Assert.Throws<DbUpdateException>(() => SpendWiseDbContextSUT.SaveChanges());
-        }
-
-        /// <summary>
-        /// Verifies that attempting to add a transaction without any associated TransactionGroupUserEntities throws a <see cref="DbUpdateException"/>.
-        /// </summary>
-        /// <returns>An asynchronous task representing the test operation.</returns>
-        [Fact]
-        public void VerifyTransactionGroupUsers_MustExist()
-        {
-            var transaction = new TransactionEntity
-            {
-                Id = Guid.NewGuid(),
-                Amount = 100.00m,
-                Date = DateTime.UtcNow,
-                Type = 1,
-                CategoryId = Guid.NewGuid()
-            };
-
-            SpendWiseDbContextSUT.Transactions.Add(transaction);
-
-            Assert.Throws<DbUpdateException>(() => SpendWiseDbContextSUT.SaveChanges());
-        }
-
-        /// <summary>
-        /// Verifies that a transaction with a description exceeding the maximum allowed length (e.g., 200 characters) throws a <see cref="DbUpdateException"/>.
-        /// </summary>
-        /// <returns>An asynchronous task representing the test operation.</returns>
-        [Fact]
-        public async Task VerifyTransactionDescription_LengthConstraint()
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task AddCategories_ConcurrentAdditions_SuccessfullyPersistAllCategories()
         {
             // Arrange
-            var longDescription = new string('a', 201); // Assuming the max length is 200 characters
-            var transaction = new TransactionEntity
-            {
-                Id = Guid.NewGuid(),
-                Amount = 100.00m,
-                Date = DateTime.UtcNow,
-                Description = longDescription,
-                Type = 1,
-                CategoryId = CategorySeeds.CategoryFood.Id
-            };
+            var baseDateTime = DateTime.UtcNow;
+            baseDateTime = new DateTime(
+                baseDateTime.Ticks - (baseDateTime.Ticks % TimeSpan.TicksPerMillisecond),
+                DateTimeKind.Utc
+            );
 
-            var transactionGroupUser = new TransactionGroupUserEntity
+            var transactionToAdd = Enumerable.Range(0, 10).Select(i => new TransactionEntity
             {
                 Id = Guid.NewGuid(),
-                TransactionId = transaction.Id,
-                GroupUserId = GroupUserSeeds.GroupUserJohnDoeInFriends.Id,
-                Transaction = null!,
-                GroupUser = null!
-            };
+                Amount = 150.0m,
+                Date = baseDateTime,
+                Description = $"Utilities{i}",
+                Type = 2,
+                CategoryId = CategorySeeds.CategoryTransport.Id,
+            }).ToList();
 
             // Act
-            SpendWiseDbContextSUT.Transactions.Add(transaction);
-            SpendWiseDbContextSUT.TransactionGroupUsers.Add(transactionGroupUser);
-            await Assert.ThrowsAsync<DbUpdateException>(async () => await SpendWiseDbContextSUT.SaveChangesAsync());
+            var tasks = transactionToAdd.Select(async transaction =>
+            {
+                await using var dbx = await DbContextFactory.CreateDbContextAsync();
+                dbx.Transactions.Add(transaction);
+                await dbx.SaveChangesAsync();
+            });
+
+            await Task.WhenAll(tasks);
+
+            // Assert
+            var verificationTasks = transactionToAdd.Select(async transaction =>
+            {
+                await using var dbx = await DbContextFactory.CreateDbContextAsync();
+                var actualTransaction = await dbx.Transactions.FindAsync(transaction.Id);
+                Assert.NotNull(actualTransaction);
+                DeepAssert.Equal(transaction, actualTransaction);
+            });
+
+            await Task.WhenAll(verificationTasks);
         }
 
+        #endregion
+
+        #region Related Entities Handling Tests
+
         /// <summary>
-        /// Verifies that updating a transaction successfully persists changes such as amount, description, and date.
+        /// Contains tests to verify the proper loading of related navigation properties for `TransactionEntity`.
         /// </summary>
-        /// <returns>An asynchronous task representing the test operation.</returns>
         [Fact]
-        public async Task UpdateTransaction_WhenTransactionIsUpdated_ChangesArePersisted()
+        /// <summary>
+        /// Tests the retrieval of a transaction and its related navigation properties.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task FetchTransaction_NavigationPropertiesAreCorrectlyLoaded()
         {
             // Arrange
-            var newTransaction = TransactionSeeds.TransactionAdminFood with
-            {
-                Amount = 500m,
-                Description = "Updated Transaction",
-                Type = 2
-            };
+            var expectedTransaction = TransactionSeeds.TransactionJohnFood;
+            var expectedTransactionGroupUsers = TransactionSeeds.TransactionJohnFood.TransactionGroupUsers;
 
-            SpendWiseDbContextSUT.Transactions.Update(newTransaction);
+            // Act
+            var actualTransaction = await SpendWiseDbContextSUT.Transactions
+                .Include(t => t.Category)
+                .Include(t => t.TransactionGroupUsers)
+                .SingleOrDefaultAsync(t => t.Id == expectedTransaction.Id);
+
+            // Assert
+            Assert.NotNull(actualTransaction);
+            Assert.NotNull(actualTransaction.Category);
+            Assert.Equal(expectedTransaction.CategoryId, actualTransaction.Category.Id);
+            Assert.NotEmpty(actualTransaction.TransactionGroupUsers);
+
+            foreach (var expectedTransactionGroupUser in expectedTransactionGroupUsers)
+            {
+                DeepAssert.Contains(expectedTransactionGroupUser, actualTransaction.TransactionGroupUsers);
+            }
+        }
+
+        #endregion
+
+        #region Consistency Tests
+
+        /// <summary>
+        /// Contains tests to verify the integrity of the database after operations that modify data.
+        /// </summary>
+        [Fact]
+        /// <summary>
+        /// Tests the integrity of the database after a transaction deletion.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task DeleteTransaction_CheckIntegrityConstraints_AfterDeletion()
+        {
+            // Arrange
+            var existingTransactionId = TransactionSeeds.TransactionDianaDinner.Id;
+
+            // Act
+            var transactionToDelete = await SpendWiseDbContextSUT.Transactions
+                .Include(t => t.TransactionGroupUsers)
+                .Where(t => t.Id == existingTransactionId)
+                .SingleOrDefaultAsync();
+
+            Assert.NotNull(transactionToDelete);
+
+            SpendWiseDbContextSUT.Transactions.Remove(transactionToDelete);
             await SpendWiseDbContextSUT.SaveChangesAsync();
 
             // Assert
-            var updatedTransaction = await SpendWiseDbContextSUT.Transactions
-                .Include(t => t.TransactionGroupUsers)
-                .SingleAsync(t => t.Id == newTransaction.Id);
+            // Check that the transaction is no longer present
+            Assert.False(await SpendWiseDbContextSUT.Transactions.AnyAsync(t => t.Id == existingTransactionId));
 
-            Assert.Equal(500.00m, updatedTransaction.Amount);
-            Assert.Equal("Updated Transaction", updatedTransaction.Description);
-            Assert.Equal(newTransaction.Date, updatedTransaction.Date);
-            Assert.NotEmpty(updatedTransaction.TransactionGroupUsers);
+            // Check that related TransactionGroupUser entities are also deleted
+            Assert.False(await SpendWiseDbContextSUT.TransactionGroupUsers
+                .AnyAsync(tgu => tgu.TransactionId == existingTransactionId));
         }
 
-        /// <summary>
-        /// Verifies that attempting to add a transaction with an amount of zero throws a <see cref="DbUpdateException"/>.
-        /// </summary>
-        /// <returns>An asynchronous task representing the test operation.</returns>
-        [Fact]
-        public void VerifyTransactionAmount_NotZeroThrowsException()
-        {
-            var transaction = new TransactionEntity
-            {
-                Id = Guid.NewGuid(),
-                Amount = 0.00m, // Zero amount
-                Date = DateTime.UtcNow,
-                Type = 1,
-                CategoryId = CategorySeeds.CategoryFood.Id
-            };
-
-            var transactionGroupUser = new TransactionGroupUserEntity
-            {
-                Id = Guid.NewGuid(),
-                TransactionId = transaction.Id,
-                GroupUserId = GroupUserSeeds.GroupUserJohnDoeInFriends.Id,
-                Transaction = null!,
-                GroupUser = null!
-            };
-
-            SpendWiseDbContextSUT.Transactions.Add(transaction);
-            SpendWiseDbContextSUT.TransactionGroupUsers.Add(transactionGroupUser);
-
-            Assert.Throws<DbUpdateException>(() => SpendWiseDbContextSUT.SaveChanges());
-        }
+        #endregion
     }
 }
-

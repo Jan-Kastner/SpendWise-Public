@@ -21,7 +21,7 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the description of the category. Can be null.
         /// </summary>
-        public string? Description { get; set; }
+        public required string? Description { get; set; }
 
         /// <summary>
         /// Gets or sets the color associated with the category. Must be at most 9 characters long.
@@ -32,7 +32,7 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the icon for the category. Can be null.
         /// </summary>
-        public byte[]? Icon { get; set; }
+        public required byte[]? Icon { get; set; }
 
         /// <summary>
         /// Gets the collection of transactions associated with this category.

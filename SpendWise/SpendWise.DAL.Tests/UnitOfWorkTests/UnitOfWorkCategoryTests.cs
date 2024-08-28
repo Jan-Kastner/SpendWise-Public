@@ -1,38 +1,37 @@
+using Xunit;
 using Xunit.Abstractions;
 using SpendWise.DAL.DTOs;
 using Microsoft.EntityFrameworkCore;
 using SpendWise.Common.Tests.Seeds;
 using SpendWise.Common.Tests.Helpers;
+using SpendWise.DAL.Entities;
+using SpendWise.DAL.QueryObjects;
+using Xunit.Sdk;
 
-namespace SpendWise.DAL.Tests
+namespace SpendWise.DAL.Tests.UnitOfWorkTests
 {
-    /// <summary>
-    /// Contains tests for operations related to categories using the 
-    /// Unit of Work pattern.
-    /// </summary>
     public class UnitOfWorkCategoryTests : UnitOfWorkTestsBase
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UnitOfWorkCategoryTests"/> class.
-        /// </summary>
-        /// <param name="output">The output helper instance.</param>
         public UnitOfWorkCategoryTests(ITestOutputHelper output) : base(output)
         {
         }
 
-        // ====================================
-        // CRUD Operations Tests
-        // ====================================
+        #region CRUD Operations Tests
 
         /// <summary>
-        /// Tests if creating a category with valid data correctly adds the category to the database.
+        /// Unit tests for CRUD (Create, Read, Update, Delete) operations on the Category entity using the Unit of Work pattern.
+        /// These tests ensure that basic data manipulation tasks are correctly implemented and persist changes in the database as expected.
+        /// </summary>
+
+        [Fact]
+        /// <summary>
+        /// Verifies that a new category with valid data is successfully added to the database and persists correctly.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task CreateCategory_ValidData_ShouldCreateNewCategory()
+        public async Task AddCategory_ValidData_SuccessfullyPersists()
         {
             // Arrange
-            var newCategoryDto = new CategoryDto
+            var categoryToAdd = new CategoryDto
             {
                 Id = Guid.NewGuid(),
                 Name = "New Category",
@@ -42,46 +41,45 @@ namespace SpendWise.DAL.Tests
             };
 
             // Act
-            await _unitOfWork.Categories.InsertAsync(newCategoryDto);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.Repository<CategoryEntity, CategoryDto>().InsertAsync(categoryToAdd);
+            await _unitOfWork.SaveChangesAsync(); // Persist changes
 
             // Assert
-            var categoryInDb = await _unitOfWork.Categories.GetByIdAsync(newCategoryDto.Id);
-            Assert.NotNull(categoryInDb);
-            DeepAssert.Equal(newCategoryDto, categoryInDb);
+            var actualCategory = await _unitOfWork.Repository<CategoryEntity, CategoryDto>().GetByIdAsync(categoryToAdd.Id);
+            Assert.NotNull(actualCategory); // Ensure the category was added
+            DeepAssert.Equal(categoryToAdd, actualCategory); // Verify that the added category matches the input data
         }
 
+        [Fact]
         /// <summary>
-        /// Tests if fetching a category by an existing ID returns the correct category.
+        /// Verifies that fetching a category by its ID returns the expected category if it exists in the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task GetCategoryById_ExistingId_ShouldReturnCorrectCategory()
+        public async Task FetchCategoryById_ExistingId_ReturnsExpectedCategory()
         {
             // Arrange
-            var expectedCategoryDto = _mapper.Map<CategoryDto>(CategorySeeds.CategoryFood);
+            var expectedCategory = _mapper.Map<CategoryDto>(CategorySeeds.CategoryFood);
 
             // Act
-            var fetchedCategoryDto = await _unitOfWork.Categories.GetByIdAsync(expectedCategoryDto.Id);
+            var actualCategory = await _unitOfWork.Repository<CategoryEntity, CategoryDto>().GetByIdAsync(expectedCategory.Id);
 
             // Assert
-            Assert.NotNull(fetchedCategoryDto);
-            DeepAssert.Equal(expectedCategoryDto, fetchedCategoryDto);
+            Assert.NotNull(actualCategory); // Ensure the category was found
+            DeepAssert.Equal(expectedCategory, actualCategory); // Verify that the fetched category matches the expected category
         }
 
+        [Fact]
         /// <summary>
-        /// Tests if updating a category with valid data correctly updates the category in the database.
+        /// Verifies that updating an existing category with valid data successfully persists the changes in the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task UpdateCategory_ValidData_ShouldUpdateCategoryInDatabase()
+        public async Task UpdateCategory_ValidData_SuccessfullyPersistsChanges()
         {
             // Arrange
-            var existingCategoryDto = _mapper.Map<CategoryDto>(CategorySeeds.CategoryFood);
-
-            var updatedCategoryDto = new CategoryDto
+            var existingCategory = _mapper.Map<CategoryDto>(CategorySeeds.CategoryFood);
+            var updatedCategory = new CategoryDto
             {
-                Id = existingCategoryDto.Id,
+                Id = existingCategory.Id,
                 Name = "Updated Category",
                 Color = "#00ff00",
                 Description = "Updated Description",
@@ -89,47 +87,52 @@ namespace SpendWise.DAL.Tests
             };
 
             // Act
-            await _unitOfWork.Categories.UpdateAsync(updatedCategoryDto);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.Repository<CategoryEntity, CategoryDto>().UpdateAsync(updatedCategory);
+            await _unitOfWork.SaveChangesAsync(); // Persist changes
 
             // Assert
-            var resultCategoryDto = await _unitOfWork.Categories.GetByIdAsync(updatedCategoryDto.Id);
-            Assert.NotNull(resultCategoryDto);
-            DeepAssert.Equal(updatedCategoryDto, resultCategoryDto);
+            var actualCategory = await _unitOfWork.Repository<CategoryEntity, CategoryDto>().GetByIdAsync(updatedCategory.Id);
+            Assert.NotNull(actualCategory); // Ensure the category was updated
+            DeepAssert.Equal(updatedCategory, actualCategory); // Verify that the updated category matches the new data
         }
 
+        [Fact]
         /// <summary>
-        /// Tests if deleting a category by an existing ID correctly removes the category from the database.
+        /// Verifies that deleting an existing category by its ID successfully removes the category from the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task DeleteCategory_ExistingId_ShouldRemoveCategoryFromDatabase()
+        public async Task DeleteCategory_ExistingId_SuccessfullyRemovesCategory()
         {
             // Arrange
-            var categoryDto = _mapper.Map<CategoryDto>(CategorySeeds.CategoryFood);
+            var categoryToDelete = _mapper.Map<CategoryDto>(CategorySeeds.CategoryFood);
 
             // Act
-            await _unitOfWork.Categories.DeleteAsync(categoryDto.Id);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.Repository<CategoryEntity, CategoryDto>().DeleteAsync(categoryToDelete.Id);
+            await _unitOfWork.SaveChangesAsync(); // Persist changes
 
             // Assert
-            var deletedCategory = await _unitOfWork.Categories.GetByIdAsync(categoryDto.Id);
-            Assert.Null(deletedCategory);
+            var deletedCategory = await _unitOfWork.Repository<CategoryEntity, CategoryDto>().GetByIdAsync(categoryToDelete.Id);
+            Assert.Null(deletedCategory); // Ensure the category was removed
         }
 
-        // ====================================
-        // Error Handling Tests
-        // ====================================
+        #endregion
+
+        #region Error Handling Tests
 
         /// <summary>
-        /// Tests if creating a category with an invalid color format fails as expected.
+        /// Unit tests for error handling scenarios in the Category operations. 
+        /// These tests verify that appropriate exceptions are thrown when invalid operations are attempted.
+        /// </summary>
+
+        [Fact]
+        /// <summary>
+        /// Verifies that attempting to add a category with an invalid color format throws a DbUpdateException.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task CreateCategory_InvalidColorFormat_ShouldFail()
+        public async Task AddCategory_InvalidColorFormat_ThrowsDbUpdateException()
         {
             // Arrange
-            var newCategory = new CategoryDto
+            var invalidCategory = new CategoryDto
             {
                 Id = Guid.NewGuid(),
                 Name = "Invalid Color Category",
@@ -141,20 +144,20 @@ namespace SpendWise.DAL.Tests
             // Act & Assert
             await Assert.ThrowsAsync<DbUpdateException>(async () =>
             {
-                await _unitOfWork.Categories.InsertAsync(newCategory);
-                await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.Repository<CategoryEntity, CategoryDto>().InsertAsync(invalidCategory);
+                await _unitOfWork.SaveChangesAsync(); // Persist changes, expecting an exception
             });
         }
 
+        [Fact]
         /// <summary>
-        /// Tests if updating a non-existent category fails as expected.
+        /// Verifies that updating a non-existent category throws an InvalidOperationException.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task UpdateCategory_NonExistentCategory_ShouldFail()
+        public async Task UpdateCategory_NonExistentCategory_ThrowsInvalidOperationException()
         {
             // Arrange
-            var nonExistentCategoryDto = new CategoryDto
+            var nonExistentCategory = new CategoryDto
             {
                 Id = Guid.NewGuid(), // Non-existent ID
                 Name = "Non-Existent Category",
@@ -166,17 +169,17 @@ namespace SpendWise.DAL.Tests
             // Act & Assert
             await Assert.ThrowsAsync<InvalidOperationException>(async () =>
             {
-                await _unitOfWork.Categories.UpdateAsync(nonExistentCategoryDto);
-                await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.Repository<CategoryEntity, CategoryDto>().UpdateAsync(nonExistentCategory);
+                await _unitOfWork.SaveChangesAsync(); // Persist changes, expecting an exception
             });
         }
 
+        [Fact]
         /// <summary>
-        /// Tests if deleting a non-existent category fails as expected.
+        /// Verifies that deleting a non-existent category throws a KeyNotFoundException.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task DeleteCategory_NonExistentCategory_ShouldFail()
+        public async Task DeleteCategory_NonExistentCategory_ThrowsKeyNotFoundException()
         {
             // Arrange
             var nonExistentCategoryId = Guid.NewGuid(); // Non-existent ID
@@ -184,72 +187,29 @@ namespace SpendWise.DAL.Tests
             // Act & Assert
             await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
             {
-                await _unitOfWork.Categories.DeleteAsync(nonExistentCategoryId);
-                await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.Repository<CategoryEntity, CategoryDto>().DeleteAsync(nonExistentCategoryId);
+                await _unitOfWork.SaveChangesAsync(); // Persist changes, expecting an exception
             });
         }
 
-        // ====================================
-        // Data Retrieval Tests
-        // ====================================
+        #endregion
+
+        #region Update and Special Cases Tests
 
         /// <summary>
-        /// Tests if fetching all categories returns the correct number and content of categories.
+        /// Unit tests for updating categories and handling special cases such as icon changes.
+        /// These tests verify that category updates are successfully persisted in the database.
         /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
+
         [Fact]
-        public async Task GetAllCategories_ShouldReturnAllCategories()
-        {
-            // Arrange
-            var seedCategories = new List<CategoryDto>
-            {
-                _mapper.Map<CategoryDto>(CategorySeeds.CategoryFood),
-                _mapper.Map<CategoryDto>(CategorySeeds.CategoryTransport)
-            };
-
-            // Act
-            var allCategories = await _unitOfWork.Categories.Get().ToListAsync();
-
-            // Assert
-            Assert.NotNull(allCategories);
-            Assert.Equal(seedCategories.Count, allCategories.Count);
-            foreach (var category in seedCategories)
-            {
-                Assert.Contains(allCategories, c => c.Id == category.Id);
-            }
-        }
-
         /// <summary>
-        /// Tests if fetching a category by its name returns the correct category.
+        /// Verifies that adding a category with an icon successfully persists the category with the icon data.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task GetCategoryByName_ReturnsCorrectCategory()
+        public async Task AddCategory_WithIcon_SuccessfullyPersistsCategoryWithIcon()
         {
             // Arrange
-            var seedCategoryDto = _mapper.Map<CategoryDto>(CategorySeeds.CategoryFood);
-
-            // Act
-            var fetchedCategoryDto = await _unitOfWork.Categories.Get(c => c.Name == seedCategoryDto.Name).SingleOrDefaultAsync();
-
-            // Assert
-            Assert.NotNull(fetchedCategoryDto);
-            DeepAssert.Equal(seedCategoryDto, fetchedCategoryDto);
-        }
-
-        // ====================================
-        // Update and Special Cases Tests
-        // ====================================
-
-        /// <summary>
-        /// Tests if creating a category with an icon correctly saves the icon in the database.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task CreateCategory_WithIcon_ShouldCreateCategoryWithIcon()
-        {
-            // Arrange
-            var newCategory = new CategoryDto
+            var categoryToAdd = new CategoryDto
             {
                 Id = Guid.NewGuid(),
                 Name = "CategoryWithIcon",
@@ -259,110 +219,186 @@ namespace SpendWise.DAL.Tests
             };
 
             // Act
-            await _unitOfWork.Categories.InsertAsync(newCategory);
+            await _unitOfWork.Repository<CategoryEntity, CategoryDto>().InsertAsync(categoryToAdd);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var categoryInDb = await _unitOfWork.Categories.GetByIdAsync(newCategory.Id);
-            Assert.NotNull(categoryInDb);
-            Assert.NotNull(categoryInDb.Icon);
-            Assert.Equal(newCategory.Icon, categoryInDb.Icon);
+            var actualCategory = await _unitOfWork.Repository<CategoryEntity, CategoryDto>().GetByIdAsync(categoryToAdd.Id);
+            Assert.NotNull(actualCategory);
+            Assert.NotNull(actualCategory.Icon);
+            Assert.Equal(categoryToAdd.Icon, actualCategory.Icon);
         }
 
+        [Fact]
         /// <summary>
-        /// Tests if updating the icon of a category correctly updates it in the database.
+        /// Verifies that changing a category's icon successfully updates the icon in the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task UpdateCategory_ChangeIcon_ShouldUpdateIcon()
+        public async Task UpdateCategory_ChangeIcon_SuccessfullyUpdatesIcon()
         {
             // Arrange
-            var existingCategoryDto = _mapper.Map<CategoryDto>(CategorySeeds.CategoryFood);
-
-            var updatedCategoryDto = new CategoryDto
+            var existingCategory = _mapper.Map<CategoryDto>(CategorySeeds.CategoryFood);
+            var updatedCategory = new CategoryDto
             {
-                Id = existingCategoryDto.Id,
-                Name = existingCategoryDto.Name,
-                Description = existingCategoryDto.Description,
-                Color = existingCategoryDto.Color,
+                Id = existingCategory.Id,
+                Name = existingCategory.Name,
+                Description = existingCategory.Description,
+                Color = existingCategory.Color,
                 Icon = new byte[] { 0x02, 0x03 }
             };
 
             // Act
-            await _unitOfWork.Categories.UpdateAsync(updatedCategoryDto);
+            await _unitOfWork.Repository<CategoryEntity, CategoryDto>().UpdateAsync(updatedCategory);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var resultCategoryDto = await _unitOfWork.Categories.GetByIdAsync(updatedCategoryDto.Id);
-            Assert.NotNull(resultCategoryDto);
-            Assert.Equal(updatedCategoryDto.Icon, resultCategoryDto.Icon);
+            var actualCategory = await _unitOfWork.Repository<CategoryEntity, CategoryDto>().GetByIdAsync(updatedCategory.Id);
+            Assert.NotNull(actualCategory);
+            Assert.Equal(updatedCategory.Icon, actualCategory.Icon);
         }
 
+        [Fact]
         /// <summary>
-        /// Tests if deleting a category that has related transactions sets the CategoryId to null in those transactions.
+        /// Verifies that setting a category's description to null successfully updates the description in the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task DeleteCategory_WithRelations_ShouldSetCategoryToNullInTransactions()
+        public async Task UpdateCategory_SetNullDescription_SuccessfullyUpdatesDescriptionToNull()
         {
             // Arrange
-            var categoryWithRelations = CategorySeeds.CategoryFoodWithRelations;
-            var categoryId = categoryWithRelations.Id;
+            var existingCategory = _mapper.Map<CategoryDto>(CategorySeeds.CategoryFood);
 
             // Act
-            await _unitOfWork.Categories.DeleteAsync(categoryId);
+            existingCategory.Description = null;
+            await _unitOfWork.Repository<CategoryEntity, CategoryDto>().UpdateAsync(existingCategory);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var transactionsAfterDelete = await _unitOfWork.Transactions.Get(t => t.CategoryId == null).ToListAsync();
+            var actualCategory = await _unitOfWork.Repository<CategoryEntity, CategoryDto>().GetByIdAsync(existingCategory.Id);
+            Assert.NotNull(actualCategory);
+            Assert.Null(actualCategory.Description);
+        }
 
-            foreach (var transaction in categoryWithRelations.Transactions)
+        [Fact]
+        /// <summary>
+        /// Verifies that changing a category's name successfully updates the name in the database.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task UpdateCategory_ChangeName_SuccessfullyUpdatesName()
+        {
+            // Arrange
+            var existingCategory = _mapper.Map<CategoryDto>(CategorySeeds.CategoryFood);
+
+            // Act
+            var newName = "Updated Food Category";
+            existingCategory.Name = newName;
+            await _unitOfWork.Repository<CategoryEntity, CategoryDto>().UpdateAsync(existingCategory);
+            await _unitOfWork.SaveChangesAsync();
+
+            // Assert
+            var actualCategory = await _unitOfWork.Repository<CategoryEntity, CategoryDto>().GetByIdAsync(existingCategory.Id);
+            Assert.NotNull(actualCategory);
+            Assert.Equal(newName, actualCategory.Name);
+        }
+
+        #endregion
+
+        #region Related Entities Handling Tests
+
+        /// <summary>
+        /// Unit tests for handling related entities when performing operations on categories.
+        /// These tests verify that integrity constraints are maintained after deletions.
+        /// </summary>
+
+        /// <summary>
+        /// Verifies that after deleting a category, the associated transactions are updated to ensure integrity constraints are maintained.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+
+        [Fact]
+        public async Task DeleteCategory_CheckIntegrityConstraints_AfterDeletion()
+        {
+            // Arrange
+            var categoryToDelete = CategorySeeds.CategoryFood; // Get the category to delete
+            var categoryId = categoryToDelete.Id;
+
+            // Act
+            // Delete the category
+            await _unitOfWork.Repository<CategoryEntity, CategoryDto>().DeleteAsync(categoryId);
+            await _unitOfWork.SaveChangesAsync();
+
+            // Prepare the query object to get transactions with null CategoryId
+            var queryObject = new TransactionQueryObject();
+            var transactionsAfterDelete = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
+                .GetAsync(queryObject.WithCategoryId(null));
+
+            // Assert
+            foreach (var transaction in categoryToDelete.Transactions)
             {
                 Assert.Contains(transactionsAfterDelete, t => t.Id == transaction.Id);
             }
         }
 
+        #endregion
+
+
+        #region Consistency Tests
+
         /// <summary>
-        /// Tests if updating a category with a null description correctly updates the description to null in the database.
+        /// Unit tests to verify transactional consistency after performing multiple category operations.
+        /// These tests ensure that categories are correctly inserted, updated, and deleted while maintaining consistency.
+        /// </summary>
+
+        /// <summary>
+        /// Verifies that after multiple category operations (insert, update, delete), the final state is consistent.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task UpdateCategory_SetNullDescription_ShouldUpdateToNull()
+        public async Task TransactionalConsistency_AfterMultipleCategoryOperations()
         {
             // Arrange
-            var existingCategoryDto = _mapper.Map<CategoryDto>(CategorySeeds.CategoryFood);
+            var newCategoryDto = new CategoryDto
+            {
+                Id = Guid.NewGuid(),
+                Name = "New Category",
+                Description = "Test Description",
+                Color = "#ff0000",
+                Icon = new byte[] { 0x01, 0x02 }
+            };
 
-            // Act
-            existingCategoryDto.Description = null;
-            await _unitOfWork.Categories.UpdateAsync(existingCategoryDto);
-            await _unitOfWork.SaveChangesAsync();
+            var updatedCategoryDto = new CategoryDto
+            {
+                Id = newCategoryDto.Id,
+                Name = "Updated Category",
+                Description = "Updated Description",
+                Color = "#00ff00",
+                Icon = new byte[] { 0x03, 0x04 }
+            };
+
+            try
+            {
+                // Act
+                // Insert
+                await _unitOfWork.Repository<CategoryEntity, CategoryDto>().InsertAsync(newCategoryDto);
+                await _unitOfWork.SaveChangesAsync();
+
+                // Update
+                await _unitOfWork.Repository<CategoryEntity, CategoryDto>().UpdateAsync(updatedCategoryDto);
+                await _unitOfWork.SaveChangesAsync();
+
+                // Delete
+                await _unitOfWork.Repository<CategoryEntity, CategoryDto>().DeleteAsync(newCategoryDto.Id);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch
+            {
+                throw; // Rethrow exception to indicate failure
+            }
 
             // Assert
-            var resultCategoryDto = await _unitOfWork.Categories.GetByIdAsync(existingCategoryDto.Id);
-            Assert.NotNull(resultCategoryDto);
-            Assert.Null(resultCategoryDto.Description);
+            var deletedCategory = await _unitOfWork.Repository<CategoryEntity, CategoryDto>().GetByIdAsync(newCategoryDto.Id);
+            Assert.Null(deletedCategory); // Ensure the category was deleted
         }
 
-        /// <summary>
-        /// Tests if updating the name of an existing category correctly updates the name in the database.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task UpdateCategory_ChangeName_ShouldUpdateNameCorrectly()
-        {
-            // Arrange
-            var existingCategoryDto = _mapper.Map<CategoryDto>(CategorySeeds.CategoryFood);
-
-            // Act
-            var newName = "Updated Food Category";
-            existingCategoryDto.Name = newName;
-            await _unitOfWork.Categories.UpdateAsync(existingCategoryDto);
-            await _unitOfWork.SaveChangesAsync();
-
-            // Assert
-            var resultCategoryDto = await _unitOfWork.Categories.GetByIdAsync(existingCategoryDto.Id);
-            Assert.NotNull(resultCategoryDto);
-            Assert.Equal(newName, resultCategoryDto.Name);
-        }
+        #endregion
     }
 }

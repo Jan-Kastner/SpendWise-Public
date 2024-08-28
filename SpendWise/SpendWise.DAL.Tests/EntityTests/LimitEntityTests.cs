@@ -19,173 +19,72 @@ namespace SpendWise.DAL.Tests
         {
         }
 
+        #region CRUD Operations Tests
+
         /// <summary>
-        /// Tests that the limit is correctly retrieved by its ID.
+        /// Contains tests that cover the basic Create, Read, Update, and Delete (CRUD) operations 
+        /// for the <see cref="LimitEntity"/> in the database context.
+        /// These tests ensure that the application can correctly persist and retrieve limits, as well as handle updates and deletions.
+        /// </summary>
+
+        [Fact]
+        /// <summary>
+        /// Tests the retrieval of a <see cref="LimitEntity"/> by its ID.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task GetLimit_ById_ReturnsCorrectLimit()
+        public async Task FetchLimitById_ReturnsExpectedLimit()
         {
             // Arrange
-            var existingLimitId = LimitSeeds.LimitAdminFamily.Id;
-            var expectedLimit = LimitSeeds.LimitAdminFamily;
+            var expectedLimit = LimitSeeds.LimitCharlieFamily;
+            var limitIdToFetch = expectedLimit.Id;
 
             // Act
-            var limit = await SpendWiseDbContextSUT.Limits
-                .Where(l => l.Id == existingLimitId)
+            var actualLimit = await SpendWiseDbContextSUT.Limits
+                .Where(l => l.Id == limitIdToFetch)
                 .SingleOrDefaultAsync();
 
             // Assert
-            Assert.NotNull(limit);
-            DeepAssert.Equal(expectedLimit, limit);
+            Assert.NotNull(actualLimit);
+            DeepAssert.Equal(expectedLimit, actualLimit);
         }
 
+        [Fact]
         /// <summary>
-        /// Tests that a valid limit is added to the database and persisted correctly.
+        /// Tests the addition of a valid <see cref="LimitEntity"/> to the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task AddLimit_WhenValidLimitIsAdded_LimitIsPersisted()
+        public async Task AddLimit_ValidLimit_SuccessfullyPersists()
         {
             // Arrange
-            var limit = new LimitEntity
+            var limitToAdd = new LimitEntity
             {
                 Id = Guid.NewGuid(),
-                GroupUserId = GroupUserSeeds.GroupUserJohnDoeInFamily.Id,
+                GroupUserId = GroupUserSeeds.GroupUserBobInFamily.Id,
                 Amount = 100.00m,
-                NoticeType = 1,
-                GroupUser = null!
+                NoticeType = 1
             };
 
             // Act
-            SpendWiseDbContextSUT.Limits.Add(limit);
+            SpendWiseDbContextSUT.Limits.Add(limitToAdd);
             await SpendWiseDbContextSUT.SaveChangesAsync();
 
             // Assert
-            var actualLimit = await SpendWiseDbContextSUT.Limits.FindAsync(limit.Id);
+            var actualLimit = await SpendWiseDbContextSUT.Limits.FindAsync(limitToAdd.Id);
             Assert.NotNull(actualLimit);
-            DeepAssert.Equal(limit, actualLimit);
+            DeepAssert.Equal(limitToAdd, actualLimit);
         }
 
+        [Fact]
         /// <summary>
-        /// Tests that adding a limit with a duplicate group user ID throws a <see cref="DbUpdateException"/>.
+        /// Tests the update of an existing <see cref="LimitEntity"/> in the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task AddLimit_WithDuplicateGroupUserId_ThrowsException()
-        {
-            // Arrange
-            var duplicateLimit = new LimitEntity
-            {
-                Id = Guid.NewGuid(),
-                GroupUserId = GroupUserSeeds.GroupUserJohnDoeInFriends.Id, // Same GroupUserId as in seeded data
-                Amount = 150.00m,
-                NoticeType = 2,
-                GroupUser = null!
-            };
-
-            // Act & Assert
-            var exception = await Assert.ThrowsAsync<DbUpdateException>(async () =>
-            {
-                await SpendWiseDbContextSUT.Limits.AddAsync(duplicateLimit);
-                await SpendWiseDbContextSUT.SaveChangesAsync();
-            });
-
-            Assert.NotNull(exception);
-        }
-
-        /// <summary>
-        /// Tests that adding a limit with a negative amount throws a <see cref="DbUpdateException"/>.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task AddLimit_WithNegativeAmount_ThrowsException()
-        {
-            // Arrange
-            var invalidLimit = new LimitEntity
-            {
-                Id = Guid.NewGuid(),
-                GroupUserId = GroupUserSeeds.GroupUserJohnDoeInFamily.Id,
-                Amount = -100.00m, // Invalid negative amount
-                NoticeType = 1,
-                GroupUser = null!
-            };
-
-            // Act & Assert
-            var exception = await Assert.ThrowsAsync<DbUpdateException>(async () =>
-            {
-                await SpendWiseDbContextSUT.Limits.AddAsync(invalidLimit);
-                await SpendWiseDbContextSUT.SaveChangesAsync();
-            });
-
-            Assert.NotNull(exception);
-        }
-
-        /// <summary>
-        /// Tests that adding a limit with an invalid notice type throws a <see cref="DbUpdateException"/>.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task AddLimit_WithInvalidNoticeType_ThrowsException()
-        {
-            // Arrange
-            var invalidLimit = new LimitEntity
-            {
-                Id = Guid.NewGuid(),
-                GroupUserId = GroupUserSeeds.GroupUserJohnDoeInFamily.Id,
-                Amount = 100.00m,
-                NoticeType = 999,
-                GroupUser = null!
-            };
-
-            // Act & Assert
-            var exception = await Assert.ThrowsAsync<DbUpdateException>(async () =>
-            {
-                await SpendWiseDbContextSUT.Limits.AddAsync(invalidLimit);
-                await SpendWiseDbContextSUT.SaveChangesAsync();
-            });
-
-            Assert.NotNull(exception);
-        }
-
-        /// <summary>
-        /// Tests that adding a limit with a non-existing group user ID throws a <see cref="DbUpdateException"/>.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task AddLimit_WithInvalidUserId_ThrowsException()
-        {
-            // Arrange
-            var invalidLimit = new LimitEntity
-            {
-                Id = Guid.NewGuid(),
-                GroupUserId = Guid.NewGuid(), // Invalid user ID
-                Amount = 100.00m,
-                NoticeType = 1,
-                GroupUser = null!
-            };
-
-            // Act & Assert
-            var exception = await Assert.ThrowsAsync<DbUpdateException>(async () =>
-            {
-                await SpendWiseDbContextSUT.Limits.AddAsync(invalidLimit);
-                await SpendWiseDbContextSUT.SaveChangesAsync();
-            });
-
-            Assert.NotNull(exception);
-        }
-
-        /// <summary>
-        /// Tests that changes to an existing limit are persisted correctly.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task UpdateLimit_WhenLimitIsUpdated_ChangesArePersisted()
+        public async Task UpdateLimit_ExistingLimit_SuccessfullyPersistsChanges()
         {
             // Arrange
             var existingLimit = await SpendWiseDbContextSUT.Limits
-                .AsNoTracking() // Ensure we are not tracking the original entity
-                .FirstAsync(l => l.Id == LimitSeeds.LimitAdminFamily.Id);
+                .AsNoTracking()
+                .FirstAsync(l => l.Id == LimitSeeds.LimitCharlieFamily.Id);
 
             var updatedLimit = existingLimit with
             {
@@ -203,70 +102,164 @@ namespace SpendWise.DAL.Tests
 
             Assert.NotNull(actualLimit);
             Assert.Equal(updatedLimit.Amount, actualLimit.Amount);
-            // Add other assertions as needed
             DeepAssert.Equal(updatedLimit, actualLimit);
         }
 
+        [Fact]
         /// <summary>
-        /// Tests that a limit is removed from the database when deleted, and that the associated group user is not deleted.
+        /// Tests the deletion of an existing <see cref="LimitEntity"/> from the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task DeleteLimit_WhenLimitIsDeleted_LimitIsRemoved_AndGroupUserIsNotDeleted()
+        public async Task DeleteLimit_ExistingLimit_SuccessfullyRemovesLimit()
         {
             // Arrange
-            var baseEntity = LimitSeeds.LimitAdminFamily;
-            var groupUserId = baseEntity.GroupUserId;
+            var limitToDelete = await SpendWiseDbContextSUT.Limits
+                .AsNoTracking()
+                .FirstAsync(l => l.Id == LimitSeeds.LimitCharlieFamily.Id);
+
+            var groupUserId = limitToDelete.GroupUserId;
 
             // Ensure the limit exists before deletion
-            Assert.True(await SpendWiseDbContextSUT.Limits.AnyAsync(l => l.Id == baseEntity.Id));
+            Assert.True(await SpendWiseDbContextSUT.Limits.AnyAsync(l => l.Id == limitToDelete.Id));
 
             // Ensure the associated GroupUser exists before deletion
             Assert.True(await SpendWiseDbContextSUT.GroupUsers.AnyAsync(gu => gu.Id == groupUserId));
 
             // Act
-            SpendWiseDbContextSUT.Limits.Remove(baseEntity);
+            SpendWiseDbContextSUT.Limits.Remove(limitToDelete);
             await SpendWiseDbContextSUT.SaveChangesAsync();
 
             // Assert
-            // Check that the limit has been deleted
-            Assert.False(await SpendWiseDbContextSUT.Limits.AnyAsync(l => l.Id == baseEntity.Id));
-
-            // Check that the associated GroupUser has not been deleted
+            Assert.False(await SpendWiseDbContextSUT.Limits.AnyAsync(l => l.Id == limitToDelete.Id));
             Assert.True(await SpendWiseDbContextSUT.GroupUsers.AnyAsync(gu => gu.Id == groupUserId));
         }
 
+        #endregion
+
+        #region Error Handling Tests
+
         /// <summary>
-        /// Tests that the total amount of limits for a user group is correctly summed up.
+        /// Contains tests focused on handling error scenarios in the `LimitEntity` CRUD operations.
+        /// These tests verify that the database context correctly throws exceptions when invalid data is persisted,
+        /// ensuring that integrity constraints and validation rules are enforced.
+        /// </summary>
+
+        [Fact]
+        /// <summary>
+        /// Tests the addition of a `LimitEntity` with a duplicate `GroupUserId`.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task GetTotalAmount_ForLimits_ReturnsCorrectSum()
+        public async Task AddLimit_DuplicateGroupUserId_ThrowsDbUpdateException()
         {
             // Arrange
-            var userGroupId = GroupUserSeeds.GroupUserAdminInFamily.Id;
+            var duplicateLimit = new LimitEntity
+            {
+                Id = Guid.NewGuid(),
+                GroupUserId = GroupUserSeeds.GroupUserCharlieInFamily.Id,
+                Amount = 150.00m,
+                NoticeType = 2
+            };
 
-            // Act
-            var totalAmount = await SpendWiseDbContextSUT.Limits
-                .Where(l => l.GroupUserId == userGroupId)
-                .SumAsync(l => l.Amount);
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            {
+                await SpendWiseDbContextSUT.Limits.AddAsync(duplicateLimit);
+                await SpendWiseDbContextSUT.SaveChangesAsync();
+            });
 
-            // Assert
-            var expectedTotalAmount = LimitSeeds.LimitAdminFamily.Amount;
-            Assert.Equal(expectedTotalAmount, totalAmount);
+            Assert.NotNull(exception);
         }
 
+        [Fact]
         /// <summary>
-        /// Tests that updating a limit with an invalid amount throws a <see cref="DbUpdateException"/>.
+        /// Tests the addition of a `LimitEntity` with a negative amount.
+        /// </summary>
+        /// <remarks>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task AddLimit_NegativeAmount_ThrowsDbUpdateException()
+        {
+            // Arrange
+            var invalidLimit = new LimitEntity
+            {
+                Id = Guid.NewGuid(),
+                GroupUserId = GroupUserSeeds.GroupUserBobInFamily.Id,
+                Amount = -100.00m,
+                NoticeType = 1
+            };
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            {
+                await SpendWiseDbContextSUT.Limits.AddAsync(invalidLimit);
+                await SpendWiseDbContextSUT.SaveChangesAsync();
+            });
+
+            Assert.NotNull(exception);
+        }
+
+        [Fact]
+        /// <summary>
+        /// Tests the addition of a `LimitEntity` with an invalid `NoticeType`.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task AddLimit_InvalidNoticeType_ThrowsDbUpdateException()
+        {
+            // Arrange
+            var invalidLimit = new LimitEntity
+            {
+                Id = Guid.NewGuid(),
+                GroupUserId = GroupUserSeeds.GroupUserBobInFamily.Id,
+                Amount = 100.00m,
+                NoticeType = 999
+            };
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            {
+                await SpendWiseDbContextSUT.Limits.AddAsync(invalidLimit);
+                await SpendWiseDbContextSUT.SaveChangesAsync();
+            });
+
+            Assert.NotNull(exception);
+        }
+
         [Fact]
-        public async Task UpdateLimit_WithInvalidAmount_ThrowsException()
+        /// <summary>
+        /// Tests the addition of a `LimitEntity` with an invalid `GroupUserId`.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task AddLimit_InvalidUserId_ThrowsDbUpdateException()
+        {
+            // Arrange
+            var invalidLimit = new LimitEntity
+            {
+                Id = Guid.NewGuid(),
+                GroupUserId = Guid.NewGuid(),
+                Amount = 100.00m,
+                NoticeType = 1
+            };
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            {
+                await SpendWiseDbContextSUT.Limits.AddAsync(invalidLimit);
+                await SpendWiseDbContextSUT.SaveChangesAsync();
+            });
+
+            Assert.NotNull(exception);
+        }
+
+        [Fact]
+        /// <summary>
+        /// Tests the update of an existing `LimitEntity` with an invalid amount.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task UpdateLimit_InvalidAmount_ThrowsDbUpdateException()
         {
             // Arrange
             var existingLimit = await SpendWiseDbContextSUT.Limits
-                .AsNoTracking() // Ensure we are not tracking the original entity
-                .FirstAsync(l => l.Id == LimitSeeds.LimitAdminFamily.Id);
+                .AsNoTracking()
+                .FirstAsync(l => l.Id == LimitSeeds.LimitCharlieFamily.Id);
 
             var invalidLimit = existingLimit with
             {
@@ -282,5 +275,81 @@ namespace SpendWise.DAL.Tests
 
             Assert.NotNull(exception);
         }
+
+        #endregion
+
+        #region Data Retrieval Tests
+
+        /// <summary>
+        /// Contains tests focused on retrieving `LimitEntity` data from the database.
+        /// These tests ensure that specific queries return the expected results and that
+        /// the data is correctly filtered based on certain criteria.
+        /// </summary>
+
+        [Fact]
+        /// <summary>
+        /// Tests the retrieval of limits by `GroupUserId`.
+        /// </summary>
+        /// <remarks>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task FetchLimitByGroupUserId_ReturnsExpectedLimits()
+        {
+            // Arrange
+            var expectedGroupUser = GroupUserSeeds.GroupUserCharlieInFamily;
+
+            // Act
+            var actualLimits = await SpendWiseDbContextSUT.Limits
+                .Where(l => l.GroupUserId == expectedGroupUser.Id)
+                .ToListAsync();
+
+            // Assert
+            Assert.NotEmpty(actualLimits);
+            foreach (var limit in actualLimits)
+            {
+                Assert.Equal(expectedGroupUser.Id, limit.GroupUserId);
+            }
+        }
+
+        #endregion
+
+        #region Consistency Tests
+
+        /// <summary>
+        /// Contains tests that ensure the consistency of the database after certain operations,
+        /// such as deletions. These tests verify that integrity constraints are maintained and that
+        /// related entities are handled correctly.
+        /// </summary>
+
+        [Fact]
+        /// <summary>
+        /// Tests the deletion of a `LimitEntity` and checks the integrity constraints afterward.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task DeleteLimit_CheckIntegrityConstraints_AfterDeletion()
+        {
+            // Arrange
+            var existingLimitId = LimitSeeds.LimitCharlieFamily.Id;
+            var expectedGroupUserId = LimitSeeds.LimitCharlieFamily.GroupUserId;
+
+            // Act
+            var limitToDelete = await SpendWiseDbContextSUT.Limits
+                .Where(l => l.Id == existingLimitId)
+                .SingleOrDefaultAsync();
+
+            Assert.NotNull(limitToDelete);
+
+            SpendWiseDbContextSUT.Limits.Remove(limitToDelete);
+            await SpendWiseDbContextSUT.SaveChangesAsync();
+
+            // Assert
+            // Check if GroupUser still exists
+            Assert.True(await SpendWiseDbContextSUT.GroupUsers.AnyAsync(gu => gu.Id == expectedGroupUserId));
+
+            // Check that the deleted limit is no longer present
+            Assert.False(await SpendWiseDbContextSUT.Limits.AnyAsync(l => l.Id == existingLimitId));
+        }
+
+        #endregion
+
     }
 }

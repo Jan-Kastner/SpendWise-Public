@@ -1,5 +1,8 @@
 using SpendWise.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+
 namespace SpendWise.Common.Tests.Seeds
 {
     /// <summary>
@@ -7,8 +10,9 @@ namespace SpendWise.Common.Tests.Seeds
     /// </summary>
     public static class GroupSeeds
     {
+        private static bool _relationsInitialized = false;
         /// <summary>
-        /// A seed instance of <see cref="GroupEntity"/> representing a family group.
+        /// Gets the seed data for the family group.
         /// </summary>
         public static readonly GroupEntity GroupFamily = new()
         {
@@ -18,7 +22,7 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="GroupEntity"/> representing a friends group.
+        /// Gets the seed data for the friends group.
         /// </summary>
         public static readonly GroupEntity GroupFriends = new()
         {
@@ -28,7 +32,7 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="GroupEntity"/> representing a work group.
+        /// Gets the seed data for the work group.
         /// </summary>
         public static readonly GroupEntity GroupWork = new()
         {
@@ -38,58 +42,57 @@ namespace SpendWise.Common.Tests.Seeds
         };
 
         /// <summary>
-        /// A seed instance of <see cref="GroupEntity"/> representing a family group with related entities.
+        /// Initializes the relationships between groups and their associated users and invitations.
         /// </summary>
-        public static readonly GroupEntity GroupFamilyWithRelations = GroupFamily with
+        public static void InitializeRelations()
         {
-            GroupUsers = new List<GroupUserEntity>
+            if (!_relationsInitialized)
             {
-                GroupUserSeeds.GroupUserAdminInFamily,
-                GroupUserSeeds.GroupUserJohnDoeInFamily
-            },
-            Invitations = new List<InvitationEntity>
-            {
-                InvitationSeeds.InvitationAdminToJohnDoeIntoFamily
-            }
-        };
+                // Initialize relations for GroupFamily
+                GroupFamily.GroupUsers.Add(GroupUserSeeds.GroupUserBobInFamily);
+                GroupFamily.GroupUsers.Add(GroupUserSeeds.GroupUserCharlieInFamily);
+                GroupFamily.GroupUsers.Add(GroupUserSeeds.GroupUserDianaInFamily);
+                GroupFamily.GroupUsers.Add(GroupUserSeeds.GroupUserJohnInFamily);
+                GroupFamily.Invitations.Add(InvitationSeeds.InvitationDianaToCharlieIntoFamily);
+                GroupFamily.Invitations.Add(InvitationSeeds.InvitationJohnToDianaIntoFamily);
 
-        /// <summary>
-        /// A seed instance of <see cref="GroupEntity"/> representing a friends group with related entities.
-        /// </summary>
-        public static readonly GroupEntity GroupFriendsWithRelations = GroupFriends with
-        {
-            GroupUsers = new List<GroupUserEntity>
-            {
-                GroupUserSeeds.GroupUserJohnDoeInFriends
-            },
-            Invitations = new List<InvitationEntity>
-            {
-                InvitationSeeds.InvitationJohnDoeToAdminIntoFriends
-            }
-        };
+                // Initialize relations for GroupFriends
+                GroupFriends.GroupUsers.Add(GroupUserSeeds.GroupUserJohnInFriends);
 
-        /// <summary>
-        /// A seed instance of <see cref="GroupEntity"/> representing a work group with related entities.
-        /// </summary>
-        public static readonly GroupEntity GroupWorkWithRelations = GroupWork with
-        {
-            GroupUsers = new List<GroupUserEntity>
-            {
-                GroupUserSeeds.GroupUserAliceBrownInWork
+                // Initialize relations for GroupWork
+                GroupWork.GroupUsers.Add(GroupUserSeeds.GroupUserJohnInWork);
+                GroupWork.Invitations.Add(InvitationSeeds.InvitationJohnToDianaIntoWork);
+
+                _relationsInitialized = true;
             }
-        };
+        }
 
         /// <summary>
         /// Seeds the <see cref="GroupEntity"/> data into the provided <see cref="ModelBuilder"/>.
         /// </summary>
-        /// <param name="modelBuilder">The model builder used to seed data.</param>
+        /// <param name="modelBuilder">The model builder to configure the entity.</param>
         public static void Seed(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<GroupEntity>().HasData(
-                GroupFamily,
-                GroupFriends,
-                GroupWork
+                GroupFamily with
+                {
+                    GroupUsers = Array.Empty<GroupUserEntity>(),
+                    Invitations = Array.Empty<InvitationEntity>()
+                },
+
+                GroupFriends with
+                {
+                    GroupUsers = Array.Empty<GroupUserEntity>(),
+                    Invitations = Array.Empty<InvitationEntity>()
+                },
+
+                GroupWork with
+                {
+                    GroupUsers = Array.Empty<GroupUserEntity>(),
+                    Invitations = Array.Empty<InvitationEntity>()
+                }
             );
+            InitializeRelations();
         }
     }
 }

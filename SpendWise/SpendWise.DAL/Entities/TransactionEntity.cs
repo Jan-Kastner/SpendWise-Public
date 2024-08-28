@@ -23,7 +23,7 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the description of the transaction. Can be null.
         /// </summary>
-        public string? Description { get; set; }
+        public required string? Description { get; set; }
 
         /// <summary>
         /// Gets or sets the type of the transaction.

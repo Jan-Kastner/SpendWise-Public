@@ -3,8 +3,8 @@ using SpendWise.DAL.Entities;
 using SpendWise.DAL.DTOs;
 using Microsoft.EntityFrameworkCore;
 using SpendWise.DAL.dbContext;
-using System.Linq.Expressions;
-
+using LinqKit;
+using SpendWise.DAL.QueryObjects;
 
 namespace SpendWise.DAL.Repositories
 {
@@ -33,18 +33,24 @@ namespace SpendWise.DAL.Repositories
             _mapper = mapper;
         }
 
-        public IQueryable<TDto> Get(Expression<Func<TEntity, bool>>? predicate = null)
+        /// <summary>
+        /// Retrieves all entities from the database as DTOs asynchronously.
+        /// </summary>
+        /// <param name="queryObject">Optional query object for additional filtering.</param>
+        /// <returns>A task representing the asynchronous operation, containing a list of DTOs.</returns>
+        public async Task<List<TDto>> GetAsync(IQueryObject<TEntity>? queryObject = null)
         {
             IQueryable<TEntity> query = _dbSet;
 
-            if (predicate != null)
+            // Použijte jakékoli dodatečné filtrování z queryObject, pokud je k dispozici
+            if (queryObject != null)
             {
-                query = query.Where(predicate);
+                var expression = queryObject.ToExpression();
+                query = query.Where(expression);
             }
-
-            return query.Select(entity => _mapper.Map<TDto>(entity));
+            // Ujistěte se, že voláte ToListAsync na IQueryable, které podporuje async
+            return await query.Select(entity => _mapper.Map<TDto>(entity)).ToListAsync();
         }
-
 
         /// <summary>
         /// Retrieves an entity by its unique identifier and returns it as a DTO.
@@ -74,14 +80,17 @@ namespace SpendWise.DAL.Repositories
         /// </summary>
         /// <param name="dto">The DTO representing the entity to insert.</param>
         /// <returns>A task representing the asynchronous operation, containing the inserted DTO.</returns>
-        public Task<TDto> InsertAsync(TDto dto)
+        public async Task<TDto> InsertAsync(TDto dto)
         {
             // Map DTO to entity
             var entity = _mapper.Map<TEntity>(dto);
-            _dbSet.Add(entity);
+            await _dbSet.AddAsync(entity).ConfigureAwait(false);
+
+            // Save changes to the database
+            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
 
             // Return the inserted DTO
-            return Task.FromResult(_mapper.Map<TDto>(entity));
+            return _mapper.Map<TDto>(entity);
         }
 
         /// <summary>
@@ -96,6 +105,9 @@ namespace SpendWise.DAL.Repositories
 
             // Map updated values from entity to existing entity
             _mapper.Map(entity, existingEntity);
+
+            // Save changes to the database
+            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
 
             // Return the updated DTO
             return _mapper.Map<TDto>(existingEntity);
@@ -114,6 +126,7 @@ namespace SpendWise.DAL.Repositories
                 throw new KeyNotFoundException($"Entity with ID {entityId} not found.");
             }
             _dbSet.Remove(entity);
+            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }

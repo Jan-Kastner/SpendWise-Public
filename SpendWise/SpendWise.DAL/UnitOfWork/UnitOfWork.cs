@@ -3,57 +3,19 @@ using SpendWise.DAL.Entities;
 using SpendWise.DAL.DTOs;
 using SpendWise.DAL.Repositories;
 using SpendWise.DAL.dbContext;
-
+using AutoMapper;
 
 namespace SpendWise.DAL.UnitOfWork
 {
     /// <summary>
-    /// Implementation of the Unit of Work pattern to manage a single DbContext and repositories.
+    /// Generic implementation of the Unit of Work pattern to manage a single DbContext and repositories.
     /// </summary>
     public class UnitOfWork : IUnitOfWork, IAsyncDisposable
     {
         private readonly IDbContext _dbContext;
         private readonly ILogger<UnitOfWork> _logger;
-
-        /// <summary>
-        /// Repository for <see cref="CategoryEntity"/>.
-        /// </summary>
-        public IRepository<CategoryEntity, CategoryDto> Categories { get; }
-
-        /// <summary>
-        /// Repository for <see cref="GroupUserEntity"/>.
-        /// </summary>
-        public IRepository<GroupUserEntity, GroupUserDto> GroupUsers { get; }
-
-        /// <summary>
-        /// Repository for <see cref="InvitationEntity"/>.
-        /// </summary>
-        public IRepository<InvitationEntity, InvitationDto> Invitations { get; }
-
-        /// <summary>
-        /// Repository for <see cref="TransactionEntity"/>.
-        /// </summary>
-        public IRepository<TransactionEntity, TransactionDto> Transactions { get; }
-
-        /// <summary>
-        /// Repository for <see cref="UserEntity"/>.
-        /// </summary>
-        public IRepository<UserEntity, UserDto> Users { get; }
-
-        /// <summary>
-        /// Repository for <see cref="GroupEntity"/>.
-        /// </summary>
-        public IRepository<GroupEntity, GroupDto> Groups { get; }
-
-        /// <summary>
-        /// Repository for <see cref="LimitEntity"/>.
-        /// </summary>
-        public IRepository<LimitEntity, LimitDto> Limits { get; }
-
-        /// <summary>
-        /// Repository for <see cref="TransactionGroupUserEntity"/>.
-        /// </summary>
-        public IRepository<TransactionGroupUserEntity, TransactionGroupUserDto> TransactionGroupUsers { get; }
+        private readonly IMapper _mapper;
+        private readonly Dictionary<(Type, Type), object> _repositories = new();
 
         private bool _disposed;
 
@@ -61,38 +23,33 @@ namespace SpendWise.DAL.UnitOfWork
         /// Initializes a new instance of the <see cref="UnitOfWork"/> class.
         /// </summary>
         /// <param name="dbContext">The database context.</param>
-        /// <param name="categories">Repository for categories.</param>
-        /// <param name="groupUsers">Repository for group users.</param>
-        /// <param name="invitations">Repository for invitations.</param>
-        /// <param name="transactions">Repository for transactions.</param>
-        /// <param name="users">Repository for users.</param>
-        /// <param name="groups">Repository for groups.</param>
-        /// <param name="limits">Repository for limits.</param>
-        /// <param name="transactionGroupUsers">Repository for transaction group users.</param>
         /// <param name="logger">Logger for recording events.</param>
-        /// <exception cref="ArgumentNullException">Thrown when any of the parameters is null.</exception>
-        public UnitOfWork(
-            IDbContext dbContext,
-            IRepository<CategoryEntity, CategoryDto> categories,
-            IRepository<GroupUserEntity, GroupUserDto> groupUsers,
-            IRepository<InvitationEntity, InvitationDto> invitations,
-            IRepository<TransactionEntity, TransactionDto> transactions,
-            IRepository<UserEntity, UserDto> users,
-            IRepository<GroupEntity, GroupDto> groups,
-            IRepository<LimitEntity, LimitDto> limits,
-            IRepository<TransactionGroupUserEntity, TransactionGroupUserDto> transactionGroupUsers,
-            ILogger<UnitOfWork> logger)
+        /// <param name="mapper">AutoMapper instance for mapping entities and DTOs.</param>
+        public UnitOfWork(IDbContext dbContext, ILogger<UnitOfWork> logger, IMapper mapper)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            Categories = categories ?? throw new ArgumentNullException(nameof(categories));
-            GroupUsers = groupUsers ?? throw new ArgumentNullException(nameof(groupUsers));
-            Invitations = invitations ?? throw new ArgumentNullException(nameof(invitations));
-            Transactions = transactions ?? throw new ArgumentNullException(nameof(transactions));
-            Users = users ?? throw new ArgumentNullException(nameof(users));
-            Groups = groups ?? throw new ArgumentNullException(nameof(groups));
-            Limits = limits ?? throw new ArgumentNullException(nameof(limits));
-            TransactionGroupUsers = transactionGroupUsers ?? throw new ArgumentNullException(nameof(transactionGroupUsers));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        }
+
+        /// <summary>
+        /// Get the repository for a specific entity type.
+        /// </summary>
+        /// <typeparam name="TEntity">The entity type.</typeparam>
+        /// <typeparam name="TDto">The DTO type.</typeparam>
+        /// <returns>An instance of the repository.</returns>
+        public IRepository<TEntity, TDto> Repository<TEntity, TDto>()
+            where TEntity : class, IEntity
+            where TDto : class, IDto
+        {
+            var typeKey = (typeof(TEntity), typeof(TDto));
+            if (!_repositories.ContainsKey(typeKey))
+            {
+                var repositoryInstance = new Repository<TEntity, TDto>(_dbContext, _mapper);
+                _repositories[typeKey] = repositoryInstance;
+            }
+
+            return (IRepository<TEntity, TDto>)_repositories[typeKey];
         }
 
         /// <summary>
@@ -155,3 +112,4 @@ namespace SpendWise.DAL.UnitOfWork
         }
     }
 }
+

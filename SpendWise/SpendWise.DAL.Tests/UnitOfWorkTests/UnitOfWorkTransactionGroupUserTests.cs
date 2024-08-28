@@ -1,9 +1,13 @@
+using Xunit;
 using Xunit.Abstractions;
 using SpendWise.DAL.DTOs;
+using Microsoft.EntityFrameworkCore;
 using SpendWise.Common.Tests.Seeds;
 using SpendWise.Common.Tests.Helpers;
+using SpendWise.DAL.Entities;
+using SpendWise.DAL.QueryObjects;
 
-namespace SpendWise.DAL.Tests
+namespace SpendWise.DAL.Tests.UnitOfWorkTests
 {
     /// <summary>
     /// Contains tests for operations related to transaction-group-user relationships using the
@@ -11,105 +15,84 @@ namespace SpendWise.DAL.Tests
     /// </summary>
     public class UnitOfWorkTransactionGroupUserTests : UnitOfWorkTestsBase
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UnitOfWorkTransactionGroupUserTests"/> class.
-        /// </summary>
-        /// <param name="output">The output helper instance.</param>
         public UnitOfWorkTransactionGroupUserTests(ITestOutputHelper output) : base(output)
         {
         }
 
-        // ====================================
-        // CRUD Operations Tests
-        // ====================================
+        #region CRUD Operations Tests
 
-        /// <summary>
-        /// Tests if inserting a new transaction-group-user relationship with valid data correctly adds the relationship to the database.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task InsertTransactionGroupUser_AddsTransactionGroupUserToDatabase()
+        public async Task AddTransactionGroupUser_ValidData_SuccessfullyPersists()
         {
             // Arrange
-            var newTransactionGroupUserDto = new TransactionGroupUserDto
+            var transactionGroupUserToAdd = new TransactionGroupUserDto
             {
                 Id = Guid.NewGuid(),
-                TransactionId = TransactionSeeds.TransactionMinus26Hours.Id,
-                GroupUserId = GroupUserSeeds.GroupUserJohnDoeInFriends.Id
+                TransactionId = TransactionSeeds.TransactionJohnTaxi.Id,
+                GroupUserId = GroupUserSeeds.GroupUserJohnInWork.Id
             };
 
             // Act
-            await _unitOfWork.TransactionGroupUsers.InsertAsync(newTransactionGroupUserDto);
+            await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().InsertAsync(transactionGroupUserToAdd);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var transactionGroupUserInDb = await _unitOfWork.TransactionGroupUsers.GetByIdAsync(newTransactionGroupUserDto.Id);
-            Assert.NotNull(transactionGroupUserInDb);
-            DeepAssert.Equal(newTransactionGroupUserDto, transactionGroupUserInDb);
+            var actualTransactionGroupUser = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().GetByIdAsync(transactionGroupUserToAdd.Id);
+            Assert.NotNull(actualTransactionGroupUser);
+            DeepAssert.Equal(transactionGroupUserToAdd, actualTransactionGroupUser);
         }
 
-        /// <summary>
-        /// Tests if fetching a transaction-group-user relationship by an existing ID returns the correct relationship.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task GetTransactionGroupUserById_ReturnsCorrectTransactionGroupUser()
+        public async Task FetchTransactionGroupUserById_ExistingId_ReturnsExpectedTransactionGroupUser()
         {
             // Arrange
-            var expectedTransactionGroupUserDto = _mapper.Map<TransactionGroupUserDto>(TransactionGroupUserSeeds.TransactionGroupUserJohnDoeInFriendsForJohnDoeTransport);
+            var expectedTransactionGroupUser = _mapper.Map<TransactionGroupUserDto>(TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana);
 
             // Act
-            var fetchedTransactionGroupUserDto = await _unitOfWork.TransactionGroupUsers.GetByIdAsync(expectedTransactionGroupUserDto.Id);
+            var actualTransactionGroupUser = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().GetByIdAsync(expectedTransactionGroupUser.Id);
 
             // Assert
-            Assert.NotNull(fetchedTransactionGroupUserDto);
-            DeepAssert.Equal(expectedTransactionGroupUserDto, fetchedTransactionGroupUserDto);
+            Assert.NotNull(actualTransactionGroupUser);
+            DeepAssert.Equal(expectedTransactionGroupUser, actualTransactionGroupUser);
         }
 
-        /// <summary>
-        /// Tests if updating a transaction-group-user relationship with valid data correctly updates the relationship in the database.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task UpdateTransactionGroupUser_UpdatesTransactionGroupUserInDatabase()
+        public async Task UpdateTransactionGroupUser_ValidData_SuccessfullyPersistsChanges()
         {
             // Arrange
-            var existingTransactionGroupUserDto = _mapper.Map<TransactionGroupUserDto>(TransactionGroupUserSeeds.TransactionGroupUserJohnDoeInFamilyForJohnDoeTransport);
-
-            var updatedTransactionGroupUserDto = new TransactionGroupUserDto
+            var existingTransactionGroupUser = _mapper.Map<TransactionGroupUserDto>(TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana);
+            var updatedTransactionGroupUser = new TransactionGroupUserDto
             {
-                Id = existingTransactionGroupUserDto.Id,
-                TransactionId = TransactionSeeds.TransactionMinus26Hours.Id,
-                GroupUserId = GroupUserSeeds.GroupUserJohnDoeInFriends.Id
+                Id = existingTransactionGroupUser.Id,
+                TransactionId = TransactionSeeds.TransactionJohnTaxi.Id,
+                GroupUserId = GroupUserSeeds.GroupUserJohnInWork.Id
             };
 
             // Act
-            await _unitOfWork.TransactionGroupUsers.UpdateAsync(updatedTransactionGroupUserDto);
+            await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().UpdateAsync(updatedTransactionGroupUser);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var resultTransactionGroupUserDto = await _unitOfWork.TransactionGroupUsers.GetByIdAsync(updatedTransactionGroupUserDto.Id);
-            Assert.NotNull(resultTransactionGroupUserDto);
-            DeepAssert.Equal(updatedTransactionGroupUserDto, resultTransactionGroupUserDto);
+            var actualTransactionGroupUser = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().GetByIdAsync(updatedTransactionGroupUser.Id);
+            Assert.NotNull(actualTransactionGroupUser);
+            DeepAssert.Equal(updatedTransactionGroupUser, actualTransactionGroupUser);
         }
 
-        /// <summary>
-        /// Tests if deleting a transaction-group-user relationship by an existing ID correctly removes the relationship from the database.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task DeleteTransactionGroupUser_RemovesTransactionGroupUserFromDatabase()
+        public async Task DeleteTransactionGroupUser_ExistingId_SuccessfullyRemovesTransactionGroupUser()
         {
             // Arrange
-            var transactionGroupUserDto = _mapper.Map<TransactionGroupUserDto>(TransactionGroupUserSeeds.TransactionGroupUserAdminInFamilyForDelete);
+            var transactionGroupUserToDelete = _mapper.Map<TransactionGroupUserDto>(TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana);
 
             // Act
-            await _unitOfWork.TransactionGroupUsers.DeleteAsync(transactionGroupUserDto.Id);
+            await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().DeleteAsync(transactionGroupUserToDelete.Id);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var deletedTransactionGroupUser = await _unitOfWork.TransactionGroupUsers.GetByIdAsync(transactionGroupUserDto.Id);
+            var deletedTransactionGroupUser = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().GetByIdAsync(transactionGroupUserToDelete.Id);
             Assert.Null(deletedTransactionGroupUser);
         }
+
+        #endregion
     }
 }

@@ -216,11 +216,6 @@ namespace SpendWise.DAL.Configurations
                 entity.Property(tgu => tgu.GroupUserId)
                     .IsRequired()
                     .HasColumnType("uuid");
-
-                // Creates a unique index on the combination of TransactionId and GroupUserId properties
-                entity.HasIndex(tgu => new { tgu.TransactionId, tgu.GroupUserId })
-                      .IsUnique()
-                      .HasDatabaseName("IX_TransactionGroupUser_Unique_TransactionId_GroupUserId");
             });
 
             // Configuration for UserEntity unique index on Email property

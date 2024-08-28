@@ -40,6 +40,11 @@ namespace SpendWise.DAL.Configurations
                 // Creates an index on the GroupId property of GroupUserEntity
                 entity.HasIndex(gu => gu.GroupId)
                     .HasDatabaseName("IX_GroupUserEntity_GroupId");
+
+                // Creates a unique index on the combination of UserId and GroupId properties
+                entity.HasIndex(gu => new { gu.UserId, gu.GroupId })
+                    .IsUnique()
+                    .HasDatabaseName("IX_TGroupUserEntity_Unique_UserId_GroupId");
             });
 
             // Configuration for InvitationEntity
@@ -60,6 +65,15 @@ namespace SpendWise.DAL.Configurations
                 // Creates an index on the SentDate property of InvitationEntity
                 entity.HasIndex(i => i.SentDate)
                     .HasDatabaseName("IX_InvitationEntity_SentDate");
+            });
+
+            // Configuration for TransactionGroupUserEntity
+            modelBuilder.Entity<TransactionGroupUserEntity>(entity =>
+            {
+                // Creates a unique index on the combination of TransactionId and GroupUserId properties
+                entity.HasIndex(tgu => new { tgu.TransactionId, tgu.GroupUserId })
+                      .IsUnique()
+                      .HasDatabaseName("IX_TransactionGroupUser_Unique_TransactionId_GroupUserId");
             });
         }
     }

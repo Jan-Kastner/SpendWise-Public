@@ -35,11 +35,17 @@ namespace SpendWise.DAL.Mappers
             CreateMap<TransactionDto, TransactionEntity>();
             CreateMap<UserDto, UserEntity>();
 
-            // Entity to Entity
+            // Entity to Entity mappings
             CreateMap<CategoryEntity, CategoryEntity>();
             CreateMap<GroupEntity, GroupEntity>();
-            CreateMap<GroupUserEntity, GroupUserEntity>();
-            CreateMap<InvitationEntity, InvitationEntity>();
+            CreateMap<GroupUserEntity, GroupUserEntity>()
+                .ForMember(dest => dest.UserId, opt => opt.Ignore())
+                .ForMember(dest => dest.GroupId, opt => opt.Ignore());
+            CreateMap<InvitationEntity, InvitationEntity>()
+                .ForMember(dest => dest.ReceiverId, opt => opt.Ignore())
+                .ForMember(dest => dest.SenderId, opt => opt.Ignore())
+                .ForMember(dest => dest.GroupId, opt => opt.Ignore())
+                .ForMember(dest => dest.SentDate, opt => opt.Ignore());
             CreateMap<LimitEntity, LimitEntity>();
             CreateMap<TransactionGroupUserEntity, TransactionGroupUserEntity>();
             CreateMap<TransactionEntity, TransactionEntity>();

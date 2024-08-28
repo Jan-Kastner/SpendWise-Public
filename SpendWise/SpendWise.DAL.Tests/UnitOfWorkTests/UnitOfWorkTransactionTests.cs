@@ -1,37 +1,30 @@
+using Xunit;
 using Xunit.Abstractions;
 using SpendWise.DAL.DTOs;
 using Microsoft.EntityFrameworkCore;
 using SpendWise.Common.Tests.Seeds;
 using SpendWise.Common.Tests.Helpers;
+using SpendWise.DAL.Entities;
+using SpendWise.DAL.QueryObjects;
 
-namespace SpendWise.DAL.Tests
+namespace SpendWise.DAL.Tests.UnitOfWorkTests
 {
     /// <summary>
     /// Contains tests for operations related to transactions using the Unit of Work pattern.
     /// </summary>
     public class UnitOfWorkTransactionTests : UnitOfWorkTestsBase
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UnitOfWorkTransactionTests"/> class.
-        /// </summary>
-        /// <param name="output">The output helper instance.</param>
         public UnitOfWorkTransactionTests(ITestOutputHelper output) : base(output)
         {
         }
 
-        // ====================================
-        // CRUD Operations Tests
-        // ====================================
+        #region CRUD Operations Tests
 
-        /// <summary>
-        /// Tests if inserting a new transaction with valid data correctly adds the transaction to the database.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task InsertTransaction_AddsTransactionToDatabase()
+        public async Task AddTransaction_ValidData_SuccessfullyPersists()
         {
             // Arrange
-            var newTransactionDto = new TransactionDto
+            var transactionToAdd = new TransactionDto
             {
                 Id = Guid.NewGuid(),
                 Amount = 300m,
@@ -42,44 +35,35 @@ namespace SpendWise.DAL.Tests
             };
 
             // Act
-            await _unitOfWork.Transactions.InsertAsync(newTransactionDto);
+            await _unitOfWork.Repository<TransactionEntity, TransactionDto>().InsertAsync(transactionToAdd);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var transactionInDb = await _unitOfWork.Transactions.GetByIdAsync(newTransactionDto.Id);
-            Assert.NotNull(transactionInDb);
-            DeepAssert.Equal(newTransactionDto, transactionInDb);
+            var actualTransaction = await _unitOfWork.Repository<TransactionEntity, TransactionDto>().GetByIdAsync(transactionToAdd.Id);
+            Assert.NotNull(actualTransaction);
+            DeepAssert.Equal(transactionToAdd, actualTransaction);
         }
 
-        /// <summary>
-        /// Tests if fetching a transaction by an existing ID returns the correct transaction.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task GetTransactionById_ReturnsCorrectTransaction()
+        public async Task FetchTransactionById_ExistingId_ReturnsExpectedTransaction()
         {
             // Arrange
-            var expectedTransactionDto = _mapper.Map<TransactionDto>(TransactionSeeds.TransactionAdminFood);
+            var expectedTransaction = _mapper.Map<TransactionDto>(TransactionSeeds.TransactionDianaDinner);
 
             // Act
-            var fetchedTransactionDto = await _unitOfWork.Transactions.GetByIdAsync(expectedTransactionDto.Id);
+            var actualTransaction = await _unitOfWork.Repository<TransactionEntity, TransactionDto>().GetByIdAsync(expectedTransaction.Id);
 
             // Assert
-            Assert.NotNull(fetchedTransactionDto);
-            DeepAssert.Equal(expectedTransactionDto, fetchedTransactionDto);
+            Assert.NotNull(actualTransaction);
+            DeepAssert.Equal(expectedTransaction, actualTransaction);
         }
 
-        /// <summary>
-        /// Tests if updating a transaction with valid data correctly updates the transaction in the database.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task UpdateTransaction_UpdatesTransactionInDatabase()
+        public async Task UpdateTransaction_ValidData_SuccessfullyPersistsChanges()
         {
             // Arrange
-            var existingTransactionDto = _mapper.Map<TransactionDto>(TransactionSeeds.TransactionAdminFood);
-
-            var updatedTransactionDto = existingTransactionDto with
+            var existingTransaction = _mapper.Map<TransactionDto>(TransactionSeeds.TransactionDianaDinner);
+            var updatedTransaction = existingTransaction with
             {
                 Amount = 500m,
                 Description = "Updated Transaction",
@@ -87,32 +71,30 @@ namespace SpendWise.DAL.Tests
             };
 
             // Act
-            await _unitOfWork.Transactions.UpdateAsync(updatedTransactionDto);
+            await _unitOfWork.Repository<TransactionEntity, TransactionDto>().UpdateAsync(updatedTransaction);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var resultTransactionDto = await _unitOfWork.Transactions.GetByIdAsync(updatedTransactionDto.Id);
-            Assert.NotNull(resultTransactionDto);
-            DeepAssert.Equal(updatedTransactionDto, resultTransactionDto);
+            var actualUpdatedTransaction = await _unitOfWork.Repository<TransactionEntity, TransactionDto>().GetByIdAsync(updatedTransaction.Id);
+            Assert.NotNull(actualUpdatedTransaction);
+            DeepAssert.Equal(updatedTransaction, actualUpdatedTransaction);
         }
 
-        /// <summary>
-        /// Tests if deleting a transaction by an existing ID correctly removes the transaction from the database.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task DeleteTransaction_RemovesTransactionFromDatabase()
+        public async Task DeleteTransaction_ExistingId_SuccessfullyRemovesTransaction()
         {
             // Arrange
-            var transactionDto = _mapper.Map<TransactionDto>(TransactionSeeds.TransactionAdminFood);
+            var transactionToDelete = _mapper.Map<TransactionDto>(TransactionSeeds.TransactionDianaDinner);
 
             // Act
-            await _unitOfWork.Transactions.DeleteAsync(transactionDto.Id);
+            await _unitOfWork.Repository<TransactionEntity, TransactionDto>().DeleteAsync(transactionToDelete.Id);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var deletedTransaction = await _unitOfWork.Transactions.GetByIdAsync(transactionDto.Id);
+            var deletedTransaction = await _unitOfWork.Repository<TransactionEntity, TransactionDto>().GetByIdAsync(transactionToDelete.Id);
             Assert.Null(deletedTransaction);
         }
+
+        #endregion
     }
 }

@@ -19,7 +19,7 @@ namespace SpendWise.DAL.DTOs
         /// <summary>
         /// Gets or sets the description of the category. Can be null.
         /// </summary>
-        public string? Description { get; set; }
+        public required string? Description { get; set; }
 
         /// <summary>
         /// Gets or sets the color associated with the category.
@@ -29,6 +29,6 @@ namespace SpendWise.DAL.DTOs
         /// <summary>
         /// Gets or sets the icon for the category. Can be null.
         /// </summary>
-        public byte[]? Icon { get; set; }
+        public required byte[]? Icon { get; set; }
     }
 }

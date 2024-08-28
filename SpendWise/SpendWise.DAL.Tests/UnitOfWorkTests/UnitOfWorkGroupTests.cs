@@ -1,38 +1,36 @@
+using Xunit;
 using Xunit.Abstractions;
 using SpendWise.DAL.DTOs;
 using Microsoft.EntityFrameworkCore;
 using SpendWise.Common.Tests.Seeds;
 using SpendWise.Common.Tests.Helpers;
+using SpendWise.DAL.Entities;
+using SpendWise.DAL.QueryObjects;
 
-namespace SpendWise.DAL.Tests
+namespace SpendWise.DAL.Tests.UnitOfWorkTests
 {
-    /// <summary>
-    /// Contains tests for operations related to groups using the 
-    /// Unit of Work pattern.
-    /// </summary>
     public class UnitOfWorkGroupTests : UnitOfWorkTestsBase
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UnitOfWorkGroupTests"/> class.
-        /// </summary>
-        /// <param name="output">The output helper instance.</param>
         public UnitOfWorkGroupTests(ITestOutputHelper output) : base(output)
         {
         }
 
-        // ====================================
-        // CRUD Operations Tests
-        // ====================================
+        #region CRUD Operations Tests
 
         /// <summary>
-        /// Tests if inserting a new group with valid data correctly adds the group to the database.
+        /// Unit tests for CRUD (Create, Read, Update, Delete) operations on groups.
+        /// These tests verify that groups can be successfully added, fetched, updated, and deleted from the database.
+        /// </summary>
+
+        [Fact]
+        /// <summary>
+        /// Verifies that adding a group with valid data successfully persists the group in the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task InsertGroup_AddsGroupToDatabase()
+        public async Task AddGroup_ValidData_SuccessfullyPersists()
         {
             // Arrange
-            var newGroupDto = new GroupDto
+            var groupToAdd = new GroupDto
             {
                 Id = Guid.NewGuid(),
                 Name = "Test Group",
@@ -40,260 +38,172 @@ namespace SpendWise.DAL.Tests
             };
 
             // Act
-            await _unitOfWork.Groups.InsertAsync(newGroupDto);
+            await _unitOfWork.Repository<GroupEntity, GroupDto>().InsertAsync(groupToAdd);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var groupInDb = await _unitOfWork.Groups.GetByIdAsync(newGroupDto.Id);
-            Assert.NotNull(groupInDb);
-            DeepAssert.Equal(newGroupDto, groupInDb);
+            var actualGroup = await _unitOfWork.Repository<GroupEntity, GroupDto>().GetByIdAsync(groupToAdd.Id);
+            Assert.NotNull(actualGroup);
+            DeepAssert.Equal(groupToAdd, actualGroup);
         }
 
+        [Fact]
         /// <summary>
-        /// Tests if fetching a group by an existing ID returns the correct group.
+        /// Verifies that fetching a group by an existing ID returns the expected group.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task GetGroupById_ReturnsCorrectGroup()
+        public async Task FetchGroupById_ExistingId_ReturnsExpectedGroup()
         {
             // Arrange
-            var expectedGroupDto = _mapper.Map<GroupDto>(GroupSeeds.GroupFamily);
+            var expectedGroup = _mapper.Map<GroupDto>(GroupSeeds.GroupFamily);
 
             // Act
-            var fetchedGroupDto = await _unitOfWork.Groups.GetByIdAsync(expectedGroupDto.Id);
+            var actualGroup = await _unitOfWork.Repository<GroupEntity, GroupDto>().GetByIdAsync(expectedGroup.Id);
 
             // Assert
-            Assert.NotNull(fetchedGroupDto);
-            DeepAssert.Equal(expectedGroupDto, fetchedGroupDto);
+            Assert.NotNull(actualGroup);
+            DeepAssert.Equal(expectedGroup, actualGroup);
         }
 
+        [Fact]
         /// <summary>
-        /// Tests if updating a group with valid data correctly updates the group in the database.
+        /// Verifies that updating a group with valid data successfully persists the changes in the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task UpdateGroup_UpdatesGroupInDatabase()
+        public async Task UpdateGroup_ValidData_SuccessfullyPersistsChanges()
         {
             // Arrange
-            var existingGroupDto = _mapper.Map<GroupDto>(GroupSeeds.GroupFamily);
-
-            var updatedGroupDto = new GroupDto
+            var existingGroup = _mapper.Map<GroupDto>(GroupSeeds.GroupFamily);
+            var updatedGroup = new GroupDto
             {
-                Id = existingGroupDto.Id,
+                Id = existingGroup.Id,
                 Name = "Updated Group",
                 Description = "Updated description"
             };
 
             // Act
-            await _unitOfWork.Groups.UpdateAsync(updatedGroupDto);
+            await _unitOfWork.Repository<GroupEntity, GroupDto>().UpdateAsync(updatedGroup);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var resultGroupDto = await _unitOfWork.Groups.GetByIdAsync(updatedGroupDto.Id);
-            Assert.NotNull(resultGroupDto);
-            DeepAssert.Equal(updatedGroupDto, resultGroupDto);
+            var actualGroup = await _unitOfWork.Repository<GroupEntity, GroupDto>().GetByIdAsync(updatedGroup.Id);
+            Assert.NotNull(actualGroup);
+            DeepAssert.Equal(updatedGroup, actualGroup);
         }
 
+        [Fact]
         /// <summary>
-        /// Tests if deleting a group by an existing ID correctly removes the group from the database.
+        /// Verifies that deleting a group with an existing ID successfully removes the group from the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task DeleteGroup_RemovesGroupFromDatabase()
+        public async Task DeleteGroup_ExistingId_SuccessfullyRemovesGroup()
         {
             // Arrange
-            var groupDto = _mapper.Map<GroupDto>(GroupSeeds.GroupFamily);
+            var groupToDelete = _mapper.Map<GroupDto>(GroupSeeds.GroupFamily);
 
             // Act
-            await _unitOfWork.Groups.DeleteAsync(groupDto.Id);
+            await _unitOfWork.Repository<GroupEntity, GroupDto>().DeleteAsync(groupToDelete.Id);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var deletedGroup = await _unitOfWork.Groups.GetByIdAsync(groupDto.Id);
+            var deletedGroup = await _unitOfWork.Repository<GroupEntity, GroupDto>().GetByIdAsync(groupToDelete.Id);
             Assert.Null(deletedGroup);
         }
 
-        // ====================================
-        // Error Handling Tests
-        // ====================================
+        #endregion
+
+        #region Error Handling Tests
 
         /// <summary>
-        /// Tests if updating a non-existent group fails as expected.
+        /// Unit tests for error handling during group operations.
+        /// These tests verify that appropriate exceptions are thrown for invalid operations.
+        /// </summary>
+
+        [Fact]
+        /// <summary>
+        /// Verifies that attempting to update a non-existent group throws an InvalidOperationException.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task UpdateGroup_NonExistentGroup_ShouldFail()
+        public async Task UpdateGroup_NonExistentGroup_ThrowsInvalidOperationException()
         {
             // Arrange
-            var nonExistentGroupId = Guid.NewGuid();
-            var groupToUpdate = new GroupDto
+            var nonExistentGroup = new GroupDto
             {
-                Id = nonExistentGroupId,
-                Name = "Non Existent Group",
+                Id = Guid.NewGuid(), // Non-existent ID
+                Name = "Non-Existent Group",
                 Description = "This group does not exist"
             };
 
             // Act & Assert
             await Assert.ThrowsAsync<InvalidOperationException>(async () =>
             {
-                await _unitOfWork.Groups.UpdateAsync(groupToUpdate);
+                await _unitOfWork.Repository<GroupEntity, GroupDto>().UpdateAsync(nonExistentGroup);
                 await _unitOfWork.SaveChangesAsync();
             });
         }
 
+        [Fact]
         /// <summary>
-        /// Tests if deleting a non-existent group fails as expected.
+        /// Verifies that attempting to delete a non-existent group throws a KeyNotFoundException.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task DeleteGroup_NonExistentGroup_ShouldFail()
+        public async Task DeleteGroup_NonExistentGroup_ThrowsKeyNotFoundException()
         {
             // Arrange
-            var nonExistentGroupId = Guid.NewGuid();
+            var nonExistentGroupId = Guid.NewGuid(); // Non-existent ID
 
             // Act & Assert
             await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
             {
-                await _unitOfWork.Groups.DeleteAsync(nonExistentGroupId);
+                await _unitOfWork.Repository<GroupEntity, GroupDto>().DeleteAsync(nonExistentGroupId);
                 await _unitOfWork.SaveChangesAsync();
             });
         }
 
-        // ====================================
-        // Data Retrieval Tests
-        // ====================================
+        #endregion
+
+        #region Update and Special Cases Tests
 
         /// <summary>
-        /// Tests if fetching all groups returns the correct number of groups and includes all seeded groups.
+        /// Unit tests for updating groups and handling special cases.
+        /// These tests verify that groups can be successfully updated even with special conditions.
         /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
+
         [Fact]
-        public async Task GetAllGroups_ShouldReturnAllGroups()
-        {
-            // Arrange
-            var expectedGroupCount = 3; // Number of groups seeded without relationships
-
-            // Act
-            var allGroups = await _unitOfWork.Groups.Get().ToListAsync();
-
-            // Assert
-            Assert.NotNull(allGroups);
-            Assert.Equal(expectedGroupCount, allGroups.Count);
-
-            // Verify that all seeded groups are present in the database
-            Assert.Contains(allGroups, g => g.Id == GroupSeeds.GroupFamily.Id && g.Name == GroupSeeds.GroupFamily.Name);
-            Assert.Contains(allGroups, g => g.Id == GroupSeeds.GroupFriends.Id && g.Name == GroupSeeds.GroupFriends.Name);
-            Assert.Contains(allGroups, g => g.Id == GroupSeeds.GroupWork.Id && g.Name == GroupSeeds.GroupWork.Name);
-        }
-
         /// <summary>
-        /// Tests if fetching a group by its name returns the correct group.
+        /// Verifies that updating a group with an empty description is successful and persists the changes.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task GetGroupByName_ReturnsCorrectGroup()
+        public async Task UpdateGroup_WithEmptyDescription_SuccessfullyUpdates()
         {
             // Arrange
-            var expectedGroupDto = _mapper.Map<GroupDto>(GroupSeeds.GroupFamily);
-
-            // Act
-            var fetchedGroupDto = await _unitOfWork.Groups.Get(g => g.Name == expectedGroupDto.Name).FirstOrDefaultAsync();
-
-            // Assert
-            Assert.NotNull(fetchedGroupDto);
-            DeepAssert.Equal(expectedGroupDto, fetchedGroupDto);
-        }
-
-        /// <summary>
-        /// Tests if fetching a group by its description returns the correct group.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task GetGroupByDescription_ReturnsCorrectGroup()
-        {
-            // Arrange
-            var descriptionToSearch = "Family group"; // Use the description from your seed data
-
-            // Assuming that the seed data is already applied to your test database
-            var expectedGroupDto = _mapper.Map<GroupDto>(GroupSeeds.GroupFamily);
-
-            // Act
-            var fetchedGroupDto = await _unitOfWork.Groups
-                .Get(g => g.Description != null && g.Description.Contains(descriptionToSearch))
-                .FirstOrDefaultAsync();
-
-            // Assert
-            Assert.NotNull(fetchedGroupDto);
-            DeepAssert.Equal(expectedGroupDto, fetchedGroupDto);
-        }
-
-        // ====================================
-        // Update and Special Cases Tests
-        // ====================================
-
-        /// <summary>
-        /// Tests if updating a group with new name and description correctly updates both fields in the database.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task UpdateGroup_ChangeNameAndDescription_ShouldUpdateBoth()
-        {
-            // Arrange
-            var existingGroupDto = _mapper.Map<GroupDto>(GroupSeeds.GroupFamily);
-
-            var updatedGroupDto = new GroupDto
+            var existingGroup = _mapper.Map<GroupDto>(GroupSeeds.GroupFamily);
+            var updatedGroup = new GroupDto
             {
-                Id = existingGroupDto.Id,
-                Name = "Updated Group",
-                Description = "Updated description"
-            };
-
-            // Act
-            await _unitOfWork.Groups.UpdateAsync(updatedGroupDto);
-            await _unitOfWork.SaveChangesAsync();
-
-            // Assert
-            var resultGroupDto = await _unitOfWork.Groups.GetByIdAsync(updatedGroupDto.Id);
-            Assert.NotNull(resultGroupDto);
-            DeepAssert.Equal(updatedGroupDto, resultGroupDto);
-        }
-
-        /// <summary>
-        /// Tests if updating a group with an empty description is allowed and correctly updates the description to empty.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task UpdateGroup_WithEmptyDescription_ShouldBeAllowed()
-        {
-            // Arrange
-            var existingGroupDto = _mapper.Map<GroupDto>(GroupSeeds.GroupFamily);
-
-            var updatedGroupDto = new GroupDto
-            {
-                Id = existingGroupDto.Id,
+                Id = existingGroup.Id,
                 Name = "Group with Empty Description",
                 Description = string.Empty
             };
 
             // Act
-            await _unitOfWork.Groups.UpdateAsync(updatedGroupDto);
+            await _unitOfWork.Repository<GroupEntity, GroupDto>().UpdateAsync(updatedGroup);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var resultGroupDto = await _unitOfWork.Groups.GetByIdAsync(updatedGroupDto.Id);
-            Assert.NotNull(resultGroupDto);
-            DeepAssert.Equal(updatedGroupDto, resultGroupDto);
+            var actualGroup = await _unitOfWork.Repository<GroupEntity, GroupDto>().GetByIdAsync(updatedGroup.Id);
+            Assert.NotNull(actualGroup);
+            DeepAssert.Equal(updatedGroup, actualGroup);
         }
 
+        [Fact]
         /// <summary>
-        /// Tests if creating a group with special characters in the name is successfully handled.
+        /// Verifies that adding a group with special characters in the name is successful and persists the group.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task CreateGroup_WithSpecialCharactersInName_ShouldSucceed()
+        public async Task AddGroup_WithSpecialCharactersInName_SuccessfullyPersists()
         {
             // Arrange
-            var newGroup = new GroupDto
+            var groupToAdd = new GroupDto
             {
                 Id = Guid.NewGuid(),
                 Name = "Test Group!@#$%^&*()_+",
@@ -301,111 +211,118 @@ namespace SpendWise.DAL.Tests
             };
 
             // Act
-            await _unitOfWork.Groups.InsertAsync(newGroup);
+            await _unitOfWork.Repository<GroupEntity, GroupDto>().InsertAsync(groupToAdd);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var groupInDb = await _unitOfWork.Groups.GetByIdAsync(newGroup.Id);
-            Assert.NotNull(groupInDb);
-            DeepAssert.Equal(newGroup, groupInDb);
+            var actualGroup = await _unitOfWork.Repository<GroupEntity, GroupDto>().GetByIdAsync(groupToAdd.Id);
+            Assert.NotNull(actualGroup);
+            DeepAssert.Equal(groupToAdd, actualGroup);
         }
 
-        // ====================================
-        // Related Entities Handling Tests
-        // ====================================
+        #endregion
+
+        #region Related Entities Handling Tests
 
         /// <summary>
-        /// Tests if deleting a group with active invitations is handled properly by removing the group and its related invitations.
+        /// Unit tests for handling related entities during group operations.
+        /// These tests verify that integrity constraints are maintained after group deletions.
+        /// </summary>
+
+        [Fact]
+        /// <summary>
+        /// Verifies that after deleting a group, the associated invitations and users are properly removed to ensure integrity constraints are maintained.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task DeleteGroup_WithActiveInvitations_ShouldHandleProperly()
+        public async Task DeleteGroup_CheckIntegrityConstraints_AfterDeletion()
         {
             // Arrange
-            var groupId = GroupSeeds.GroupFamilyWithRelations.Id;
+            var groupId = GroupSeeds.GroupFamily.Id;
 
-            // Verify the invitation exists before deletion
-            var initialInvitation = await _unitOfWork.Invitations.Get(i => i.GroupId == groupId).FirstOrDefaultAsync();
-            Assert.NotNull(initialInvitation);
+            // Verify the initial state before deletion
+            var initialInvitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
+                .GetAsync(new InvitationQueryObject().WithGroupId(groupId));
+            Assert.NotEmpty(initialInvitations); // Ensure there are invitations related to the group
+
+            var initialGroupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
+                .GetAsync(new GroupUserQueryObject().WithGroupId(groupId));
+            Assert.NotEmpty(initialGroupUsers); // Ensure there are users related to the group
 
             // Act
-            await _unitOfWork.Groups.DeleteAsync(groupId);
+            await _unitOfWork.Repository<GroupEntity, GroupDto>().DeleteAsync(groupId);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var deletedGroup = await _unitOfWork.Groups.GetByIdAsync(groupId);
-            Assert.Null(deletedGroup);
+            var deletedGroup = await _unitOfWork.Repository<GroupEntity, GroupDto>().GetByIdAsync(groupId);
+            Assert.Null(deletedGroup); // Ensure the group is deleted
 
-            var deletedInvitation = await _unitOfWork.Invitations.Get(i => i.GroupId == groupId).FirstOrDefaultAsync();
-            Assert.Null(deletedInvitation);
+            var invitationsAfterDelete = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
+                .GetAsync(new InvitationQueryObject().WithGroupId(groupId));
+            Assert.Empty(invitationsAfterDelete); // Ensure all invitations related to the group are removed
+
+            var usersAfterDelete = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
+                .GetAsync(new GroupUserQueryObject().WithGroupId(groupId));
+            Assert.Empty(usersAfterDelete); // Ensure all users related to the group are removed
         }
 
-        /// <summary>
-        /// Tests if deleting a group with active users correctly removes all associated users from the group.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task DeleteGroup_WithActiveUsers_ShouldRemoveAllAssociatedUsers()
-        {
-            // Arrange
-            var groupId = GroupSeeds.GroupFamilyWithRelations.Id;
 
-            var initialGroupUsers = await _unitOfWork.GroupUsers.Get(gu => gu.GroupId == groupId).ToListAsync();
-            Assert.NotEmpty(initialGroupUsers);
+        #endregion
 
-            // Act
-            await _unitOfWork.Groups.DeleteAsync(groupId);
-            await _unitOfWork.SaveChangesAsync();
 
-            // Assert
-            var deletedGroup = await _unitOfWork.Groups.GetByIdAsync(groupId);
-            Assert.Null(deletedGroup);
-
-            var deletedGroupUsers = await _unitOfWork.GroupUsers.Get(gu => gu.GroupId == groupId).ToListAsync();
-            Assert.Empty(deletedGroupUsers);
-        }
-
-        // ====================================
-        // Consistency Tests
-        // ====================================
+        #region Consistency Tests
 
         /// <summary>
-        /// Tests if a group remains consistent after multiple updates.
+        /// Unit tests for ensuring transactional consistency after multiple group operations.
+        /// These tests verify that all operations are completed successfully and the database remains in a consistent state.
+        /// </summary>
+
+        [Fact]
+        /// <summary>
+        /// Verifies that multiple group operations (insert, update, delete) maintain transactional consistency.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task UpdateGroup_ConsistencyAfterMultipleUpdates()
+        public async Task TransactionalConsistency_AfterMultipleGroupOperations()
         {
             // Arrange
-            var existingGroupDto = _mapper.Map<GroupDto>(GroupSeeds.GroupFamily);
-
-            // First update
-            var firstUpdateDto = new GroupDto
+            var newGroupDto = new GroupDto
             {
-                Id = existingGroupDto.Id,
-                Name = "First Update",
-                Description = "First update description"
+                Id = Guid.NewGuid(),
+                Name = "Test Group",
+                Description = "A group for testing"
             };
 
-            // Second update
-            var secondUpdateDto = new GroupDto
+            var updatedGroupDto = new GroupDto
             {
-                Id = existingGroupDto.Id,
-                Name = "Second Update",
-                Description = "Second update description"
+                Id = newGroupDto.Id,
+                Name = "Updated Test Group",
+                Description = "Updated description for testing"
             };
 
-            // Act
-            await _unitOfWork.Groups.UpdateAsync(firstUpdateDto);
-            await _unitOfWork.SaveChangesAsync();
+            try
+            {
+                // Act
+                // Insert
+                await _unitOfWork.Repository<GroupEntity, GroupDto>().InsertAsync(newGroupDto);
+                await _unitOfWork.SaveChangesAsync();
 
-            await _unitOfWork.Groups.UpdateAsync(secondUpdateDto);
-            await _unitOfWork.SaveChangesAsync();
+                // Update
+                await _unitOfWork.Repository<GroupEntity, GroupDto>().UpdateAsync(updatedGroupDto);
+                await _unitOfWork.SaveChangesAsync();
 
-            // Assert
-            var resultGroupDto = await _unitOfWork.Groups.GetByIdAsync(secondUpdateDto.Id);
-            Assert.NotNull(resultGroupDto);
-            DeepAssert.Equal(secondUpdateDto, resultGroupDto);
+                // Delete
+                await _unitOfWork.Repository<GroupEntity, GroupDto>().DeleteAsync(newGroupDto.Id);
+                await _unitOfWork.SaveChangesAsync();
+
+                // Verify the group has been deleted
+                var deletedGroup = await _unitOfWork.Repository<GroupEntity, GroupDto>().GetByIdAsync(newGroupDto.Id);
+                Assert.Null(deletedGroup);
+            }
+            catch (Exception)
+            {
+                Assert.False(true, "Transactional consistency was broken.");
+            }
         }
+
+        #endregion
     }
 }

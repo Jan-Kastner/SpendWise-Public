@@ -1,7 +1,6 @@
 using SpendWise.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 
 namespace SpendWise.Common.Tests.Seeds
 {
@@ -11,229 +10,101 @@ namespace SpendWise.Common.Tests.Seeds
     public static class TransactionGroupUserSeeds
     {
         /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for Admin 
-        /// in the family group for Admin Food.
+        /// Gets the seed data for the transaction group user entry for Diana's dinner in the family group.
         /// </summary>
-        public static readonly TransactionGroupUserEntity TransactionGroupUserAdminInFamilyForAdminFood = new()
+        public static readonly TransactionGroupUserEntity TransactionGroupUserDinnerFamilyDiana = new()
         {
             Id = Guid.NewGuid(),
-            TransactionId = TransactionSeeds.TransactionAdminFood.Id,
-            GroupUserId = GroupUserSeeds.GroupUserAdminInFamily.Id,
-            Transaction = null!,
-            GroupUser = null!
+            TransactionId = TransactionSeeds.TransactionDianaDinner.Id,
+            GroupUserId = GroupUserSeeds.GroupUserDianaInFamily.Id,
+            Transaction = TransactionSeeds.TransactionDianaDinner,
+            GroupUser = GroupUserSeeds.GroupUserDianaInFamily
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe 
-        /// in the friends group for John Doe Transport.
+        /// Gets the seed data for the transaction group user entry for John's food transaction in the family group.
         /// </summary>
-        public static readonly TransactionGroupUserEntity TransactionGroupUserJohnDoeInFriendsForJohnDoeTransport = new()
+        public static readonly TransactionGroupUserEntity TransactionGroupUserFoodFamilyJohn = new()
         {
             Id = Guid.NewGuid(),
-            TransactionId = TransactionSeeds.TransactionJohnDoeTransport.Id,
-            GroupUserId = GroupUserSeeds.GroupUserJohnDoeInFriends.Id,
-            Transaction = null!,
-            GroupUser = null!
+            TransactionId = TransactionSeeds.TransactionJohnFood.Id,
+            GroupUserId = GroupUserSeeds.GroupUserJohnInFamily.Id,
+            Transaction = TransactionSeeds.TransactionJohnFood,
+            GroupUser = GroupUserSeeds.GroupUserJohnInFamily
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe 
-        /// in the family group for John Doe Transport.
+        /// Gets the seed data for the transaction group user entry for John's taxi transaction in the friends group.
         /// </summary>
-        public static readonly TransactionGroupUserEntity TransactionGroupUserJohnDoeInFamilyForJohnDoeTransport = new()
+        public static readonly TransactionGroupUserEntity TransactionGroupUserTaxiFriendsJohn = new()
         {
             Id = Guid.NewGuid(),
-            TransactionId = TransactionSeeds.TransactionJohnDoeTransport.Id,
-            GroupUserId = GroupUserSeeds.GroupUserJohnDoeInFamily.Id,
-            Transaction = null!,
-            GroupUser = null!
+            TransactionId = TransactionSeeds.TransactionJohnTaxi.Id,
+            GroupUserId = GroupUserSeeds.GroupUserJohnInFriends.Id,
+            Transaction = TransactionSeeds.TransactionJohnTaxi,
+            GroupUser = GroupUserSeeds.GroupUserJohnInFriends
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe 
-        /// in the family group for Minus 30 Hours.
+        /// Gets the seed data for the transaction group user entry for John's transport transaction in the friends group.
         /// </summary>
-        public static readonly TransactionGroupUserEntity TransactionGroupUserJohnDoeInFamilyForMinus30Hours = new()
+        public static readonly TransactionGroupUserEntity TransactionGroupUserTransportFriendsJohn = new()
         {
             Id = Guid.NewGuid(),
-            TransactionId = TransactionSeeds.TransactionMinus30Hours.Id,
-            GroupUserId = GroupUserSeeds.GroupUserJohnDoeInFamily.Id,
-            Transaction = null!,
-            GroupUser = null!
+            TransactionId = TransactionSeeds.TransactionJohnTransport.Id,
+            GroupUserId = GroupUserSeeds.GroupUserJohnInFriends.Id,
+            Transaction = TransactionSeeds.TransactionJohnTransport,
+            GroupUser = GroupUserSeeds.GroupUserJohnInFriends
         };
 
         /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe 
-        /// in the family group for Minus 28 Hours.
+        /// Gets the seed data for the transaction group user entry for John's transport transaction in the work group.
         /// </summary>
-        public static readonly TransactionGroupUserEntity TransactionGroupUserJohnDoeInFamilyForMinus28Hours = new()
+        public static readonly TransactionGroupUserEntity TransactionGroupUserTransportWorkJohn = new()
         {
             Id = Guid.NewGuid(),
-            TransactionId = TransactionSeeds.TransactionMinus28Hours.Id,
-            GroupUserId = GroupUserSeeds.GroupUserJohnDoeInFamily.Id,
-            Transaction = null!,
-            GroupUser = null!
-        };
-
-        /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe 
-        /// in the family group for Minus 26 Hours.
-        /// </summary>
-        public static readonly TransactionGroupUserEntity TransactionGroupUserJohnDoeInFamilyForMinus26Hours = new()
-        {
-            Id = Guid.NewGuid(),
-            TransactionId = TransactionSeeds.TransactionMinus26Hours.Id,
-            GroupUserId = GroupUserSeeds.GroupUserJohnDoeInFamily.Id,
-            Transaction = null!,
-            GroupUser = null!
-        };
-
-        /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for Admin 
-        /// in the family group for Minus 24 Hours.
-        /// </summary>
-        public static readonly TransactionGroupUserEntity TransactionGroupUserAdminInFamilyForMinus24Hours = new()
-        {
-            Id = Guid.NewGuid(),
-            TransactionId = TransactionSeeds.TransactionMinus24Hours.Id,
-            GroupUserId = GroupUserSeeds.GroupUserAdminInFamily.Id,
-            Transaction = null!,
-            GroupUser = null!
-        };
-
-        /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for Admin 
-        /// in the family group for Minus 22 Hours.
-        /// </summary>
-        public static readonly TransactionGroupUserEntity TransactionGroupUserAdminInFamilyForMinus22Hours = new()
-        {
-            Id = Guid.NewGuid(),
-            TransactionId = TransactionSeeds.TransactionMinus22Hours.Id,
-            GroupUserId = GroupUserSeeds.GroupUserAdminInFamily.Id,
-            Transaction = null!,
-            GroupUser = null!
-        };
-
-        /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for Admin 
-        /// in the family group for Deletion.
-        /// </summary>
-        public static readonly TransactionGroupUserEntity TransactionGroupUserAdminInFamilyForDelete = new()
-        {
-            Id = Guid.NewGuid(),
-            TransactionId = TransactionSeeds.TransactionDelete.Id,
-            GroupUserId = GroupUserSeeds.GroupUserAdminInFamily.Id,
-            Transaction = null!,
-            GroupUser = null!
-        };
-
-        /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for Admin 
-        /// in the family group for Admin Food with related entities.
-        /// </summary>
-        public static readonly TransactionGroupUserEntity TransactionGroupUserAdminInFamilyForAdminFoodWithRelations = TransactionGroupUserAdminInFamilyForAdminFood with
-        {
-            Transaction = TransactionSeeds.TransactionAdminFood,
-            GroupUser = GroupUserSeeds.GroupUserAdminInFamily
-        };
-
-        /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe 
-        /// in the friends group for John Doe Transport with related entities.
-        /// </summary>
-        public static readonly TransactionGroupUserEntity TransactionGroupUserJohnDoeInFriendsForJohnDoeTransportWithRelations = TransactionGroupUserJohnDoeInFriendsForJohnDoeTransport with
-        {
-            Transaction = TransactionSeeds.TransactionJohnDoeTransport,
-            GroupUser = GroupUserSeeds.GroupUserJohnDoeInFriends
-        };
-
-        /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe 
-        /// in the family group for Minus 30 Hours with related entities.
-        /// </summary>
-        public static readonly TransactionGroupUserEntity TransactionGroupUserJohnDoeInFamilyForMinus30HoursWithRelations = TransactionGroupUserJohnDoeInFamilyForMinus30Hours with
-        {
-            Transaction = TransactionSeeds.TransactionMinus30Hours,
-            GroupUser = GroupUserSeeds.GroupUserJohnDoeInFamily
-        };
-
-        /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe 
-        /// in the family group for Minus 28 Hours with related entities.
-        /// </summary>
-        public static readonly TransactionGroupUserEntity TransactionGroupUserJohnDoeInFamilyForMinus28HoursWithRelations = TransactionGroupUserJohnDoeInFamilyForMinus28Hours with
-        {
-            Transaction = TransactionSeeds.TransactionMinus28Hours,
-            GroupUser = GroupUserSeeds.GroupUserJohnDoeInFamily
-        };
-
-        /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe 
-        /// in the family group for Minus 26 Hours with related entities.
-        /// </summary>
-        public static readonly TransactionGroupUserEntity TransactionGroupUserJohnDoeInFamilyForMinus26HoursWithRelations = TransactionGroupUserJohnDoeInFamilyForMinus26Hours with
-        {
-            Transaction = TransactionSeeds.TransactionMinus26Hours,
-            GroupUser = GroupUserSeeds.GroupUserJohnDoeInFamily
-        };
-
-        /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for Admin 
-        /// in the family group for Minus 24 Hours with related entities.
-        /// </summary>
-        public static readonly TransactionGroupUserEntity TransactionGroupUserAdminInFamilyForMinus24HoursWithRelations = TransactionGroupUserAdminInFamilyForMinus24Hours with
-        {
-            Transaction = TransactionSeeds.TransactionMinus24Hours,
-            GroupUser = GroupUserSeeds.GroupUserAdminInFamily
-        };
-
-        /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for Admin 
-        /// in the family group for Minus 22 Hours with related entities.
-        /// </summary>
-        public static readonly TransactionGroupUserEntity TransactionGroupUserAdminInFamilyForMinus22HoursWithRelations = TransactionGroupUserAdminInFamilyForMinus22Hours with
-        {
-            Transaction = TransactionSeeds.TransactionMinus22Hours,
-            GroupUser = GroupUserSeeds.GroupUserAdminInFamily
-        };
-
-        /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for Admin 
-        /// in the family group for Deletion with related entities.
-        /// </summary>
-        public static readonly TransactionGroupUserEntity TransactionGroupUserAdminInFamilyForDeleteWithRelations = TransactionGroupUserAdminInFamilyForDelete with
-        {
-            Transaction = TransactionSeeds.TransactionDelete,
-            GroupUser = GroupUserSeeds.GroupUserAdminInFamily
-        };
-
-        /// <summary>
-        /// A seed instance of <see cref="TransactionGroupUserEntity"/> representing a transaction for John Doe 
-        /// in the family group for John Doe Transport with related entities.
-        /// </summary>
-        public static readonly TransactionGroupUserEntity TransactionGroupUserJohnDoeInFamilyForJohnDoeTransportWithRelations = TransactionGroupUserJohnDoeInFamilyForJohnDoeTransport with
-        {
-            Id = Guid.NewGuid(),
-            Transaction = TransactionSeeds.TransactionJohnDoeTransport,
-            GroupUser = GroupUserSeeds.GroupUserJohnDoeInFamily
+            TransactionId = TransactionSeeds.TransactionJohnTransport.Id,
+            GroupUserId = GroupUserSeeds.GroupUserJohnInWork.Id,
+            Transaction = TransactionSeeds.TransactionJohnTransport,
+            GroupUser = GroupUserSeeds.GroupUserJohnInWork
         };
 
         /// <summary>
         /// Seeds the <see cref="TransactionGroupUserEntity"/> data into the provided <see cref="ModelBuilder"/>.
         /// </summary>
-        /// <param name="modelBuilder">The model builder used to seed data.</param>
+        /// <param name="modelBuilder">The model builder to seed data into.</param>
         public static void Seed(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<TransactionGroupUserEntity>().HasData(
-                TransactionGroupUserAdminInFamilyForAdminFood,
-                TransactionGroupUserJohnDoeInFriendsForJohnDoeTransport,
-                TransactionGroupUserJohnDoeInFamilyForMinus30Hours,
-                TransactionGroupUserJohnDoeInFamilyForMinus28Hours,
-                TransactionGroupUserJohnDoeInFamilyForMinus26Hours,
-                TransactionGroupUserAdminInFamilyForMinus24Hours,
-                TransactionGroupUserAdminInFamilyForMinus22Hours,
-                TransactionGroupUserAdminInFamilyForDelete,
-                TransactionGroupUserJohnDoeInFamilyForJohnDoeTransport
+                TransactionGroupUserDinnerFamilyDiana with
+                {
+                    Transaction = null!,
+                    GroupUser = null!
+                },
+
+                TransactionGroupUserFoodFamilyJohn with
+                {
+                    Transaction = null!,
+                    GroupUser = null!
+                },
+
+                TransactionGroupUserTaxiFriendsJohn with
+                {
+                    Transaction = null!,
+                    GroupUser = null!
+                },
+
+                TransactionGroupUserTransportFriendsJohn with
+                {
+                    Transaction = null!,
+                    GroupUser = null!
+                },
+
+                TransactionGroupUserTransportWorkJohn with
+                {
+                    Transaction = null!,
+                    GroupUser = null!
+                }
             );
         }
     }

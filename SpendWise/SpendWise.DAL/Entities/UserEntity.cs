@@ -10,7 +10,7 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the unique identifier for the user.
         /// </summary>
-        public Guid Id { get; set; }
+        public required Guid Id { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the user. Must be at least 2 characters long.
@@ -44,7 +44,7 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the photo of the user. Can be null.
         /// </summary>
-        public byte[]? Photo { get; set; }
+        public required byte[]? Photo { get; set; }
 
         /// <summary>
         /// Gets the collection of invitations sent by the user.

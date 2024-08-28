@@ -15,10 +15,10 @@ namespace SpendWise.DAL.Entities
         /// </summary>
         public required Guid GroupUserId { get; set; }
 
-        /// <summary>
-        /// Gets or sets the unique identifier for the group-user associated with the limit. Can be null.
-        /// </summary>
-        public required GroupUserEntity GroupUser { get; init; }
+        // /// <summary>
+        // /// Gets or sets the unique identifier for the group-user associated with the limit. Can be null.
+        // /// </summary>
+        // public required GroupUserEntity GroupUser { get; init; }
 
         /// <summary>
         /// Gets or sets the amount of the limit.

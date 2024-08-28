@@ -9,38 +9,48 @@ namespace SpendWise.Common.Tests.Seeds
     public static class LimitSeeds
     {
         /// <summary>
-        /// A seed instance of <see cref="LimitEntity"/> representing a limit for Admin in the family group.
+        /// Gets the seed data for a limit assigned to Charlie in the family group.
         /// </summary>
-        public static readonly LimitEntity LimitAdminFamily = new()
+        public static readonly LimitEntity LimitCharlieFamily = new()
         {
             Id = Guid.NewGuid(),
             Amount = 1000m,
             NoticeType = 1,
-            GroupUserId = GroupUserSeeds.GroupUserAdminInFamily.Id,
-            GroupUser = null!
+            GroupUserId = GroupUserSeeds.GroupUserCharlieInFamily.Id
         };
 
         /// <summary>
-        /// A seed instance of <see cref="LimitEntity"/> representing a limit for John Doe in the friends group.
+        /// Gets the seed data for a limit assigned to Diana in the family group.
         /// </summary>
-        public static readonly LimitEntity LimitJohnDoeFriends = new()
+        public static readonly LimitEntity LimitDianaFamily = new()
         {
             Id = Guid.NewGuid(),
-            Amount = 500m,
+            Amount = 1500m,
+            NoticeType = 2,
+            GroupUserId = GroupUserSeeds.GroupUserDianaInFamily.Id
+        };
+
+        /// <summary>
+        /// Gets the seed data for a limit assigned to John in the work group.
+        /// </summary>
+        public static readonly LimitEntity LimitJohnWork = new()
+        {
+            Id = Guid.NewGuid(),
+            Amount = 2000m,
             NoticeType = 1,
-            GroupUserId = GroupUserSeeds.GroupUserJohnDoeInFriends.Id,
-            GroupUser = null!
+            GroupUserId = GroupUserSeeds.GroupUserJohnInWork.Id
         };
 
         /// <summary>
         /// Seeds the <see cref="LimitEntity"/> data into the provided <see cref="ModelBuilder"/>.
         /// </summary>
-        /// <param name="modelBuilder">The model builder used to seed data.</param>
+        /// <param name="modelBuilder">The model builder to configure the entity.</param>
         public static void Seed(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<LimitEntity>().HasData(
-                LimitAdminFamily,
-                LimitJohnDoeFriends
+                LimitCharlieFamily,
+                LimitDianaFamily,
+                LimitJohnWork
             );
         }
     }

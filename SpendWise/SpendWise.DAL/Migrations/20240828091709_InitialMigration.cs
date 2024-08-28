@@ -89,7 +89,8 @@ namespace SpendWise.DAL.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    GroupId = table.Column<Guid>(type: "uuid", nullable: false)
+                    GroupId = table.Column<Guid>(type: "uuid", nullable: false),
+                    LimitId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -212,6 +213,12 @@ namespace SpendWise.DAL.Migrations
                 name: "IX_GroupUserEntity_UserId",
                 table: "GroupUsers",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TGroupUserEntity_Unique_UserId_GroupId",
+                table: "GroupUsers",
+                columns: new[] { "UserId", "GroupId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_InvitationEntity_GroupId",

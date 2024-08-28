@@ -102,7 +102,7 @@ namespace SpendWise.DAL.Configurations
 
                 // Configures one-to-one relationship with LimitEntity
                 entity.HasOne(gu => gu.Limit)
-                    .WithOne(l => l.GroupUser)
+                    .WithOne()
                     .HasForeignKey<LimitEntity>(l => l.GroupUserId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
@@ -152,8 +152,7 @@ namespace SpendWise.DAL.Configurations
                 entity.HasIndex(l => l.GroupUserId)
                     .IsUnique();
 
-                // Configures one-to-one relationship with GroupUserEntity
-                entity.HasOne(l => l.GroupUser)
+                entity.HasOne<GroupUserEntity>()
                     .WithOne(gu => gu.Limit)
                     .HasForeignKey<LimitEntity>(l => l.GroupUserId)
                     .OnDelete(DeleteBehavior.Cascade);

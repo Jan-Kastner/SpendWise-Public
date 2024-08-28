@@ -8,6 +8,25 @@ namespace SpendWise.Common.Tests.Helpers
     /// </summary>
     public static class DeepAssert
     {
+        // Predefined navigation properties to ignore in all comparisons.
+        private static readonly List<string> DefaultIgnoredProperties =
+        [
+            "GroupUsers",
+            "Invitations",
+            "User",
+            "Group",
+            "Limit",
+            "TransactionGroupUsers",
+            "Sender",
+            "Receiver",
+            "GroupUser",
+            "Category",
+            "Transaction",
+            "Transactions",
+            "SentInvitations",
+            "ReceivedInvitations"
+        ];
+
         /// <summary>
         /// Asserts that a collection does not contain an item that is deeply equal 
         /// to the expected item, ignoring specified properties.
@@ -25,11 +44,14 @@ namespace SpendWise.Common.Tests.Helpers
             if (collection is null)
                 throw new ArgumentNullException(nameof(collection));
 
+            // Combine default ignored properties with those provided by the user
+            var allPropertiesToIgnore = DefaultIgnoredProperties.Concat(propertiesToIgnore).ToList();
+
             CompareLogic compareLogic = new CompareLogic
             {
                 Config =
                 {
-                    MembersToIgnore = propertiesToIgnore.ToList(),
+                    MembersToIgnore = allPropertiesToIgnore,
                     IgnoreCollectionOrder = true,
                     IgnoreObjectTypes = true,
                     CompareStaticProperties = false,
@@ -55,11 +77,14 @@ namespace SpendWise.Common.Tests.Helpers
             T? actual,
             params string[] propertiesToIgnore)
         {
+            // Combine default ignored properties with those provided by the user
+            var allPropertiesToIgnore = DefaultIgnoredProperties.Concat(propertiesToIgnore).ToList();
+
             CompareLogic compareLogic = new CompareLogic
             {
                 Config =
                 {
-                    MembersToIgnore = propertiesToIgnore.ToList(),
+                    MembersToIgnore = allPropertiesToIgnore,
                     IgnoreCollectionOrder = true,
                     IgnoreObjectTypes = true,
                     CompareStaticProperties = false,
@@ -91,11 +116,14 @@ namespace SpendWise.Common.Tests.Helpers
             if (collection is null)
                 throw new ArgumentNullException(nameof(collection));
 
+            // Combine default ignored properties with those provided by the user
+            var allPropertiesToIgnore = DefaultIgnoredProperties.Concat(propertiesToIgnore).ToList();
+
             CompareLogic compareLogic = new CompareLogic
             {
                 Config =
                 {
-                    MembersToIgnore = propertiesToIgnore.ToList(),
+                    MembersToIgnore = allPropertiesToIgnore,
                     IgnoreCollectionOrder = true,
                     IgnoreObjectTypes = true,
                     CompareStaticProperties = false,

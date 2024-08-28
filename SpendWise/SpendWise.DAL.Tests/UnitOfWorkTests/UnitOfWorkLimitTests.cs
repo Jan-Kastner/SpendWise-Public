@@ -1,115 +1,94 @@
+using Xunit;
 using Xunit.Abstractions;
 using SpendWise.DAL.DTOs;
+using Microsoft.EntityFrameworkCore;
 using SpendWise.Common.Tests.Seeds;
 using SpendWise.Common.Tests.Helpers;
+using SpendWise.DAL.Entities;
+using SpendWise.DAL.QueryObjects;
 
-namespace SpendWise.DAL.Tests
+namespace SpendWise.DAL.Tests.UnitOfWorkTests
 {
-    /// <summary>
-    /// Contains tests for operations related to limits using the Unit of Work pattern.
-    /// </summary>
     public class UnitOfWorkLimitTests : UnitOfWorkTestsBase
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UnitOfWorkLimitTests"/> class.
-        /// </summary>
-        /// <param name="output">The output helper instance.</param>
         public UnitOfWorkLimitTests(ITestOutputHelper output) : base(output)
         {
         }
 
-        // ====================================
-        // CRUD Operations Tests
-        // ====================================
+        #region CRUD Operations Tests
 
-        /// <summary>
-        /// Tests if inserting a new limit with valid data correctly adds the limit to the database.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task InsertLimit_AddsLimitToDatabase()
+        public async Task AddLimit_ValidData_SuccessfullyPersists()
         {
             // Arrange
-            var newLimitDto = new LimitDto
+            var limitToAdd = new LimitDto
             {
                 Id = Guid.NewGuid(),
-                GroupUserId = GroupUserSeeds.GroupUserAliceBrownInWork.Id,
+                GroupUserId = GroupUserSeeds.GroupUserJohnInFamily.Id,
                 Amount = 1500m,
                 NoticeType = 2,
-
             };
 
             // Act
-            await _unitOfWork.Limits.InsertAsync(newLimitDto);
+            await _unitOfWork.Repository<LimitEntity, LimitDto>().InsertAsync(limitToAdd);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var limitInDb = await _unitOfWork.Limits.GetByIdAsync(newLimitDto.Id);
-            Assert.NotNull(limitInDb);
-            DeepAssert.Equal(newLimitDto, limitInDb);
+            var actualLimit = await _unitOfWork.Repository<LimitEntity, LimitDto>().GetByIdAsync(limitToAdd.Id);
+            Assert.NotNull(actualLimit);
+            DeepAssert.Equal(limitToAdd, actualLimit);
         }
 
-        /// <summary>
-        /// Tests if fetching a limit by an existing ID returns the correct limit.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task GetLimitById_ReturnsCorrectLimit()
+        public async Task FetchLimitById_ExistingId_ReturnsExpectedLimit()
         {
             // Arrange
-            var expectedLimitDto = _mapper.Map<LimitDto>(LimitSeeds.LimitAdminFamily);
+            var expectedLimit = _mapper.Map<LimitDto>(LimitSeeds.LimitCharlieFamily);
 
             // Act
-            var fetchedLimitDto = await _unitOfWork.Limits.GetByIdAsync(expectedLimitDto.Id);
+            var actualLimit = await _unitOfWork.Repository<LimitEntity, LimitDto>().GetByIdAsync(expectedLimit.Id);
 
             // Assert
-            Assert.NotNull(fetchedLimitDto);
-            DeepAssert.Equal(expectedLimitDto, fetchedLimitDto);
+            Assert.NotNull(actualLimit);
+            DeepAssert.Equal(expectedLimit, actualLimit);
         }
 
-        /// <summary>
-        /// Tests if updating a limit with valid data correctly updates the limit in the database.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task UpdateLimit_UpdatesLimitInDatabase()
+        public async Task UpdateLimit_ValidData_SuccessfullyPersistsChanges()
         {
             // Arrange
-            var existingLimitDto = _mapper.Map<LimitDto>(LimitSeeds.LimitAdminFamily);
-
-            var updatedLimitDto = existingLimitDto with
+            var existingLimit = _mapper.Map<LimitDto>(LimitSeeds.LimitCharlieFamily);
+            var updatedLimit = existingLimit with
             {
                 Amount = 2000m,
                 NoticeType = 1
             };
 
             // Act
-            await _unitOfWork.Limits.UpdateAsync(updatedLimitDto);
+            await _unitOfWork.Repository<LimitEntity, LimitDto>().UpdateAsync(updatedLimit);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var resultLimitDto = await _unitOfWork.Limits.GetByIdAsync(updatedLimitDto.Id);
-            Assert.NotNull(resultLimitDto);
-            DeepAssert.Equal(updatedLimitDto, resultLimitDto);
+            var actualLimit = await _unitOfWork.Repository<LimitEntity, LimitDto>().GetByIdAsync(updatedLimit.Id);
+            Assert.NotNull(actualLimit);
+            DeepAssert.Equal(updatedLimit, actualLimit);
         }
 
-        /// <summary>
-        /// Tests if deleting a limit by an existing ID correctly removes the limit from the database.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task DeleteLimit_RemovesLimitFromDatabase()
+        public async Task DeleteLimit_ExistingId_SuccessfullyRemovesLimit()
         {
             // Arrange
-            var limitDto = _mapper.Map<LimitDto>(LimitSeeds.LimitAdminFamily);
+            var limitToDelete = _mapper.Map<LimitDto>(LimitSeeds.LimitCharlieFamily);
 
             // Act
-            await _unitOfWork.Limits.DeleteAsync(limitDto.Id);
+            await _unitOfWork.Repository<LimitEntity, LimitDto>().DeleteAsync(limitToDelete.Id);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var deletedLimit = await _unitOfWork.Limits.GetByIdAsync(limitDto.Id);
+            var deletedLimit = await _unitOfWork.Repository<LimitEntity, LimitDto>().GetByIdAsync(limitToDelete.Id);
             Assert.Null(deletedLimit);
         }
+
+        #endregion
     }
 }
