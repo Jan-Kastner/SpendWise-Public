@@ -11,7 +11,7 @@ namespace SpendWise.DAL.QueryObjects
     /// </summary>
     public class TransactionGroupUserQueryObject : QueryObject<TransactionGroupUserEntity>
     {
-        // Methods for AND operations
+        #region AND
 
         /// <summary>
         /// Adds a condition to compare the entity ID using an AND operation.
@@ -46,7 +46,9 @@ namespace SpendWise.DAL.QueryObjects
             return this;
         }
 
-        // Methods for OR operations
+        #endregion
+
+        #region OR
 
         /// <summary>
         /// Adds a condition to compare the entity ID using an OR operation.
@@ -81,7 +83,9 @@ namespace SpendWise.DAL.QueryObjects
             return this;
         }
 
-        // Methods for NOT operations
+        #endregion
+
+        #region NOT
 
         /// <summary>
         /// Adds a condition to exclude entities with a specific ID using a NOT operation.
@@ -115,5 +119,7 @@ namespace SpendWise.DAL.QueryObjects
             Not(entity => entity.GroupUserId == groupUserId);
             return this;
         }
+
+        #endregion
     }
 }

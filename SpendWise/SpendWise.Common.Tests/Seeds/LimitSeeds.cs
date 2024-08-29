@@ -1,5 +1,6 @@
 using SpendWise.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
+using SpendWise.Common.Enums;
 
 namespace SpendWise.Common.Tests.Seeds
 {
@@ -15,7 +16,7 @@ namespace SpendWise.Common.Tests.Seeds
         {
             Id = Guid.NewGuid(),
             Amount = 1000m,
-            NoticeType = 1,
+            NoticeType = NoticeType.InApp,
             GroupUserId = GroupUserSeeds.GroupUserCharlieInFamily.Id
         };
 
@@ -26,7 +27,7 @@ namespace SpendWise.Common.Tests.Seeds
         {
             Id = Guid.NewGuid(),
             Amount = 1500m,
-            NoticeType = 2,
+            NoticeType = NoticeType.SMS,
             GroupUserId = GroupUserSeeds.GroupUserDianaInFamily.Id
         };
 
@@ -37,7 +38,7 @@ namespace SpendWise.Common.Tests.Seeds
         {
             Id = Guid.NewGuid(),
             Amount = 2000m,
-            NoticeType = 1,
+            NoticeType = NoticeType.InApp,
             GroupUserId = GroupUserSeeds.GroupUserJohnInWork.Id
         };
 

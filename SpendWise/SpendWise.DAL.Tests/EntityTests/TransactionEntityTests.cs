@@ -3,6 +3,7 @@ using SpendWise.Common.Tests.Seeds;
 using Microsoft.EntityFrameworkCore;
 using Xunit.Abstractions;
 using SpendWise.Common.Tests.Helpers;
+using SpendWise.Common.Enums;
 
 namespace SpendWise.DAL.Tests
 {
@@ -47,7 +48,7 @@ namespace SpendWise.DAL.Tests
                 Amount = 150.0m,
                 Date = baseDateTime,
                 Description = "Utilities",
-                Type = 2,
+                Type = TransactionType.Expense,
                 CategoryId = CategorySeeds.CategoryTransport.Id,
             };
 
@@ -111,7 +112,7 @@ namespace SpendWise.DAL.Tests
                 Date = TransactionSeeds.TransactionDianaDinner.Date,
                 Amount = 500m,
                 Description = "Updated Transaction",
-                Type = 2
+                Type = TransactionType.Income,
             };
 
             // Act
@@ -152,7 +153,7 @@ namespace SpendWise.DAL.Tests
                 Id = Guid.NewGuid(),
                 Amount = -100.00m,
                 Date = DateTime.UtcNow,
-                Type = 1,
+                Type = TransactionType.Expense,
                 CategoryId = Guid.NewGuid(),
                 Description = null
             };
@@ -180,7 +181,7 @@ namespace SpendWise.DAL.Tests
                 Id = Guid.NewGuid(),
                 Amount = 200.00m,
                 Date = DateTime.UtcNow,
-                Type = 1,
+                Type = TransactionType.Expense,
                 CategoryId = Guid.NewGuid(),
                 Description = null
             };
@@ -191,34 +192,6 @@ namespace SpendWise.DAL.Tests
                 SpendWiseDbContextSUT.Transactions.Update(invalidTransaction);
                 await SpendWiseDbContextSUT.SaveChangesAsync();
             });
-        }
-
-        [Fact]
-        /// <summary>
-        /// Tests that adding a transaction with an invalid type value throws a `DbUpdateException`.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddTransaction_InvalidType_ThrowsDbUpdateException()
-        {
-            // Arrange
-            var invalidTransaction = new TransactionEntity
-            {
-                Id = Guid.NewGuid(),
-                Amount = 100.00m,
-                Date = DateTime.UtcNow,
-                Type = 99, // Invalid type
-                CategoryId = Guid.NewGuid(),
-                Description = null
-            };
-
-            // Act & Assert
-            var exception = await Assert.ThrowsAsync<DbUpdateException>(async () =>
-            {
-                await SpendWiseDbContextSUT.Transactions.AddAsync(invalidTransaction);
-                await SpendWiseDbContextSUT.SaveChangesAsync();
-            });
-
-            Assert.NotNull(exception);
         }
 
         [Fact]
@@ -234,7 +207,7 @@ namespace SpendWise.DAL.Tests
                 Id = Guid.NewGuid(),
                 Amount = 100.00m,
                 Date = DateTime.UtcNow,
-                Type = 1,
+                Type = TransactionType.Expense,
                 CategoryId = Guid.Empty,
                 Description = null
             };
@@ -264,7 +237,7 @@ namespace SpendWise.DAL.Tests
                 Amount = 100.00m,
                 Date = DateTime.UtcNow,
                 Description = longDescription,
-                Type = 1,
+                Type = TransactionType.Expense,
                 CategoryId = CategorySeeds.CategoryFood.Id
             };
 
@@ -291,7 +264,7 @@ namespace SpendWise.DAL.Tests
                 Id = Guid.NewGuid(),
                 Amount = 0.00m, // Zero amount
                 Date = DateTime.UtcNow,
-                Type = 1,
+                Type = TransactionType.Expense,
                 CategoryId = CategorySeeds.CategoryFood.Id,
                 Description = null
             };
@@ -438,7 +411,7 @@ namespace SpendWise.DAL.Tests
                 Amount = 150.0m,
                 Date = baseDateTime,
                 Description = $"Utilities{i}",
-                Type = 2,
+                Type = TransactionType.Income,
                 CategoryId = CategorySeeds.CategoryTransport.Id,
             }).ToList();
 

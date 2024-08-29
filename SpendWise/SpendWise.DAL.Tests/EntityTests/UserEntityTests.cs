@@ -3,6 +3,7 @@ using SpendWise.Common.Tests.Seeds;
 using Microsoft.EntityFrameworkCore;
 using Xunit.Abstractions;
 using SpendWise.Common.Tests.Helpers;
+using SpendWise.Common.Enums;
 
 namespace SpendWise.DAL.Tests
 {
@@ -46,12 +47,20 @@ namespace SpendWise.DAL.Tests
                 Name = "David",
                 Surname = "Smith",
                 Email = "david.smith@example.com",
-                Password = "somestrongpassword",
-                Date_of_registration = baseTime,
+                PasswordHash = "somestrongpassword",
+                DateOfRegistration = baseTime,
                 ReceivedInvitations = Array.Empty<InvitationEntity>(),
                 SentInvitations = Array.Empty<InvitationEntity>(),
                 GroupUsers = Array.Empty<GroupUserEntity>(),
-                Photo = null
+                Photo = Array.Empty<byte>(),
+                IsEmailConfirmed = false,
+                EmailConfirmationToken = null,
+                ResetPasswordToken = null,
+                ResetPasswordTokenExpiry = null,
+                IsTwoFactorEnabled = false,
+                TwoFactorSecret = null,
+                Role = UserRole.User,
+                PreferredTheme = Theme.SystemDefault
             };
 
             // Act
@@ -104,8 +113,8 @@ namespace SpendWise.DAL.Tests
                 Name = existingUser.Name + " Updated",
                 Surname = existingUser.Surname + " Updated",
                 Email = existingUser.Email + " Updated",
-                Password = existingUser.Password + " Updated",
-                Date_of_registration = existingUser.Date_of_registration.AddHours(3),
+                PasswordHash = existingUser.PasswordHash + " Updated",
+                DateOfRegistration = existingUser.DateOfRegistration.AddHours(3),
             };
 
             // Act
@@ -178,9 +187,17 @@ namespace SpendWise.DAL.Tests
                 Name = maxLengthName,
                 Surname = maxLengthName,
                 Email = maxLengthEmail,
-                Password = new string('C', 255),
-                Date_of_registration = DateTime.UtcNow,
-                Photo = null
+                PasswordHash = new string('C', 255),
+                DateOfRegistration = DateTime.UtcNow,
+                Photo = Array.Empty<byte>(),
+                IsEmailConfirmed = false,
+                EmailConfirmationToken = null,
+                ResetPasswordToken = null,
+                ResetPasswordTokenExpiry = null,
+                IsTwoFactorEnabled = false,
+                TwoFactorSecret = null,
+                Role = UserRole.User,
+                PreferredTheme = Theme.SystemDefault
             };
 
             // Act
@@ -220,9 +237,17 @@ namespace SpendWise.DAL.Tests
                 Name = "John",
                 Surname = "Smith",
                 Email = "john.doe@spendwise.com", // Duplicate email
-                Password = "password789",
-                Date_of_registration = DateTime.UtcNow,
-                Photo = null
+                PasswordHash = "password789",
+                DateOfRegistration = DateTime.UtcNow,
+                Photo = Array.Empty<byte>(),
+                IsEmailConfirmed = false,
+                EmailConfirmationToken = null,
+                ResetPasswordToken = null,
+                ResetPasswordTokenExpiry = null,
+                IsTwoFactorEnabled = false,
+                TwoFactorSecret = null,
+                Role = UserRole.User,
+                PreferredTheme = Theme.SystemDefault
             };
 
             SpendWiseDbContextSUT.Users.Add(userWithDuplicateEmail);
@@ -245,9 +270,17 @@ namespace SpendWise.DAL.Tests
                 Name = "John",
                 Surname = "Smith",
                 Email = "invalid.user@example.com",
-                Password = "password789",
-                Date_of_registration = DateTime.UtcNow.AddHours(1),
-                Photo = null
+                PasswordHash = "password789",
+                DateOfRegistration = DateTime.UtcNow.AddHours(1),
+                Photo = Array.Empty<byte>(),
+                IsEmailConfirmed = false,
+                EmailConfirmationToken = null,
+                ResetPasswordToken = null,
+                ResetPasswordTokenExpiry = null,
+                IsTwoFactorEnabled = false,
+                TwoFactorSecret = null,
+                Role = UserRole.User,
+                PreferredTheme = Theme.SystemDefault
             };
 
             SpendWiseDbContextSUT.Users.Add(userWithInvalidDate);
@@ -299,7 +332,7 @@ namespace SpendWise.DAL.Tests
 
             var updatedEntity = existingUser with
             {
-                Date_of_registration = invalidDate
+                DateOfRegistration = invalidDate
             };
 
             // Act & Assert
@@ -338,7 +371,7 @@ namespace SpendWise.DAL.Tests
 
             // Act
             var actualUsers = await SpendWiseDbContextSUT.Users
-                .Where(u => u.Date_of_registration >= startDate && u.Date_of_registration < endDate)
+                .Where(u => u.DateOfRegistration >= startDate && u.DateOfRegistration < endDate)
                 .ToListAsync();
 
             // Assert
@@ -442,7 +475,7 @@ namespace SpendWise.DAL.Tests
         {
             // Act
             var retrievedUsers = await SpendWiseDbContextSUT.Users
-                .OrderBy(u => u.Date_of_registration)
+                .OrderBy(u => u.DateOfRegistration)
                 .ToListAsync();
 
             // Assert
@@ -654,9 +687,17 @@ namespace SpendWise.DAL.Tests
                 Name = $"Bob{i}",
                 Surname = "Johnson",
                 Email = $"bob{i}.johnson@spendwise.com",
-                Password = "password456",
-                Date_of_registration = baseTime,
-                Photo = null
+                PasswordHash = "password456",
+                DateOfRegistration = baseTime,
+                Photo = Array.Empty<byte>(),
+                IsEmailConfirmed = false,
+                EmailConfirmationToken = null,
+                ResetPasswordToken = null,
+                ResetPasswordTokenExpiry = null,
+                IsTwoFactorEnabled = false,
+                TwoFactorSecret = null,
+                Role = UserRole.User,
+                PreferredTheme = Theme.SystemDefault
             }).ToList();
 
             // Act

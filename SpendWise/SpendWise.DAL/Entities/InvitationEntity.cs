@@ -53,6 +53,6 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets a value indicating whether the invitation was accepted. Can be null.
         /// </summary>
-        public required bool? IsAccepted { get; set; }
+        public required bool? IsAccepted { get; set; } = null;
     }
 }

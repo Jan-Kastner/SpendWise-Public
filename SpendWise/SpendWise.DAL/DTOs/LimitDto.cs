@@ -1,3 +1,5 @@
+using SpendWise.Common.Enums;
+
 namespace SpendWise.DAL.DTOs
 {
     public record LimitDto : IDto
@@ -20,6 +22,6 @@ namespace SpendWise.DAL.DTOs
         /// <summary>
         /// Gets or sets the type of notice associated with the limit.
         /// </summary>
-        public required int NoticeType { get; set; }
+        public required NoticeType NoticeType { get; set; } = NoticeType.InApp;
     }
 }

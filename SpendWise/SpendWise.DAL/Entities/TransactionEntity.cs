@@ -1,3 +1,5 @@
+using SpendWise.Common.Enums;
+
 namespace SpendWise.DAL.Entities
 {
     /// <summary>
@@ -23,12 +25,12 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the description of the transaction. Can be null.
         /// </summary>
-        public required string? Description { get; set; }
+        public required string? Description { get; set; } = null;
 
         /// <summary>
         /// Gets or sets the type of the transaction.
         /// </summary>
-        public required int Type { get; set; }
+        public required TransactionType Type { get; set; }
 
         /// <summary>
         /// Gets or sets the unique identifier for the category associated with the transaction. Can be null.

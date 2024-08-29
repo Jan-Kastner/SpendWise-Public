@@ -62,7 +62,7 @@ namespace SpendWise.DAL.Tests.EntityTests
                 Name = "Entertainment",
                 Description = "Movies, concerts, and other leisure activities",
                 Color = "#00ff00",
-                Icon = null
+                Icon = Array.Empty<byte>()
             };
 
             // Act
@@ -160,7 +160,7 @@ namespace SpendWise.DAL.Tests.EntityTests
                 Name = "Valid Name",
                 Description = "Valid Description",
                 Color = "#00ff0000", // Invalid Color
-                Icon = null
+                Icon = Array.Empty<byte>()
             };
 
             // Act & Assert
@@ -247,7 +247,7 @@ namespace SpendWise.DAL.Tests.EntityTests
                 Name = new string('A', 100),
                 Description = new string('B', 200),
                 Color = "#123456",
-                Icon = null
+                Icon = Array.Empty<byte>()
             };
 
             // Act
@@ -279,7 +279,7 @@ namespace SpendWise.DAL.Tests.EntityTests
                 Name = $"Category{i}",
                 Description = $"Description{i}",
                 Color = $"#ff000{i}",
-                Icon = null
+                Icon = Array.Empty<byte>()
             }).ToList();
 
             // Act

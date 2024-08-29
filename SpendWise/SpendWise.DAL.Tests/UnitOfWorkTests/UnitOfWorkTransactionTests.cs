@@ -6,6 +6,7 @@ using SpendWise.Common.Tests.Seeds;
 using SpendWise.Common.Tests.Helpers;
 using SpendWise.DAL.Entities;
 using SpendWise.DAL.QueryObjects;
+using SpendWise.Common.Enums;
 
 namespace SpendWise.DAL.Tests.UnitOfWorkTests
 {
@@ -30,7 +31,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 Amount = 300m,
                 Date = DateTime.UtcNow,
                 Description = "Test Transaction",
-                Type = 1,
+                Type = TransactionType.Expense,
                 CategoryId = null // Optional, depending on your business logic
             };
 
@@ -67,7 +68,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             {
                 Amount = 500m,
                 Description = "Updated Transaction",
-                Type = 2
+                Type = TransactionType.Income,
             };
 
             // Act

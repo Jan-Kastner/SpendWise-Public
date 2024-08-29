@@ -38,7 +38,7 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the limit entity associated with this group-user relationship. Can be null.
         /// </summary>
-        public LimitEntity? Limit { get; set; }
+        public LimitEntity? Limit { get; set; } = null;
 
         /// <summary>
         /// Gets the collection of transaction group-user relationships associated with this group-user relationship.

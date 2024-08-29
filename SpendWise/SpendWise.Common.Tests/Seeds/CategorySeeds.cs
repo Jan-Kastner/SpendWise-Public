@@ -21,7 +21,7 @@ namespace SpendWise.Common.Tests.Seeds
             Name = "Food",
             Description = "Groceries and eating out",
             Color = "#ff0000",
-            Icon = null
+            Icon = Array.Empty<byte>()
         };
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace SpendWise.Common.Tests.Seeds
             Name = "Transport",
             Description = "Transportation expenses",
             Color = "#00ff00",
-            Icon = null
+            Icon = Array.Empty<byte>()
         };
 
         /// <summary>

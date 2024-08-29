@@ -153,8 +153,7 @@ namespace SpendWise.DAL.Configurations
 
                 // Configures NoticeType property: required and stored as integer
                 entity.Property(l => l.NoticeType)
-                    .IsRequired()
-                    .HasColumnType("integer");
+                    .IsRequired();
 
                 // Creates a unique index on GroupUserId property
                 entity.HasIndex(l => l.GroupUserId)
@@ -169,34 +168,66 @@ namespace SpendWise.DAL.Configurations
                     .IsRequired()
                     .HasColumnType("uuid");
 
-                // Configures Name property: required with a maximum length of 100 characters
+                // Configures Name property: required with a minimum length of 2 characters and maximum length of 100 characters
                 entity.Property(u => u.Name)
                     .IsRequired()
                     .HasMaxLength(100);
 
-                // Configures Surname property: required with a maximum length of 100 characters
+                // Configures Surname property: required with a minimum length of 2 characters and maximum length of 100 characters
                 entity.Property(u => u.Surname)
                     .IsRequired()
                     .HasMaxLength(100);
 
-                // Configures Email property: required with a maximum length of 255 characters
+                // Configures Email property: required with a minimum length of 5 characters and maximum length of 255 characters
                 entity.Property(u => u.Email)
                     .IsRequired()
                     .HasMaxLength(255);
 
-                // Configures Password property: required with a maximum length of 255 characters
-                entity.Property(u => u.Password)
+                // Configures PasswordHash property: required with a minimum length of 8 characters and maximum length of 255 characters
+                entity.Property(u => u.PasswordHash)
                     .IsRequired()
                     .HasMaxLength(255);
 
-                // Configures Date_of_registration property: required and stored as timestamp with time zone
-                entity.Property(u => u.Date_of_registration)
+                // Configures DateOfRegistration property: required and stored as timestamp with time zone
+                entity.Property(u => u.DateOfRegistration)
                     .IsRequired()
                     .HasColumnType("timestamp(3) with time zone");
 
-                // Configures Photo property: stored as byte array
+                // Configures Photo property: stored as byte array, can be null
                 entity.Property(u => u.Photo)
                     .HasColumnType("bytea");
+
+                // Configures IsEmailConfirmed property: required with default value of false
+                entity.Property(u => u.IsEmailConfirmed)
+                    .IsRequired();
+
+                // Configures EmailConfirmationToken property: can be null
+                entity.Property(u => u.EmailConfirmationToken)
+                    .HasMaxLength(255); // You can adjust the max length as per your requirement
+
+                // Configures ResetPasswordToken property: can be null
+                entity.Property(u => u.ResetPasswordToken)
+                    .HasMaxLength(255); // You can adjust the max length as per your requirement
+
+                // Configures ResetPasswordTokenExpiry property: can be null
+                entity.Property(u => u.ResetPasswordTokenExpiry)
+                    .HasColumnType("timestamp(3) with time zone"); // Assuming you want to keep the same type
+
+                // Configures IsTwoFactorEnabled property: required with default value of false
+                entity.Property(u => u.IsTwoFactorEnabled)
+                    .IsRequired();
+
+                // Configures TwoFactorSecret property: can be null
+                entity.Property(u => u.TwoFactorSecret)
+                    .HasMaxLength(255); // You can adjust the max length as per your requirement
+
+                // Configures Role property: required with a default value of UserRole.User
+                entity.Property(u => u.Role)
+                    .IsRequired();
+
+                // Configures PreferredTheme property: required with a default value of Theme.SystemDefault
+                entity.Property(u => u.PreferredTheme)
+                    .IsRequired();
             });
 
             // Configuration for TransactionGroupUserEntity

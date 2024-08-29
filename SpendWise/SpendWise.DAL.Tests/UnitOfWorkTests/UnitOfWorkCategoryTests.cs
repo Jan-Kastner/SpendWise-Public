@@ -37,7 +37,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 Name = "New Category",
                 Description = "Test Description",
                 Color = "#0000ff",
-                Icon = new byte[] { }
+                Icon = Array.Empty<byte>()
             };
 
             // Act
@@ -83,7 +83,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 Name = "Updated Category",
                 Color = "#00ff00",
                 Description = "Updated Description",
-                Icon = new byte[] { }
+                Icon = Array.Empty<byte>()
             };
 
             // Act
@@ -138,7 +138,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 Name = "Invalid Color Category",
                 Description = "Test Description",
                 Color = "InvalidColor", // Invalid color format
-                Icon = new byte[] { }
+                Icon = Array.Empty<byte>()
             };
 
             // Act & Assert
@@ -163,7 +163,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 Name = "Non-Existent Category",
                 Description = "Should fail",
                 Color = "#0000ff",
-                Icon = new byte[] { }
+                Icon = Array.Empty<byte>()
             };
 
             // Act & Assert

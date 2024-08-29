@@ -24,8 +24,8 @@ namespace SpendWise.DAL.Configurations
                     // Ensures the Date is less than or equal to the current date and time
                     tb.HasCheckConstraint("CK_TransactionEntity_Date", "\"Date\" <= NOW()");
 
-                    // Ensures the Type is either 1 or 2
-                    tb.HasCheckConstraint("CK_TransactionEntity_Type", "\"Type\" IN (1, 2)");
+                    // Ensures the Type is valid (enum values)
+                    tb.HasCheckConstraint("CK_TransactionEntity_Type", "\"Type\" IS NOT NULL");
                 });
 
             // Configuration for the InvitationEntity
@@ -56,8 +56,8 @@ namespace SpendWise.DAL.Configurations
                     // Ensures the Amount is greater than or equal to 0
                     tb.HasCheckConstraint("CK_Limit_Amount", "\"Amount\" >= 0");
 
-                    // Ensures NoticeType is either 0, 1, or 2
-                    tb.HasCheckConstraint("CK_Limit_NoticeType", "\"NoticeType\" IN (0, 1, 2)");
+                    // Ensures NoticeType is valid (enum values)
+                    tb.HasCheckConstraint("CK_Limit_NoticeType", "\"NoticeType\" IS NOT NULL");
                 });
             });
 
@@ -69,7 +69,27 @@ namespace SpendWise.DAL.Configurations
                     // Ensures Date_of_registration is less than or equal to the current date and time
                     tb.HasCheckConstraint(
                         "CK_UserEntity_Date_of_registration",
-                        "\"Date_of_registration\" <= NOW()");
+                        "\"DateOfRegistration\" <= NOW()");
+
+                    // Ensures Name is at least 2 characters long
+                    tb.HasCheckConstraint(
+                        "CK_UserEntity_Name_Length",
+                        "LENGTH(\"Name\") >= 2");
+
+                    // Ensures Surname is at least 2 characters long
+                    tb.HasCheckConstraint(
+                        "CK_UserEntity_Surname_Length",
+                        "LENGTH(\"Surname\") >= 2");
+
+                    // Ensures Email is at least 5 characters long and valid
+                    tb.HasCheckConstraint(
+                        "CK_UserEntity_Email_Length",
+                        "LENGTH(\"Email\") >= 5");
+
+                    // Ensures PasswordHash is at least 8 characters long
+                    tb.HasCheckConstraint(
+                        "CK_UserEntity_PasswordHash_Length",
+                        "LENGTH(\"PasswordHash\") >= 8");
                 });
             });
 

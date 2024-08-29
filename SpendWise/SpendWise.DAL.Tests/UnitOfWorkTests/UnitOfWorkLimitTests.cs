@@ -6,6 +6,7 @@ using SpendWise.Common.Tests.Seeds;
 using SpendWise.Common.Tests.Helpers;
 using SpendWise.DAL.Entities;
 using SpendWise.DAL.QueryObjects;
+using SpendWise.Common.Enums;
 
 namespace SpendWise.DAL.Tests.UnitOfWorkTests
 {
@@ -26,7 +27,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 Id = Guid.NewGuid(),
                 GroupUserId = GroupUserSeeds.GroupUserJohnInFamily.Id,
                 Amount = 1500m,
-                NoticeType = 2,
+                NoticeType = NoticeType.SMS,
             };
 
             // Act
@@ -61,7 +62,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             var updatedLimit = existingLimit with
             {
                 Amount = 2000m,
-                NoticeType = 1
+                NoticeType = NoticeType.SMS,
             };
 
             // Act

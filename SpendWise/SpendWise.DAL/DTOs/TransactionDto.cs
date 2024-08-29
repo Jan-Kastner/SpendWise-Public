@@ -1,3 +1,5 @@
+using SpendWise.Common.Enums;
+
 namespace SpendWise.DAL.DTOs
 {
     /// <summary>
@@ -28,7 +30,7 @@ namespace SpendWise.DAL.DTOs
         /// <summary>
         /// Gets or sets the type of the transaction.
         /// </summary>
-        public required int Type { get; set; }
+        public required TransactionType Type { get; set; }
 
         /// <summary>
         /// Gets or sets the unique identifier for the category associated with the transaction. Can be null.

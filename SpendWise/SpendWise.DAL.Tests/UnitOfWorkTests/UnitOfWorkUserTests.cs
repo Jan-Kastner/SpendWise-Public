@@ -6,6 +6,7 @@ using SpendWise.Common.Tests.Seeds;
 using SpendWise.Common.Tests.Helpers;
 using SpendWise.DAL.Entities;
 using SpendWise.DAL.QueryObjects;
+using SpendWise.Common.Enums;
 
 namespace SpendWise.DAL.Tests.UnitOfWorkTests
 {
@@ -27,9 +28,17 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 Name = "New",
                 Surname = "User",
                 Email = "new.user@spendwise.com",
-                Password = "password987",
-                Date_of_registration = DateTime.UtcNow,
-                Photo = new byte[] { }
+                PasswordHash = "password987",
+                DateOfRegistration = DateTime.UtcNow,
+                Photo = Array.Empty<byte>(),
+                IsEmailConfirmed = false,
+                EmailConfirmationToken = null,
+                ResetPasswordToken = null,
+                ResetPasswordTokenExpiry = null,
+                IsTwoFactorEnabled = false,
+                TwoFactorSecret = null,
+                Role = UserRole.User,
+                PreferredTheme = Theme.SystemDefault
             };
 
             // Act

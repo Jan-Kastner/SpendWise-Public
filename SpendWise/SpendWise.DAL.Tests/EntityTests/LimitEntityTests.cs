@@ -3,6 +3,7 @@ using SpendWise.Common.Tests.Seeds;
 using Microsoft.EntityFrameworkCore;
 using Xunit.Abstractions;
 using SpendWise.Common.Tests.Helpers;
+using SpendWise.Common.Enums;
 
 namespace SpendWise.DAL.Tests
 {
@@ -61,7 +62,7 @@ namespace SpendWise.DAL.Tests
                 Id = Guid.NewGuid(),
                 GroupUserId = GroupUserSeeds.GroupUserBobInFamily.Id,
                 Amount = 100.00m,
-                NoticeType = 1
+                NoticeType = NoticeType.InApp
             };
 
             // Act
@@ -157,7 +158,7 @@ namespace SpendWise.DAL.Tests
                 Id = Guid.NewGuid(),
                 GroupUserId = GroupUserSeeds.GroupUserCharlieInFamily.Id,
                 Amount = 150.00m,
-                NoticeType = 2
+                NoticeType = NoticeType.SMS
             };
 
             // Act & Assert
@@ -184,33 +185,7 @@ namespace SpendWise.DAL.Tests
                 Id = Guid.NewGuid(),
                 GroupUserId = GroupUserSeeds.GroupUserBobInFamily.Id,
                 Amount = -100.00m,
-                NoticeType = 1
-            };
-
-            // Act & Assert
-            var exception = await Assert.ThrowsAsync<DbUpdateException>(async () =>
-            {
-                await SpendWiseDbContextSUT.Limits.AddAsync(invalidLimit);
-                await SpendWiseDbContextSUT.SaveChangesAsync();
-            });
-
-            Assert.NotNull(exception);
-        }
-
-        [Fact]
-        /// <summary>
-        /// Tests the addition of a `LimitEntity` with an invalid `NoticeType`.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddLimit_InvalidNoticeType_ThrowsDbUpdateException()
-        {
-            // Arrange
-            var invalidLimit = new LimitEntity
-            {
-                Id = Guid.NewGuid(),
-                GroupUserId = GroupUserSeeds.GroupUserBobInFamily.Id,
-                Amount = 100.00m,
-                NoticeType = 999
+                NoticeType = NoticeType.InApp
             };
 
             // Act & Assert
@@ -236,7 +211,7 @@ namespace SpendWise.DAL.Tests
                 Id = Guid.NewGuid(),
                 GroupUserId = Guid.NewGuid(),
                 Amount = 100.00m,
-                NoticeType = 1
+                NoticeType = NoticeType.InApp
             };
 
             // Act & Assert

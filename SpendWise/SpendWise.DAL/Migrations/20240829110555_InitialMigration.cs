@@ -19,7 +19,7 @@ namespace SpendWise.DAL.Migrations
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     Color = table.Column<string>(type: "character varying(7)", maxLength: 7, nullable: false),
-                    Icon = table.Column<byte[]>(type: "bytea", nullable: true)
+                    Icon = table.Column<byte[]>(type: "bytea", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -48,14 +48,26 @@ namespace SpendWise.DAL.Migrations
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Surname = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Email = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    Password = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    Date_of_registration = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false),
-                    Photo = table.Column<byte[]>(type: "bytea", nullable: true)
+                    PasswordHash = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    DateOfRegistration = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false),
+                    Photo = table.Column<byte[]>(type: "bytea", nullable: false),
+                    IsEmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    EmailConfirmationToken = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    ResetPasswordToken = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    ResetPasswordTokenExpiry = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: true),
+                    IsTwoFactorEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    TwoFactorSecret = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Role = table.Column<int>(type: "integer", nullable: false),
+                    PreferredTheme = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
-                    table.CheckConstraint("CK_UserEntity_Date_of_registration", "\"Date_of_registration\" <= NOW()");
+                    table.CheckConstraint("CK_UserEntity_Date_of_registration", "\"DateOfRegistration\" <= NOW()");
+                    table.CheckConstraint("CK_UserEntity_Email_Length", "LENGTH(\"Email\") >= 5");
+                    table.CheckConstraint("CK_UserEntity_Name_Length", "LENGTH(\"Name\") >= 2");
+                    table.CheckConstraint("CK_UserEntity_PasswordHash_Length", "LENGTH(\"PasswordHash\") >= 8");
+                    table.CheckConstraint("CK_UserEntity_Surname_Length", "LENGTH(\"Surname\") >= 2");
                 });
 
             migrationBuilder.CreateTable(
@@ -74,7 +86,7 @@ namespace SpendWise.DAL.Migrations
                     table.PrimaryKey("PK_Transactions", x => x.Id);
                     table.CheckConstraint("CK_TransactionEntity_Amount", "\"Amount\" > 0");
                     table.CheckConstraint("CK_TransactionEntity_Date", "\"Date\" <= NOW()");
-                    table.CheckConstraint("CK_TransactionEntity_Type", "\"Type\" IN (1, 2)");
+                    table.CheckConstraint("CK_TransactionEntity_Type", "\"Type\" IS NOT NULL");
                     table.ForeignKey(
                         name: "FK_Transactions_Categories_CategoryId",
                         column: x => x.CategoryId,
@@ -160,7 +172,7 @@ namespace SpendWise.DAL.Migrations
                 {
                     table.PrimaryKey("PK_Limits", x => x.Id);
                     table.CheckConstraint("CK_Limit_Amount", "\"Amount\" >= 0");
-                    table.CheckConstraint("CK_Limit_NoticeType", "\"NoticeType\" IN (0, 1, 2)");
+                    table.CheckConstraint("CK_Limit_NoticeType", "\"NoticeType\" IS NOT NULL");
                     table.ForeignKey(
                         name: "FK_Limits_GroupUsers_GroupUserId",
                         column: x => x.GroupUserId,

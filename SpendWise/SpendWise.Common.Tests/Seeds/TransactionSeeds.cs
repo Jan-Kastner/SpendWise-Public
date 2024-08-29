@@ -1,6 +1,7 @@
 using SpendWise.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
+using SpendWise.Common.Enums;
 
 namespace SpendWise.Common.Tests.Seeds
 {
@@ -18,7 +19,7 @@ namespace SpendWise.Common.Tests.Seeds
             Amount = 45.0m,
             Date = new DateTime(2024, 7, 4, 19, 30, 0, DateTimeKind.Utc),
             Description = "Dinner at restaurant",
-            Type = 1,
+            Type = TransactionType.Expense,
             CategoryId = null,
             Category = null
         };
@@ -32,7 +33,7 @@ namespace SpendWise.Common.Tests.Seeds
             Amount = 100.0m,
             Date = new DateTime(2024, 7, 5, 12, 5, 0, DateTimeKind.Utc),
             Description = "Groceries",
-            Type = 1,
+            Type = TransactionType.Expense,
             CategoryId = CategorySeeds.CategoryFood.Id,
             Category = CategorySeeds.CategoryFood
         };
@@ -46,7 +47,7 @@ namespace SpendWise.Common.Tests.Seeds
             Amount = 25.0m,
             Date = new DateTime(2024, 7, 6, 22, 15, 0, DateTimeKind.Utc),
             Description = "Taxi ride home",
-            Type = 1,
+            Type = TransactionType.Expense,
             CategoryId = CategorySeeds.CategoryTransport.Id,
             Category = CategorySeeds.CategoryTransport
         };
@@ -60,7 +61,7 @@ namespace SpendWise.Common.Tests.Seeds
             Amount = 50.0m,
             Date = new DateTime(2024, 7, 7, 8, 30, 0, DateTimeKind.Utc),
             Description = "Public Transport",
-            Type = 1,
+            Type = TransactionType.Expense,
             CategoryId = CategorySeeds.CategoryTransport.Id,
             Category = CategorySeeds.CategoryTransport
         };

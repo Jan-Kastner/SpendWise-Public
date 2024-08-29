@@ -38,6 +38,7 @@ namespace SpendWise.DAL.Migrations
                         .HasColumnType("character varying(200)");
 
                     b.Property<byte[]>("Icon")
+                        .IsRequired()
                         .HasColumnType("bytea");
 
                     b.Property<string>("Name")
@@ -181,7 +182,7 @@ namespace SpendWise.DAL.Migrations
                         {
                             t.HasCheckConstraint("CK_Limit_Amount", "\"Amount\" >= 0");
 
-                            t.HasCheckConstraint("CK_Limit_NoticeType", "\"NoticeType\" IN (0, 1, 2)");
+                            t.HasCheckConstraint("CK_Limit_NoticeType", "\"NoticeType\" IS NOT NULL");
                         });
                 });
 
@@ -217,7 +218,7 @@ namespace SpendWise.DAL.Migrations
 
                             t.HasCheckConstraint("CK_TransactionEntity_Date", "\"Date\" <= NOW()");
 
-                            t.HasCheckConstraint("CK_TransactionEntity_Type", "\"Type\" IN (1, 2)");
+                            t.HasCheckConstraint("CK_TransactionEntity_Type", "\"Type\" IS NOT NULL");
                         });
                 });
 
@@ -250,7 +251,7 @@ namespace SpendWise.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("Date_of_registration")
+                    b.Property<DateTime>("DateOfRegistration")
                         .HasColumnType("timestamp(3) with time zone");
 
                     b.Property<string>("Email")
@@ -258,23 +259,51 @@ namespace SpendWise.DAL.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
+                    b.Property<string>("EmailConfirmationToken")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<bool>("IsEmailConfirmed")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsTwoFactorEnabled")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
                     b.Property<byte[]>("Photo")
+                        .IsRequired()
                         .HasColumnType("bytea");
+
+                    b.Property<int>("PreferredTheme")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ResetPasswordToken")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<DateTime?>("ResetPasswordTokenExpiry")
+                        .HasColumnType("timestamp(3) with time zone");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Surname")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
+
+                    b.Property<string>("TwoFactorSecret")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.HasKey("Id");
 
@@ -283,7 +312,15 @@ namespace SpendWise.DAL.Migrations
 
                     b.ToTable("Users", t =>
                         {
-                            t.HasCheckConstraint("CK_UserEntity_Date_of_registration", "\"Date_of_registration\" <= NOW()");
+                            t.HasCheckConstraint("CK_UserEntity_Date_of_registration", "\"DateOfRegistration\" <= NOW()");
+
+                            t.HasCheckConstraint("CK_UserEntity_Email_Length", "LENGTH(\"Email\") >= 5");
+
+                            t.HasCheckConstraint("CK_UserEntity_Name_Length", "LENGTH(\"Name\") >= 2");
+
+                            t.HasCheckConstraint("CK_UserEntity_PasswordHash_Length", "LENGTH(\"PasswordHash\") >= 8");
+
+                            t.HasCheckConstraint("CK_UserEntity_Surname_Length", "LENGTH(\"Surname\") >= 2");
                         });
                 });
 

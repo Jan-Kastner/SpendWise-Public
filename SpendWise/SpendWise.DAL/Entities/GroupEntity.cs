@@ -21,7 +21,7 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the description of the group. Can be null.
         /// </summary>
-        public required string? Description { get; set; }
+        public required string? Description { get; set; } = null;
 
         /// <summary>
         /// Gets the collection of users associated with this group.

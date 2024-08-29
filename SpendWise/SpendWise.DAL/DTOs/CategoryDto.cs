@@ -29,6 +29,6 @@ namespace SpendWise.DAL.DTOs
         /// <summary>
         /// Gets or sets the icon for the category. Can be null.
         /// </summary>
-        public required byte[]? Icon { get; set; }
+        public required byte[] Icon { get; set; }
     }
 }
