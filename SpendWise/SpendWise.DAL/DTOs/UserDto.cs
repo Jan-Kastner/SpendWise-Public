@@ -79,11 +79,6 @@ namespace SpendWise.DAL.DTOs
         public required string? TwoFactorSecret { get; set; }
 
         /// <summary>
-        /// Gets or sets the user's role within the application (e.g., Admin, User).
-        /// </summary>
-        public required UserRole Role { get; set; }
-
-        /// <summary>
         /// Gets or sets the user's preferred theme for the application.
         /// </summary>
         public required Theme PreferredTheme { get; set; }

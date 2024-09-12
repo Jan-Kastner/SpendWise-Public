@@ -23,40 +23,34 @@ namespace SpendWise.DAL.Tests.EntityTests
         #region CRUD Operations Tests
 
         /// <summary>
-        /// Tests the CRUD (Create, Read, Update, Delete) operations for the <see cref="CategoryEntity"/> entity.
-        /// These tests verify that the database operations work as expected for categories.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Verifies that fetching a category by its ID returns the expected category.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task FetchCategoryById_ReturnsExpectedCategory()
+        [Fact]
+        public async Task FetchCategoryById_ShouldReturnExpectedCategory()
         {
             // Arrange
             var expectedCategory = CategorySeeds.CategoryFood;
-            var categoryIdToFetch = expectedCategory.Id;
+            var categoryId = expectedCategory.Id;
 
             // Act
             var actualCategory = await SpendWiseDbContextSUT.Categories
-                .Where(c => c.Id == categoryIdToFetch)
-                .SingleOrDefaultAsync();
+                .SingleOrDefaultAsync(c => c.Id == categoryId);
 
             // Assert
             Assert.NotNull(actualCategory);
             DeepAssert.Equal(expectedCategory, actualCategory);
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that adding a valid category successfully persists the category in the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddCategory_ValidCategory_SuccessfullyPersists()
+        [Fact]
+        public async Task AddCategory_ShouldPersistValidCategory()
         {
             // Arrange
-            var categoryToAdd = new CategoryEntity
+            var newCategory = new CategoryEntity
             {
                 Id = Guid.NewGuid(),
                 Name = "Entertainment",
@@ -66,23 +60,23 @@ namespace SpendWise.DAL.Tests.EntityTests
             };
 
             // Act
-            SpendWiseDbContextSUT.Categories.Add(categoryToAdd);
+            SpendWiseDbContextSUT.Categories.Add(newCategory);
             await SpendWiseDbContextSUT.SaveChangesAsync();
 
             // Assert
             await using var dbx = await DbContextFactory.CreateDbContextAsync();
-            var actualCategory = await dbx.Categories.FindAsync(categoryToAdd.Id);
+            var actualCategory = await dbx.Categories.FindAsync(newCategory.Id);
 
             Assert.NotNull(actualCategory);
-            DeepAssert.Equal(categoryToAdd, actualCategory);
+            DeepAssert.Equal(newCategory, actualCategory);
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that updating an existing category successfully persists the changes in the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UpdateCategory_ExistingCategory_SuccessfullyPersistsChanges()
+        [Fact]
+        public async Task UpdateCategory_ShouldPersistChanges()
         {
             // Arrange
             var existingCategory = CategorySeeds.CategoryFood;
@@ -109,12 +103,12 @@ namespace SpendWise.DAL.Tests.EntityTests
             DeepAssert.Equal(updatedCategory, actualCategory);
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that deleting an existing category successfully removes it from the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task DeleteCategory_ExistingCategory_SuccessfullyRemovesCategory()
+        [Fact]
+        public async Task DeleteCategory_ShouldRemoveCategory()
         {
             // Arrange
             var categoryToDelete = await SpendWiseDbContextSUT.Categories
@@ -142,16 +136,11 @@ namespace SpendWise.DAL.Tests.EntityTests
         #region Error Handling Tests
 
         /// <summary>
-        /// Tests the error handling scenarios for the <see cref="CategoryEntity"/> entity.
-        /// This region verifies that the application behaves as expected when invalid data is provided.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Verifies that attempting to add a category with invalid data (e.g., invalid color) throws a <see cref="DbUpdateException"/>.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddCategory_InvalidData_ThrowsDbUpdateException()
+        [Fact]
+        public async Task AddCategory_WithInvalidData_ShouldThrowDbUpdateException()
         {
             // Arrange
             var invalidCategory = new CategoryEntity
@@ -178,46 +167,39 @@ namespace SpendWise.DAL.Tests.EntityTests
         #region Data Retrieval Tests
 
         /// <summary>
-        /// Tests for retrieving category data from the database.
-        /// This region verifies that data retrieval methods function correctly and return the expected results.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Verifies that fetching a category by its name returns the expected category.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task FetchCategoryByName_ReturnsExpectedCategory()
+        [Fact]
+        public async Task FetchCategoryByName_ShouldReturnExpectedCategory()
         {
             // Arrange
             var expectedCategory = CategorySeeds.CategoryFood;
-            var categoryNameToFetch = expectedCategory.Name;
+            var categoryName = expectedCategory.Name;
 
             // Act
             var actualCategory = await SpendWiseDbContextSUT.Categories
-                .Where(c => c.Name == categoryNameToFetch)
-                .SingleOrDefaultAsync();
+                .SingleOrDefaultAsync(c => c.Name == categoryName);
 
             // Assert
             Assert.NotNull(actualCategory);
             DeepAssert.Equal(expectedCategory, actualCategory);
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that fetching categories by their color returns the expected category.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task FetchCategoriesByColor_ReturnsExpectedCategories()
+        [Fact]
+        public async Task FetchCategoriesByColor_ShouldReturnExpectedCategories()
         {
             // Arrange
             var expectedCategory = CategorySeeds.CategoryFood;
-            var categoryColorToFetch = expectedCategory.Color;
+            var categoryColor = expectedCategory.Color;
 
             // Act
             var actualCategory = await SpendWiseDbContextSUT.Categories
-                .Where(c => c.Color == categoryColorToFetch)
-                .SingleOrDefaultAsync();
+                .SingleOrDefaultAsync(c => c.Color == categoryColor);
 
             // Assert
             Assert.NotNull(actualCategory);
@@ -229,19 +211,14 @@ namespace SpendWise.DAL.Tests.EntityTests
         #region Update and Special Cases Tests
 
         /// <summary>
-        /// Tests for various update scenarios and edge cases for the <see cref="CategoryEntity"/> entity.
-        /// This region verifies that updates work correctly, including maximum field lengths and concurrent additions.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Verifies that adding a category with maximum field lengths stores the data correctly in the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddCategory_MaxFieldLength_StoresDataCorrectly()
+        [Fact]
+        public async Task AddCategory_WithMaxFieldLength_ShouldStoreDataCorrectly()
         {
             // Arrange
-            var categoryToAdd = new CategoryEntity
+            var newCategory = new CategoryEntity
             {
                 Id = Guid.NewGuid(),
                 Name = new string('A', 100),
@@ -251,26 +228,25 @@ namespace SpendWise.DAL.Tests.EntityTests
             };
 
             // Act
-            await SpendWiseDbContextSUT.Categories.AddAsync(categoryToAdd);
+            await SpendWiseDbContextSUT.Categories.AddAsync(newCategory);
             await SpendWiseDbContextSUT.SaveChangesAsync();
 
             await using var dbx = await DbContextFactory.CreateDbContextAsync();
             var actualCategory = await dbx.Categories
-                .Where(c => c.Id == categoryToAdd.Id)
-                .SingleOrDefaultAsync();
+                .SingleOrDefaultAsync(c => c.Id == newCategory.Id);
 
             // Assert
             Assert.NotNull(actualCategory);
-            Assert.Equal(categoryToAdd.Name, actualCategory.Name);
-            Assert.Equal(categoryToAdd.Description, actualCategory.Description);
+            Assert.Equal(newCategory.Name, actualCategory.Name);
+            Assert.Equal(newCategory.Description, actualCategory.Description);
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that concurrent additions of categories successfully persist all categories in the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddCategories_ConcurrentAdditions_SuccessfullyPersistAllCategories()
+        [Fact]
+        public async Task AddCategories_Concurrently_ShouldPersistAllCategories()
         {
             // Arrange
             var categoriesToAdd = Enumerable.Range(0, 10).Select(i => new CategoryEntity
@@ -309,25 +285,20 @@ namespace SpendWise.DAL.Tests.EntityTests
         #region Related Entities Handling Tests
 
         /// <summary>
-        /// Tests for handling related entities, specifically navigation properties for the <see cref="CategoryEntity"/>.
-        /// This region ensures that related data, such as transactions, is correctly loaded and accessible.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Verifies that fetching a category correctly loads its navigation properties, particularly the associated transactions.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task FetchCategory_NavigationPropertiesAreCorrectlyLoaded()
+        [Fact]
+        public async Task FetchCategory_ShouldLoadNavigationProperties()
         {
             // Arrange
             var expectedCategory = CategorySeeds.CategoryTransport;
-            var categoryIdToFetch = expectedCategory.Id;
+            var categoryId = expectedCategory.Id;
             var expectedTransactions = expectedCategory.Transactions;
 
             // Act
             var actualCategory = await SpendWiseDbContextSUT.Categories
-                .Where(c => c.Id == categoryIdToFetch)
+                .Where(c => c.Id == categoryId)
                 .Include(c => c.Transactions) // Include the Transactions navigation property
                 .SingleOrDefaultAsync();
 
@@ -347,25 +318,20 @@ namespace SpendWise.DAL.Tests.EntityTests
         #region Consistency Tests
 
         /// <summary>
-        /// Tests to ensure the integrity of data and constraints after operations on the <see cref="CategoryEntity"/>.
-        /// This region verifies that relationships and data integrity remain consistent after deletions and modifications.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Verifies that after deleting a category, the associated transactions have their CategoryId set to null,
         /// ensuring referential integrity is maintained.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task DeleteCategory_CheckIntegrityConstraints_AfterDeletion()
+        [Fact]
+        public async Task DeleteCategory_ShouldMaintainIntegrityConstraints()
         {
             // Arrange
-            var existingCategoryId = CategorySeeds.CategoryTransport.Id;
+            var categoryId = CategorySeeds.CategoryTransport.Id;
             var expectedTransactions = CategorySeeds.CategoryTransport.Transactions;
 
             // Act
             var categoryToDelete = await SpendWiseDbContextSUT.Categories
-                .Where(c => c.Id == existingCategoryId)
+                .Where(c => c.Id == categoryId)
                 .Include(c => c.Transactions)
                 .SingleOrDefaultAsync();
 

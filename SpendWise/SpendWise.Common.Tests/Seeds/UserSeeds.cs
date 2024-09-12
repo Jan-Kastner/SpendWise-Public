@@ -24,14 +24,13 @@ namespace SpendWise.Common.Tests.Seeds
             Email = "john.doe@spendwise.com",
             PasswordHash = "hashed_password_1",
             DateOfRegistration = new DateTime(2024, 6, 15, 11, 0, 0, DateTimeKind.Utc),
-            Photo = Array.Empty<byte>(),
-            IsEmailConfirmed = false,
-            EmailConfirmationToken = null,
-            ResetPasswordToken = null,
-            ResetPasswordTokenExpiry = null,
-            IsTwoFactorEnabled = false,
-            TwoFactorSecret = null,
-            Role = UserRole.User,
+            Photo = new byte[] { 10, 20 },
+            IsEmailConfirmed = true,
+            EmailConfirmationToken = Guid.NewGuid().ToString(),
+            ResetPasswordToken = Guid.NewGuid().ToString(),
+            ResetPasswordTokenExpiry = new DateTime(2024, 6, 15, 12, 0, 0, DateTimeKind.Utc),
+            IsTwoFactorEnabled = true,
+            TwoFactorSecret = "ABC123XYZ",
             PreferredTheme = Theme.SystemDefault
         };
 
@@ -53,8 +52,7 @@ namespace SpendWise.Common.Tests.Seeds
             ResetPasswordTokenExpiry = null,
             IsTwoFactorEnabled = false,
             TwoFactorSecret = null,
-            Role = UserRole.User,
-            PreferredTheme = Theme.SystemDefault
+            PreferredTheme = Theme.Light
         };
 
         /// <summary>
@@ -75,7 +73,6 @@ namespace SpendWise.Common.Tests.Seeds
             ResetPasswordTokenExpiry = null,
             IsTwoFactorEnabled = false,
             TwoFactorSecret = null,
-            Role = UserRole.User,
             PreferredTheme = Theme.SystemDefault
         };
 
@@ -97,7 +94,6 @@ namespace SpendWise.Common.Tests.Seeds
             ResetPasswordTokenExpiry = null,
             IsTwoFactorEnabled = false,
             TwoFactorSecret = null,
-            Role = UserRole.User,
             PreferredTheme = Theme.SystemDefault
         };
 
@@ -109,7 +105,7 @@ namespace SpendWise.Common.Tests.Seeds
             Id = Guid.NewGuid(),
             Name = "Diana",
             Surname = "Green",
-            Email = "diana.green@spendwise.com",
+            Email = "diana.green@google.com",
             PasswordHash = "hashed_password_5",
             DateOfRegistration = new DateTime(2024, 6, 20, 11, 0, 0, DateTimeKind.Utc),
             Photo = Array.Empty<byte>(),
@@ -119,7 +115,6 @@ namespace SpendWise.Common.Tests.Seeds
             ResetPasswordTokenExpiry = null,
             IsTwoFactorEnabled = false,
             TwoFactorSecret = null,
-            Role = UserRole.User,
             PreferredTheme = Theme.SystemDefault
         };
 

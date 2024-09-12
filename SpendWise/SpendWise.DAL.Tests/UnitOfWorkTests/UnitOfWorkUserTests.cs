@@ -37,7 +37,6 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 ResetPasswordTokenExpiry = null,
                 IsTwoFactorEnabled = false,
                 TwoFactorSecret = null,
-                Role = UserRole.User,
                 PreferredTheme = Theme.SystemDefault
             };
 

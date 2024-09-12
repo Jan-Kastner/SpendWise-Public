@@ -3,6 +3,7 @@ using SpendWise.Common.Tests.Seeds;
 using Microsoft.EntityFrameworkCore;
 using Xunit.Abstractions;
 using SpendWise.Common.Tests.Helpers;
+using SpendWise.Common.Enums;
 
 namespace SpendWise.DAL.Tests
 {
@@ -22,25 +23,19 @@ namespace SpendWise.DAL.Tests
         #region CRUD Operations Tests
 
         /// <summary>
-        /// Tests the CRUD (Create, Read, Update, Delete) operations for the <see cref="GroupUserEntity"/> entity.
-        /// These tests verify that the database operations work as expected for categories.
-        /// </summary>
-
-        /// <summary>
         /// Verifies that fetching a group user by its ID returns the expected group user.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task FetchGroupUserById_ReturnsExpectedGroupUser()
+        public async Task FetchGroupUserById_ShouldReturnExpectedGroupUser()
         {
             // Arrange
             var expectedGroupUser = GroupUserSeeds.GroupUserBobInFamily;
-            var groupUserIdToFetch = expectedGroupUser.Id;
+            var groupUserId = expectedGroupUser.Id;
 
             // Act
             var actualGroupUser = await SpendWiseDbContextSUT.GroupUsers
-                .Where(gu => gu.Id == groupUserIdToFetch)
-                .SingleOrDefaultAsync();
+                .SingleOrDefaultAsync(gu => gu.Id == groupUserId);
 
             // Assert
             Assert.NotNull(actualGroupUser);
@@ -52,12 +47,13 @@ namespace SpendWise.DAL.Tests
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task AddGroupUser_ValidGroupUser_SuccessfullyPersists()
+        public async Task AddGroupUser_ShouldPersistValidGroupUser()
         {
             // Arrange
-            var groupUserToAdd = new GroupUserEntity
+            var newGroupUser = new GroupUserEntity
             {
                 Id = Guid.NewGuid(),
+                Role = UserRole.GroupParticipant,
                 UserId = UserSeeds.UserAliceSmith.Id,
                 GroupId = GroupSeeds.GroupFriends.Id,
                 User = null!,
@@ -65,15 +61,15 @@ namespace SpendWise.DAL.Tests
             };
 
             // Act
-            SpendWiseDbContextSUT.GroupUsers.Add(groupUserToAdd);
+            SpendWiseDbContextSUT.GroupUsers.Add(newGroupUser);
             await SpendWiseDbContextSUT.SaveChangesAsync();
 
             // Assert
             await using var dbx = await DbContextFactory.CreateDbContextAsync();
-            var actualGroupUser = await dbx.GroupUsers.FindAsync(groupUserToAdd.Id);
+            var actualGroupUser = await dbx.GroupUsers.FindAsync(newGroupUser.Id);
 
             Assert.NotNull(actualGroupUser);
-            DeepAssert.Equal(groupUserToAdd, actualGroupUser);
+            DeepAssert.Equal(newGroupUser, actualGroupUser);
         }
 
         /// <summary>
@@ -81,7 +77,7 @@ namespace SpendWise.DAL.Tests
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task UpdateGroupUser_ExistingGroupUser_SuccessfullyPersistsChanges()
+        public async Task UpdateGroupUser_ShouldPersistChanges()
         {
             // Arrange
             var existingGroupUser = GroupUserSeeds.GroupUserBobInFamily;
@@ -89,6 +85,7 @@ namespace SpendWise.DAL.Tests
             var updatedGroupUser = new GroupUserEntity
             {
                 Id = existingGroupUser.Id,
+                Role = UserRole.GroupParticipant,
                 UserId = UserSeeds.UserAliceSmith.Id,
                 GroupId = GroupSeeds.GroupWork.Id,
                 User = null!,
@@ -114,7 +111,7 @@ namespace SpendWise.DAL.Tests
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task DeleteGroupUser_ExistingGroupUser_SuccessfullyRemovesGroupUser()
+        public async Task DeleteGroupUser_ShouldRemoveGroupUser()
         {
             // Arrange
             var groupUserToDelete = await SpendWiseDbContextSUT.GroupUsers
@@ -122,7 +119,7 @@ namespace SpendWise.DAL.Tests
                 .FirstAsync(gu => gu.Id == GroupUserSeeds.GroupUserBobInFamily.Id);
 
             Assert.NotNull(groupUserToDelete);
-            Assert.True(await SpendWiseDbContextSUT.GroupUsers.AnyAsync(c => c.Id == groupUserToDelete.Id));
+            Assert.True(await SpendWiseDbContextSUT.GroupUsers.AnyAsync(gu => gu.Id == groupUserToDelete.Id));
 
             // Act
             SpendWiseDbContextSUT.GroupUsers.Remove(groupUserToDelete);
@@ -142,22 +139,18 @@ namespace SpendWise.DAL.Tests
         #region Error Handling Tests
 
         /// <summary>
-        /// Tests the error handling scenarios for the <see cref="GroupUserEntity"/> entity.
-        /// This region verifies that the application behaves as expected when invalid data is provided.
-        /// </summary>
-
-        /// <summary>
         /// Verifies that updating a group user with an invalid user ID throws a <see cref="DbUpdateException"/>.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task UpdateGroupUser_InvalidUserId_ThrowsDbUpdateException()
+        public async Task UpdateGroupUser_WithInvalidUserId_ShouldThrowDbUpdateException()
         {
             // Arrange
             var groupUserToUpdate = GroupUserSeeds.GroupUserBobInFamily;
             var updatedGroupUser = new GroupUserEntity
             {
                 Id = groupUserToUpdate.Id,
+                Role = UserRole.GroupParticipant,
                 UserId = Guid.NewGuid(),  // Assuming this ID does not exist in the User table
                 GroupId = groupUserToUpdate.GroupId,
                 User = null!,
@@ -177,13 +170,14 @@ namespace SpendWise.DAL.Tests
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task UpdateGroupUser_InvalidGroupId_ThrowsDbUpdateException()
+        public async Task UpdateGroupUser_WithInvalidGroupId_ShouldThrowDbUpdateException()
         {
             // Arrange
             var groupUserToUpdate = GroupUserSeeds.GroupUserBobInFamily;
             var updatedGroupUser = new GroupUserEntity
             {
                 Id = groupUserToUpdate.Id,
+                Role = UserRole.GroupParticipant,
                 UserId = groupUserToUpdate.UserId,
                 GroupId = Guid.NewGuid(),  // Assuming this ID does not exist in the Group table
                 User = null!,
@@ -203,23 +197,18 @@ namespace SpendWise.DAL.Tests
         #region Data Retrieval Tests
 
         /// <summary>
-        /// Tests for retrieving category data from the database.
-        /// This region verifies that data retrieval methods function correctly and return the expected results.
-        /// </summary>
-
-        /// <summary>
         /// Verifies that fetching group users by group ID returns the expected group users.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task FetchGroupUsersByGroupId_ReturnsExpectedGroupUsers()
+        public async Task FetchGroupUsersByGroupId_ShouldReturnExpectedGroupUsers()
         {
             // Arrange
-            var groupIdToFetch = GroupSeeds.GroupFriends.Id;
+            var groupId = GroupSeeds.GroupFriends.Id;
 
             // Act
             var actualGroupUsers = await SpendWiseDbContextSUT.GroupUsers
-                .Where(gu => gu.GroupId == groupIdToFetch)
+                .Where(gu => gu.GroupId == groupId)
                 .ToListAsync();
 
             // Assert
@@ -233,10 +222,10 @@ namespace SpendWise.DAL.Tests
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task FetchGroupUsersByUserId_ReturnsExpectedGroupUsers()
+        public async Task FetchGroupUsersByUserId_ShouldReturnExpectedGroupUsers()
         {
             // Arrange
-            var userIdToFetch = UserSeeds.UserJohnDoe.Id;
+            var userId = UserSeeds.UserJohnDoe.Id;
             var expectedGroupUsers = new[]
             {
                 GroupUserSeeds.GroupUserJohnInFamily,
@@ -246,7 +235,7 @@ namespace SpendWise.DAL.Tests
 
             // Act
             var actualGroupUsers = await SpendWiseDbContextSUT.GroupUsers
-                .Where(gu => gu.UserId == userIdToFetch)
+                .Where(gu => gu.UserId == userId)
                 .ToListAsync();
 
             // Assert
@@ -263,18 +252,18 @@ namespace SpendWise.DAL.Tests
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task FetchGroupUser_MembershipCount_ReturnsCorrectCount()
+        public async Task FetchGroupUserCountByGroupId_ShouldReturnCorrectCount()
         {
             // Arrange
             var groupId = GroupSeeds.GroupFamily.Id;
-            var expectedGroupUserCount = 4;
+            var expectedCount = 4;
 
             // Act
-            var actualGroupUserCount = await SpendWiseDbContextSUT.GroupUsers
+            var actualCount = await SpendWiseDbContextSUT.GroupUsers
                 .CountAsync(gu => gu.GroupId == groupId);
 
             // Assert
-            Assert.Equal(expectedGroupUserCount, actualGroupUserCount);
+            Assert.Equal(expectedCount, actualCount);
         }
 
         #endregion
@@ -282,21 +271,17 @@ namespace SpendWise.DAL.Tests
         #region Update and Special Cases Tests
 
         /// <summary>
-        /// Tests for various update scenarios and edge cases for the <see cref="GroupUserEntity"/> entity.
-        /// This region verifies that updates work correctly, including concurrent additions of group users.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Verifies that concurrent additions of group users successfully persist all group users in the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddGroupUsers_ConcurrentAdditions_SuccessfullyPersistAllUsers()
+        [Fact]
+        public async Task AddGroupUsers_Concurrently_ShouldPersistAllUsers()
         {
             // Arrange
             var groupUsersToAdd = Enumerable.Range(0, 3).Select(i => new GroupUserEntity
             {
                 Id = Guid.NewGuid(),
+                Role = UserRole.GroupParticipant,
                 UserId = UserSeeds.UserAliceSmith.Id,
                 GroupId = i switch
                 {
@@ -336,16 +321,11 @@ namespace SpendWise.DAL.Tests
         #region Related Entities Handling Tests
 
         /// <summary>
-        /// Tests for handling related entities, specifically navigation properties for the <see cref="GroupUserEntity"/>.
-        /// This region ensures that related data, such as transactions, is correctly loaded and accessible.
-        /// </summary>
-
-        /// <summary>
         /// Verifies that fetching a group user with its navigation properties correctly loads related entities.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task FetchGroupUser_NavigationPropertiesAreCorrectlyLoaded()
+        public async Task FetchGroupUser_WithNavigationProperties_ShouldLoadRelatedEntities()
         {
             // Arrange
             var expectedGroupUser = GroupUserSeeds.GroupUserDianaInFamily;
@@ -380,20 +360,14 @@ namespace SpendWise.DAL.Tests
 
         #endregion
 
-
         #region Consistency Tests
 
-        /// <summary>
-        /// Tests to ensure the integrity of data and constraints after operations on the <see cref="GroupUserEntity"/>.
-        /// This region verifies that relationships and data integrity remain consistent after deletions and modifications.
-        /// </summary>
-
-        [Fact]
         /// <summary>
         /// Verifies that after deleting a group user, the associated group, user, and other related entities maintain integrity constraints.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task DeleteGroupUser_VerifyIntegrityConstraints_AfterDeletion()
+        [Fact]
+        public async Task DeleteGroupUser_ShouldMaintainIntegrityConstraints()
         {
             // Arrange
             var groupUserToDelete = await SpendWiseDbContextSUT.GroupUsers

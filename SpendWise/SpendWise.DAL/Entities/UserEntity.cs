@@ -6,7 +6,7 @@ namespace SpendWise.DAL.Entities
     /// <summary>
     /// Represents a user entity within the SpendWise application.
     /// </summary>
-    public record UserEntity : IEntity
+    public record UserEntity : IUserEntity
     {
         /// <summary>
         /// Gets or sets the unique identifier for the user.
@@ -77,11 +77,6 @@ namespace SpendWise.DAL.Entities
         /// Gets or sets the two-factor authentication secret key.
         /// </summary>
         public required string? TwoFactorSecret { get; set; }
-
-        /// <summary>
-        /// Gets or sets the user's role within the application (e.g., Admin, User).
-        /// </summary>
-        public required UserRole Role { get; set; } = UserRole.User;
 
         /// <summary>
         /// Gets or sets the user's preferred theme for the application.

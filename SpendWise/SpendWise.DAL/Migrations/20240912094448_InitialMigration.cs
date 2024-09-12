@@ -57,7 +57,6 @@ namespace SpendWise.DAL.Migrations
                     ResetPasswordTokenExpiry = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: true),
                     IsTwoFactorEnabled = table.Column<bool>(type: "boolean", nullable: false),
                     TwoFactorSecret = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    Role = table.Column<int>(type: "integer", nullable: false),
                     PreferredTheme = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -100,6 +99,7 @@ namespace SpendWise.DAL.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Role = table.Column<int>(type: "integer", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     GroupId = table.Column<Guid>(type: "uuid", nullable: false),
                     LimitId = table.Column<Guid>(type: "uuid", nullable: true)
@@ -186,6 +186,7 @@ namespace SpendWise.DAL.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    IsRead = table.Column<bool>(type: "boolean", nullable: false),
                     TransactionId = table.Column<Guid>(type: "uuid", nullable: false),
                     GroupUserId = table.Column<Guid>(type: "uuid", nullable: false)
                 },

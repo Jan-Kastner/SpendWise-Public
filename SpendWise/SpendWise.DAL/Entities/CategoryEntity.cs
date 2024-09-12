@@ -5,7 +5,7 @@ namespace SpendWise.DAL.Entities
     /// <summary>
     /// Represents a category entity within the SpendWise application.
     /// </summary>
-    public record CategoryEntity : IEntity
+    public record CategoryEntity : ICategoryEntity
     {
         /// <summary>
         /// Gets or sets the unique identifier for the category.

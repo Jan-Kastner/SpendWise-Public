@@ -1,4 +1,4 @@
-using System;
+using SpendWise.DAL.QueryObjects.Interfaces.QueryPropertyInterfaces;
 using System.Linq.Expressions;
 using SpendWise.DAL.Entities;
 

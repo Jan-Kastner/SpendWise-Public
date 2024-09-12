@@ -1,7 +1,6 @@
 using SpendWise.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
+using SpendWise.Common.Enums;
 
 namespace SpendWise.Common.Tests.Seeds
 {
@@ -17,6 +16,7 @@ namespace SpendWise.Common.Tests.Seeds
         public static GroupUserEntity GroupUserBobInFamily = new()
         {
             Id = Guid.NewGuid(),
+            Role = UserRole.GroupManager,
             UserId = UserSeeds.UserBobBrown.Id,
             GroupId = GroupSeeds.GroupFamily.Id,
             User = UserSeeds.UserBobBrown, // Set User directly
@@ -29,6 +29,7 @@ namespace SpendWise.Common.Tests.Seeds
         public static GroupUserEntity GroupUserCharlieInFamily = new()
         {
             Id = Guid.NewGuid(),
+            Role = UserRole.GroupCoordinator,
             UserId = UserSeeds.UserCharlieBlack.Id,
             GroupId = GroupSeeds.GroupFamily.Id,
             User = UserSeeds.UserCharlieBlack, // Set User directly
@@ -41,6 +42,7 @@ namespace SpendWise.Common.Tests.Seeds
         public static GroupUserEntity GroupUserDianaInFamily = new()
         {
             Id = Guid.NewGuid(),
+            Role = UserRole.GroupParticipant,
             UserId = UserSeeds.UserDianaGreen.Id,
             GroupId = GroupSeeds.GroupFamily.Id,
             User = UserSeeds.UserDianaGreen, // Set User directly
@@ -53,6 +55,7 @@ namespace SpendWise.Common.Tests.Seeds
         public static GroupUserEntity GroupUserJohnInFamily = new()
         {
             Id = Guid.NewGuid(),
+            Role = UserRole.GroupFounder,
             UserId = UserSeeds.UserJohnDoe.Id,
             GroupId = GroupSeeds.GroupFamily.Id,
             User = UserSeeds.UserJohnDoe, // Set User directly
@@ -65,6 +68,7 @@ namespace SpendWise.Common.Tests.Seeds
         public static GroupUserEntity GroupUserJohnInFriends = new()
         {
             Id = Guid.NewGuid(),
+            Role = UserRole.GroupFounder,
             UserId = UserSeeds.UserJohnDoe.Id,
             GroupId = GroupSeeds.GroupFriends.Id,
             User = UserSeeds.UserJohnDoe, // Set User directly
@@ -77,6 +81,7 @@ namespace SpendWise.Common.Tests.Seeds
         public static GroupUserEntity GroupUserJohnInWork = new()
         {
             Id = Guid.NewGuid(),
+            Role = UserRole.GroupFounder,
             UserId = UserSeeds.UserJohnDoe.Id,
             GroupId = GroupSeeds.GroupWork.Id,
             User = UserSeeds.UserJohnDoe, // Set User directly

@@ -3,7 +3,7 @@ namespace SpendWise.DAL.Entities
     /// <summary>
     /// Represents a transaction-group-user relationship entity within the SpendWise application.
     /// </summary>
-    public record TransactionGroupUserEntity : IEntity
+    public record TransactionGroupUserEntity : ITransactionGroupUserEntity
     {
         /// <summary>
         /// Gets or sets the unique identifier for the transaction-group-user relationship.
@@ -11,9 +11,14 @@ namespace SpendWise.DAL.Entities
         public required Guid Id { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the transaction has been read by the user.
+        /// </summary>
+        public required bool IsRead { get; set; } = false;
+
+        /// <summary>
         /// Gets or sets the unique identifier for the associated transaction.
         /// </summary>
-        public required Guid TransactionId { get; set; }
+        public required Guid TransactionId { get; init; }
 
         /// <summary>
         /// Gets or sets the transaction entity associated with this relationship.
@@ -23,7 +28,7 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the unique identifier for the associated group-user relationship.
         /// </summary>
-        public required Guid GroupUserId { get; set; }
+        public required Guid GroupUserId { get; init; }
 
         /// <summary>
         /// Gets or sets the group-user entity associated with this relationship.

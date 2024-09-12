@@ -5,7 +5,7 @@ namespace SpendWise.DAL.Entities
     /// <summary>
     /// Represents a group entity within the SpendWise application.
     /// </summary>
-    public record GroupEntity : IEntity
+    public record GroupEntity : IGroupEntity
     {
         /// <summary>
         /// Gets or sets the unique identifier for the group.

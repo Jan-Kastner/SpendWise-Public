@@ -23,41 +23,34 @@ namespace SpendWise.DAL.Tests
         #region CRUD Operations Tests
 
         /// <summary>
-        /// Contains tests that cover the basic Create, Read, Update, and Delete (CRUD) operations 
-        /// for the <see cref="LimitEntity"/> in the database context.
-        /// These tests ensure that the application can correctly persist and retrieve limits, as well as handle updates and deletions.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Tests the retrieval of a <see cref="LimitEntity"/> by its ID.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task FetchLimitById_ReturnsExpectedLimit()
+        [Fact]
+        public async Task FetchLimitById_ShouldReturnExpectedLimit()
         {
             // Arrange
             var expectedLimit = LimitSeeds.LimitCharlieFamily;
-            var limitIdToFetch = expectedLimit.Id;
+            var limitId = expectedLimit.Id;
 
             // Act
             var actualLimit = await SpendWiseDbContextSUT.Limits
-                .Where(l => l.Id == limitIdToFetch)
-                .SingleOrDefaultAsync();
+                .SingleOrDefaultAsync(l => l.Id == limitId);
 
             // Assert
             Assert.NotNull(actualLimit);
             DeepAssert.Equal(expectedLimit, actualLimit);
         }
 
-        [Fact]
         /// <summary>
         /// Tests the addition of a valid <see cref="LimitEntity"/> to the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddLimit_ValidLimit_SuccessfullyPersists()
+        [Fact]
+        public async Task AddLimit_ShouldPersistValidLimit()
         {
             // Arrange
-            var limitToAdd = new LimitEntity
+            var newLimit = new LimitEntity
             {
                 Id = Guid.NewGuid(),
                 GroupUserId = GroupUserSeeds.GroupUserBobInFamily.Id,
@@ -66,21 +59,21 @@ namespace SpendWise.DAL.Tests
             };
 
             // Act
-            SpendWiseDbContextSUT.Limits.Add(limitToAdd);
+            SpendWiseDbContextSUT.Limits.Add(newLimit);
             await SpendWiseDbContextSUT.SaveChangesAsync();
 
             // Assert
-            var actualLimit = await SpendWiseDbContextSUT.Limits.FindAsync(limitToAdd.Id);
+            var actualLimit = await SpendWiseDbContextSUT.Limits.FindAsync(newLimit.Id);
             Assert.NotNull(actualLimit);
-            DeepAssert.Equal(limitToAdd, actualLimit);
+            DeepAssert.Equal(newLimit, actualLimit);
         }
 
-        [Fact]
         /// <summary>
         /// Tests the update of an existing <see cref="LimitEntity"/> in the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UpdateLimit_ExistingLimit_SuccessfullyPersistsChanges()
+        [Fact]
+        public async Task UpdateLimit_ShouldPersistChanges()
         {
             // Arrange
             var existingLimit = await SpendWiseDbContextSUT.Limits
@@ -106,12 +99,12 @@ namespace SpendWise.DAL.Tests
             DeepAssert.Equal(updatedLimit, actualLimit);
         }
 
-        [Fact]
         /// <summary>
         /// Tests the deletion of an existing <see cref="LimitEntity"/> from the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task DeleteLimit_ExistingLimit_SuccessfullyRemovesLimit()
+        [Fact]
+        public async Task DeleteLimit_ShouldRemoveLimit()
         {
             // Arrange
             var limitToDelete = await SpendWiseDbContextSUT.Limits
@@ -140,17 +133,11 @@ namespace SpendWise.DAL.Tests
         #region Error Handling Tests
 
         /// <summary>
-        /// Contains tests focused on handling error scenarios in the `LimitEntity` CRUD operations.
-        /// These tests verify that the database context correctly throws exceptions when invalid data is persisted,
-        /// ensuring that integrity constraints and validation rules are enforced.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Tests the addition of a `LimitEntity` with a duplicate `GroupUserId`.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddLimit_DuplicateGroupUserId_ThrowsDbUpdateException()
+        [Fact]
+        public async Task AddLimit_WithDuplicateGroupUserId_ShouldThrowDbUpdateException()
         {
             // Arrange
             var duplicateLimit = new LimitEntity
@@ -171,13 +158,12 @@ namespace SpendWise.DAL.Tests
             Assert.NotNull(exception);
         }
 
-        [Fact]
         /// <summary>
         /// Tests the addition of a `LimitEntity` with a negative amount.
         /// </summary>
-        /// <remarks>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddLimit_NegativeAmount_ThrowsDbUpdateException()
+        [Fact]
+        public async Task AddLimit_WithNegativeAmount_ShouldThrowDbUpdateException()
         {
             // Arrange
             var invalidLimit = new LimitEntity
@@ -198,12 +184,12 @@ namespace SpendWise.DAL.Tests
             Assert.NotNull(exception);
         }
 
-        [Fact]
         /// <summary>
         /// Tests the addition of a `LimitEntity` with an invalid `GroupUserId`.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddLimit_InvalidUserId_ThrowsDbUpdateException()
+        [Fact]
+        public async Task AddLimit_WithInvalidGroupUserId_ShouldThrowDbUpdateException()
         {
             // Arrange
             var invalidLimit = new LimitEntity
@@ -224,12 +210,12 @@ namespace SpendWise.DAL.Tests
             Assert.NotNull(exception);
         }
 
-        [Fact]
         /// <summary>
         /// Tests the update of an existing `LimitEntity` with an invalid amount.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UpdateLimit_InvalidAmount_ThrowsDbUpdateException()
+        [Fact]
+        public async Task UpdateLimit_WithInvalidAmount_ShouldThrowDbUpdateException()
         {
             // Arrange
             var existingLimit = await SpendWiseDbContextSUT.Limits
@@ -256,18 +242,11 @@ namespace SpendWise.DAL.Tests
         #region Data Retrieval Tests
 
         /// <summary>
-        /// Contains tests focused on retrieving `LimitEntity` data from the database.
-        /// These tests ensure that specific queries return the expected results and that
-        /// the data is correctly filtered based on certain criteria.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Tests the retrieval of limits by `GroupUserId`.
         /// </summary>
-        /// <remarks>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task FetchLimitByGroupUserId_ReturnsExpectedLimits()
+        [Fact]
+        public async Task FetchLimitsByGroupUserId_ShouldReturnExpectedLimits()
         {
             // Arrange
             var expectedGroupUser = GroupUserSeeds.GroupUserCharlieInFamily;
@@ -290,17 +269,11 @@ namespace SpendWise.DAL.Tests
         #region Consistency Tests
 
         /// <summary>
-        /// Contains tests that ensure the consistency of the database after certain operations,
-        /// such as deletions. These tests verify that integrity constraints are maintained and that
-        /// related entities are handled correctly.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Tests the deletion of a `LimitEntity` and checks the integrity constraints afterward.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task DeleteLimit_CheckIntegrityConstraints_AfterDeletion()
+        [Fact]
+        public async Task DeleteLimit_ShouldMaintainIntegrityConstraints()
         {
             // Arrange
             var existingLimitId = LimitSeeds.LimitCharlieFamily.Id;
@@ -308,8 +281,7 @@ namespace SpendWise.DAL.Tests
 
             // Act
             var limitToDelete = await SpendWiseDbContextSUT.Limits
-                .Where(l => l.Id == existingLimitId)
-                .SingleOrDefaultAsync();
+                .SingleOrDefaultAsync(l => l.Id == existingLimitId);
 
             Assert.NotNull(limitToDelete);
 
@@ -325,6 +297,5 @@ namespace SpendWise.DAL.Tests
         }
 
         #endregion
-
     }
 }

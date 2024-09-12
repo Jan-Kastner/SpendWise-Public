@@ -12,7 +12,7 @@ using SpendWise.DAL.dbContext;
 namespace SpendWise.DAL.Migrations
 {
     [DbContext(typeof(SpendWiseDbContext))]
-    [Migration("20240829110555_InitialMigration")]
+    [Migration("20240912094448_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -94,6 +94,9 @@ namespace SpendWise.DAL.Migrations
 
                     b.Property<Guid?>("LimitId")
                         .HasColumnType("uuid");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -234,6 +237,9 @@ namespace SpendWise.DAL.Migrations
                     b.Property<Guid>("GroupUserId")
                         .HasColumnType("uuid");
 
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("boolean");
+
                     b.Property<Guid>("TransactionId")
                         .HasColumnType("uuid");
 
@@ -295,9 +301,6 @@ namespace SpendWise.DAL.Migrations
 
                     b.Property<DateTime?>("ResetPasswordTokenExpiry")
                         .HasColumnType("timestamp(3) with time zone");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("integer");
 
                     b.Property<string>("Surname")
                         .IsRequired()

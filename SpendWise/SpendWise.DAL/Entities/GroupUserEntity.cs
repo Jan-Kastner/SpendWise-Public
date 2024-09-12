@@ -1,14 +1,21 @@
+using SpendWise.Common.Enums;
+
 namespace SpendWise.DAL.Entities
 {
     /// <summary>
     /// Represents a group-user relationship entity within the SpendWise application.
     /// </summary>
-    public record GroupUserEntity : IEntity
+    public record GroupUserEntity : IGroupUserEntity
     {
         /// <summary>
         /// Gets or sets the unique identifier for the group-user relationship.
         /// </summary>
         public required Guid Id { get; set; }
+
+        /// <summary>
+        /// Gets or sets the user's role within the application (e.g., Admin, User).
+        /// </summary>
+        public required UserRole Role { get; set; }
 
         /// <summary>
         /// Gets or sets the unique identifier for the user.

@@ -22,37 +22,31 @@ namespace SpendWise.DAL.Tests
         #region CRUD Operations Tests
 
         /// <summary>
-        /// Tests for basic CRUD (Create, Read, Update, Delete) operations involving the <see cref="InvitationEntity"/>.
-        /// This region includes tests that validate the correct behavior of these operations in the database.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Verifies that fetching an invitation by its ID returns the expected invitation entity.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task FetchInvitationById_ReturnsExpectedInvitation()
+        [Fact]
+        public async Task FetchInvitationById_ShouldReturnExpectedInvitation()
         {
             // Arrange
             var expectedInvitation = InvitationSeeds.InvitationDianaToCharlieIntoFamily;
-            var invitationIdToFetch = expectedInvitation.Id;
+            var invitationId = expectedInvitation.Id;
 
             // Act
             var actualInvitation = await SpendWiseDbContextSUT.Invitations
-                .Where(i => i.Id == invitationIdToFetch)
-                .SingleOrDefaultAsync();
+                .SingleOrDefaultAsync(i => i.Id == invitationId);
 
             // Assert
             Assert.NotNull(actualInvitation);
             DeepAssert.Equal(expectedInvitation, actualInvitation);
         }
 
-        [Fact]
         /// <summary>
         /// Tests the addition of a valid invitation entity to the database and verifies it is successfully persisted.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddInvitation_ValidInvitation_SuccessfullyPersists()
+        [Fact]
+        public async Task AddInvitation_ShouldPersistValidInvitation()
         {
             var baseTime = DateTime.UtcNow;
             baseTime = new DateTime(
@@ -61,7 +55,7 @@ namespace SpendWise.DAL.Tests
             );
 
             // Arrange
-            var invitationToAdd = new InvitationEntity
+            var newInvitation = new InvitationEntity
             {
                 Id = Guid.NewGuid(),
                 SenderId = UserSeeds.UserJohnDoe.Id,
@@ -76,22 +70,22 @@ namespace SpendWise.DAL.Tests
             };
 
             // Act
-            SpendWiseDbContextSUT.Invitations.Add(invitationToAdd);
+            SpendWiseDbContextSUT.Invitations.Add(newInvitation);
             await SpendWiseDbContextSUT.SaveChangesAsync();
 
             // Assert
             await using var dbx = await DbContextFactory.CreateDbContextAsync();
-            var actualInvitation = await dbx.Invitations.FindAsync(invitationToAdd.Id);
+            var actualInvitation = await dbx.Invitations.FindAsync(newInvitation.Id);
             Assert.NotNull(actualInvitation);
-            DeepAssert.Equal(invitationToAdd, actualInvitation);
+            DeepAssert.Equal(newInvitation, actualInvitation);
         }
 
-        [Fact]
         /// <summary>
         /// Tests the updating of an existing invitation entity and verifies that the changes are correctly persisted.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UpdateInvitation_ExistingInvitation_SuccessfullyPersistsChanges()
+        [Fact]
+        public async Task UpdateInvitation_ShouldPersistChanges()
         {
             var baseTime = DateTime.UtcNow;
             baseTime = new DateTime(
@@ -125,12 +119,12 @@ namespace SpendWise.DAL.Tests
             DeepAssert.Equal(updatedInvitation, actualInvitation);
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that deleting an existing invitation entity successfully removes it from the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task DeleteInvitation_ExistingInvitation_SuccessfullyRemovesInvitation()
+        [Fact]
+        public async Task DeleteInvitation_ShouldRemoveInvitation()
         {
             // Arrange
             var invitationToDelete = await SpendWiseDbContextSUT.Invitations
@@ -153,16 +147,11 @@ namespace SpendWise.DAL.Tests
         #region Error Handling Tests
 
         /// <summary>
-        /// Contains tests for validating the error handling mechanisms when performing update operations on the <see cref="InvitationEntity"/>.
-        /// These tests ensure that invalid data triggers the appropriate exceptions, thereby maintaining the integrity of the application's data.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Validates that updating an invitation with an invalid SenderId results in a <see cref="DbUpdateException"/>.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UpdateInvitation_InvalidSenderId_ThrowsDbUpdateException()
+        [Fact]
+        public async Task UpdateInvitation_WithInvalidSenderId_ShouldThrowDbUpdateException()
         {
             // Arrange
             var existingInvitation = await SpendWiseDbContextSUT.Invitations
@@ -184,12 +173,12 @@ namespace SpendWise.DAL.Tests
             Assert.NotNull(exception);
         }
 
-        [Fact]
         /// <summary>
         /// Ensures that updating an invitation with an invalid ReceiverId raises a <see cref="DbUpdateException"/>.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UpdateInvitation_InvalidReceiverId_ThrowsDbUpdateException()
+        [Fact]
+        public async Task UpdateInvitation_WithInvalidReceiverId_ShouldThrowDbUpdateException()
         {
             // Arrange
             var existingInvitation = await SpendWiseDbContextSUT.Invitations
@@ -211,12 +200,12 @@ namespace SpendWise.DAL.Tests
             Assert.NotNull(exception);
         }
 
-        [Fact]
         /// <summary>
         /// Confirms that updating an invitation with an invalid GroupId triggers a <see cref="DbUpdateException"/>.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UpdateInvitation_InvalidGroupId_ThrowsDbUpdateException()
+        [Fact]
+        public async Task UpdateInvitation_WithInvalidGroupId_ShouldThrowDbUpdateException()
         {
             // Arrange
             var existingInvitation = await SpendWiseDbContextSUT.Invitations
@@ -238,12 +227,12 @@ namespace SpendWise.DAL.Tests
             Assert.NotNull(exception);
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that updating an invitation with an invalid ResponseDate (e.g., <see cref="DateTime.MinValue"/>) causes a <see cref="DbUpdateException"/>.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UpdateInvitation_InvalidResponseDate_ThrowsDbUpdateException()
+        [Fact]
+        public async Task UpdateInvitation_WithInvalidResponseDate_ShouldThrowDbUpdateException()
         {
             // Arrange
             var existingInvitation = await SpendWiseDbContextSUT.Invitations
@@ -270,90 +259,85 @@ namespace SpendWise.DAL.Tests
         #region Data Retrieval Tests
 
         /// <summary>
-        /// Contains tests focused on retrieving <see cref="InvitationEntity"/> data from the database.
-        /// These tests ensure that the data retrieval logic functions as expected, particularly when filtering by different properties.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Validates that invitations can be correctly fetched based on their acceptance status.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task FetchInvitationsByStatus_ReturnsExpectedInvitations()
+        [Fact]
+        public async Task FetchInvitationsByStatus_ShouldReturnExpectedInvitations()
         {
             // Arrange
-            var status = true; // Accepted invitations
+            var isAccepted = true; // Accepted invitations
 
             // Act
             var invitations = await SpendWiseDbContextSUT.Invitations
-                .Where(i => i.IsAccepted == status)
+                .Where(i => i.IsAccepted == isAccepted)
                 .ToListAsync();
 
             // Assert
             Assert.NotEmpty(invitations);
-            Assert.All(invitations, i => Assert.Equal(status, i.IsAccepted));
+            Assert.All(invitations, i => Assert.Equal(isAccepted, i.IsAccepted));
         }
 
-        [Fact]
         /// <summary>
         /// Ensures that invitations sent by a specific user can be accurately retrieved from the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task FetchInvitationsBySenderId_ReturnsExpectedInvitations()
+        [Fact]
+        public async Task FetchInvitationsBySenderId_ShouldReturnExpectedInvitations()
         {
             // Arrange
-            var senderIdToFetch = UserSeeds.UserJohnDoe.Id;
+            var senderId = UserSeeds.UserJohnDoe.Id;
 
             // Act
             var invitations = await SpendWiseDbContextSUT.Invitations
-                .Where(i => i.SenderId == senderIdToFetch)
+                .Where(i => i.SenderId == senderId)
                 .ToListAsync();
 
             // Assert
             Assert.NotEmpty(invitations);
-            Assert.All(invitations, i => Assert.Equal(senderIdToFetch, i.SenderId));
+            Assert.All(invitations, i => Assert.Equal(senderId, i.SenderId));
         }
 
-        [Fact]
         /// <summary>
         /// Confirms that invitations received by a specific user can be accurately retrieved from the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task FetchInvitationsByReceiverId_ReturnsExpectedInvitations()
+        [Fact]
+        public async Task FetchInvitationsByReceiverId_ShouldReturnExpectedInvitations()
         {
             // Arrange
-            var receiverIdToFetch = UserSeeds.UserDianaGreen.Id;
+            var receiverId = UserSeeds.UserDianaGreen.Id;
 
             // Act
             var invitations = await SpendWiseDbContextSUT.Invitations
-                .Where(i => i.ReceiverId == receiverIdToFetch)
+                .Where(i => i.ReceiverId == receiverId)
                 .ToListAsync();
 
             // Assert
             Assert.NotEmpty(invitations);
-            Assert.All(invitations, i => Assert.Equal(receiverIdToFetch, i.ReceiverId));
+            Assert.All(invitations, i => Assert.Equal(receiverId, i.ReceiverId));
         }
 
         #endregion
 
         #region Related Entities Handling Tests
 
-        [Fact]
         /// <summary>
         /// Validates that the navigation properties of an invitation entity are correctly loaded when fetching an invitation by its ID.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task FetchInvitation_NavigationPropertiesAreCorrectlyLoaded()
+        [Fact]
+        public async Task FetchInvitation_WithNavigationProperties_ShouldLoadRelatedEntities()
         {
             // Arrange
-            var invitationIdToFetch = InvitationSeeds.InvitationDianaToCharlieIntoFamily.Id;
+            var invitationId = InvitationSeeds.InvitationDianaToCharlieIntoFamily.Id;
 
             // Act
             var actualInvitation = await SpendWiseDbContextSUT.Invitations
                 .Include(i => i.Sender)
                 .Include(i => i.Receiver)
                 .Include(i => i.Group)
-                .SingleOrDefaultAsync(i => i.Id == invitationIdToFetch);
+                .SingleOrDefaultAsync(i => i.Id == invitationId);
 
             // Assert
             Assert.NotNull(actualInvitation);
@@ -370,16 +354,11 @@ namespace SpendWise.DAL.Tests
         #region Update and Special Cases Tests
 
         /// <summary>
-        /// Contains tests that focus on handling special cases and updates in the <see cref="InvitationEntity"/>.
-        /// These tests ensure that the application can handle concurrent operations and correctly persist data even under challenging conditions.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Tests the ability of the application to successfully handle concurrent additions of multiple invitations.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddInvitations_ConcurrentAdditions_SuccessfullyPersistAllInvitations()
+        [Fact]
+        public async Task AddInvitations_Concurrently_ShouldPersistAllInvitations()
         {
             // Arrange
             var baseTime = DateTime.UtcNow;
@@ -420,16 +399,11 @@ namespace SpendWise.DAL.Tests
         #region Consistency Tests
 
         /// <summary>
-        /// Contains tests to ensure the consistency and integrity of the <see cref="InvitationEntity"/> after certain operations, such as deletions.
-        /// These tests check that related entities remain intact and the database's referential integrity is maintained.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Verifies the integrity constraints of the database after deleting an invitation.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task DeleteInvitation_CheckIntegrityConstraints_AfterDeletion()
+        [Fact]
+        public async Task DeleteInvitation_ShouldMaintainIntegrityConstraints()
         {
             // Arrange
             var invitationToRemove = await SpendWiseDbContextSUT.Invitations

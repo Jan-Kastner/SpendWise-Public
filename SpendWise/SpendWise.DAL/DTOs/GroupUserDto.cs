@@ -1,3 +1,5 @@
+using SpendWise.Common.Enums;
+
 namespace SpendWise.DAL.DTOs
 {
     /// <summary>
@@ -9,6 +11,11 @@ namespace SpendWise.DAL.DTOs
         /// Gets or sets the unique identifier for the group-user relationship.
         /// </summary>
         public required Guid Id { get; set; }
+
+        /// <summary>
+        /// Gets or sets the user's role within the application (e.g., Admin, User).
+        /// </summary>
+        public required UserRole Role { get; set; }
 
         /// <summary>
         /// Gets or sets the unique identifier for the user.

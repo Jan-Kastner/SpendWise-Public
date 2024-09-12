@@ -5,7 +5,7 @@ namespace SpendWise.DAL.Entities
     /// <summary>
     /// Represents a transaction entity within the SpendWise application.
     /// </summary>
-    public record TransactionEntity : IEntity
+    public record TransactionEntity : ITransactionEntity
     {
         /// <summary>
         /// Gets or sets the unique identifier for the transaction.

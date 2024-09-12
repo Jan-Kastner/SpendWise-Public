@@ -15,6 +15,7 @@ namespace SpendWise.Common.Tests.Seeds
         public static readonly TransactionGroupUserEntity TransactionGroupUserDinnerFamilyDiana = new()
         {
             Id = Guid.NewGuid(),
+            IsRead = true,
             TransactionId = TransactionSeeds.TransactionDianaDinner.Id,
             GroupUserId = GroupUserSeeds.GroupUserDianaInFamily.Id,
             Transaction = TransactionSeeds.TransactionDianaDinner,
@@ -27,6 +28,7 @@ namespace SpendWise.Common.Tests.Seeds
         public static readonly TransactionGroupUserEntity TransactionGroupUserFoodFamilyJohn = new()
         {
             Id = Guid.NewGuid(),
+            IsRead = true,
             TransactionId = TransactionSeeds.TransactionJohnFood.Id,
             GroupUserId = GroupUserSeeds.GroupUserJohnInFamily.Id,
             Transaction = TransactionSeeds.TransactionJohnFood,
@@ -39,6 +41,7 @@ namespace SpendWise.Common.Tests.Seeds
         public static readonly TransactionGroupUserEntity TransactionGroupUserTaxiFriendsJohn = new()
         {
             Id = Guid.NewGuid(),
+            IsRead = false,
             TransactionId = TransactionSeeds.TransactionJohnTaxi.Id,
             GroupUserId = GroupUserSeeds.GroupUserJohnInFriends.Id,
             Transaction = TransactionSeeds.TransactionJohnTaxi,
@@ -51,6 +54,7 @@ namespace SpendWise.Common.Tests.Seeds
         public static readonly TransactionGroupUserEntity TransactionGroupUserTransportFriendsJohn = new()
         {
             Id = Guid.NewGuid(),
+            IsRead = false,
             TransactionId = TransactionSeeds.TransactionJohnTransport.Id,
             GroupUserId = GroupUserSeeds.GroupUserJohnInFriends.Id,
             Transaction = TransactionSeeds.TransactionJohnTransport,
@@ -63,6 +67,7 @@ namespace SpendWise.Common.Tests.Seeds
         public static readonly TransactionGroupUserEntity TransactionGroupUserTransportWorkJohn = new()
         {
             Id = Guid.NewGuid(),
+            IsRead = false,
             TransactionId = TransactionSeeds.TransactionJohnTransport.Id,
             GroupUserId = GroupUserSeeds.GroupUserJohnInWork.Id,
             Transaction = TransactionSeeds.TransactionJohnTransport,

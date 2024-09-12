@@ -3,7 +3,7 @@ namespace SpendWise.DAL.Entities
     /// <summary>
     /// Represents an invitation entity within the SpendWise application.
     /// </summary>
-    public record InvitationEntity : IEntity
+    public record InvitationEntity : IInvitationEntity
     {
         /// <summary>
         /// Gets or sets the unique identifier for the invitation.

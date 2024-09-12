@@ -1,7 +1,7 @@
 using System;
 using System.Linq.Expressions;
 using SpendWise.DAL.Entities;
-using SpendWise.DAL.QueryObjects;
+using SpendWise.Common.Enums;
 
 namespace SpendWise.DAL.QueryObjects
 {
@@ -9,177 +9,198 @@ namespace SpendWise.DAL.QueryObjects
     /// Represents a query object for the <see cref="GroupUserEntity"/>.
     /// Enables query construction using methods for AND, OR, and NOT operations.
     /// </summary>
-    public class GroupUserQueryObject : QueryObject<GroupUserEntity>
+    public class GroupUserQueryObject : BaseQueryObject<GroupUserEntity, GroupUserQueryObject>, IGroupUserQueryObject<GroupUserQueryObject>
     {
-        #region AND
+        #region IIdQuery
 
         /// <summary>
-        /// Adds a condition to compare the group user ID using an AND operation.
+        /// Filters the query to include items with the specified ID.
         /// </summary>
-        /// <param name="id">The group user ID to compare.</param>
-        /// <returns>The current instance of <see cref="GroupUserQueryObject"/>.</returns>
-        public GroupUserQueryObject WithId(Guid id)
-        {
-            And(entity => entity.Id == id);
-            return this;
-        }
+        /// <param name="id">The ID to filter by.</param>
+        /// <returns>The query object with the applied filter.</returns>
+        public new GroupUserQueryObject WithId(Guid id) => base.WithId(id);
 
         /// <summary>
-        /// Adds a condition to compare the user ID using an AND operation.
+        /// Adds an OR condition to the query to include items with the specified ID.
         /// </summary>
-        /// <param name="userId">The user ID to compare.</param>
-        /// <returns>The current instance of <see cref="GroupUserQueryObject"/>.</returns>
-        public GroupUserQueryObject WithUserId(Guid userId)
+        /// <param name="id">The ID to filter by.</param>
+        /// <returns>The query object with the applied OR condition.</returns>
+        public new GroupUserQueryObject OrWithId(Guid id) => base.OrWithId(id);
+
+        /// <summary>
+        /// Filters the query to exclude items with the specified ID.
+        /// </summary>
+        /// <param name="id">The ID to exclude.</param>
+        /// <returns>The query object with the applied exclusion filter.</returns>
+        public new GroupUserQueryObject NotWithId(Guid id) => base.NotWithId(id);
+
+        #endregion
+
+        #region IRoleQuery
+
+        /// <summary>
+        /// Filters the query to include items with the specified user role.
+        /// </summary>
+        /// <param name="role">The user role to filter by.</param>
+        /// <returns>The query object with the applied filter.</returns>
+        public new GroupUserQueryObject WithUserRole(UserRole role) => base.WithUserRole(role);
+
+        /// <summary>
+        /// Adds an OR condition to the query to include items with the specified user role.
+        /// </summary>
+        /// <param name="role">The user role to filter by.</param>
+        /// <returns>The query object with the applied OR condition.</returns>
+        public new GroupUserQueryObject OrWithUserRole(UserRole role) => base.OrWithUserRole(role);
+
+        /// <summary>
+        /// Filters the query to exclude items with the specified user role.
+        /// </summary>
+        /// <param name="role">The user role to exclude.</param>
+        /// <returns>The query object with the applied exclusion filter.</returns>
+        public new GroupUserQueryObject NotWithUserRole(UserRole role) => base.NotWithUserRole(role);
+
+        #endregion
+
+        #region IUserQuery
+
+        /// <summary>
+        /// Filters the query to include items with the specified user ID.
+        /// </summary>
+        /// <param name="userId">The user ID to filter by.</param>
+        /// <returns>The query object with the applied filter.</returns>
+        public GroupUserQueryObject WithUser(Guid userId)
         {
             And(entity => entity.UserId == userId);
             return this;
         }
 
         /// <summary>
-        /// Adds a condition to compare the group ID using an AND operation.
+        /// Adds an OR condition to the query to include items with the specified user ID.
         /// </summary>
-        /// <param name="groupId">The group ID to compare.</param>
-        /// <returns>The current instance of <see cref="GroupUserQueryObject"/>.</returns>
-        public GroupUserQueryObject WithGroupId(Guid groupId)
-        {
-            And(entity => entity.GroupId == groupId);
-            return this;
-        }
-
-        /// <summary>
-        /// Adds a condition to compare the limit ID using an AND operation.
-        /// </summary>
-        /// <param name="limitId">The limit ID to compare.</param>
-        /// <returns>The current instance of <see cref="GroupUserQueryObject"/>.</returns>
-        public GroupUserQueryObject WithLimitId(Guid? limitId)
-        {
-            And(entity => entity.LimitId == limitId);
-            return this;
-        }
-
-        /// <summary>
-        /// Adds a condition to include entities that have a specific transaction group user ID using an AND operation.
-        /// </summary>
-        /// <param name="transactionGroupUserId">The transaction group user ID to match.</param>
-        /// <returns>The current instance of <see cref="GroupUserQueryObject"/>.</returns>
-        public GroupUserQueryObject WithTransactionGroupUser(Guid transactionGroupUserId)
-        {
-            And(entity => entity.TransactionGroupUsers.Any(tgu => tgu.Id == transactionGroupUserId));
-            return this;
-        }
-
-        #endregion
-
-        #region OR
-
-        /// <summary>
-        /// Adds a condition to compare the group user ID using an OR operation.
-        /// </summary>
-        /// <param name="id">The group user ID to compare.</param>
-        /// <returns>The current instance of <see cref="GroupUserQueryObject"/>.</returns>
-        public GroupUserQueryObject OrWithId(Guid id)
-        {
-            Or(entity => entity.Id == id);
-            return this;
-        }
-
-        /// <summary>
-        /// Adds a condition to compare the user ID using an OR operation.
-        /// </summary>
-        /// <param name="userId">The user ID to compare.</param>
-        /// <returns>The current instance of <see cref="GroupUserQueryObject"/>.</returns>
-        public GroupUserQueryObject OrWithUserId(Guid userId)
+        /// <param name="userId">The user ID to filter by.</param>
+        /// <returns>The query object with the applied OR condition.</returns>
+        public GroupUserQueryObject OrWithUser(Guid userId)
         {
             Or(entity => entity.UserId == userId);
             return this;
         }
 
         /// <summary>
-        /// Adds a condition to compare the group ID using an OR operation.
+        /// Filters the query to exclude items with the specified user ID.
         /// </summary>
-        /// <param name="groupId">The group ID to compare.</param>
-        /// <returns>The current instance of <see cref="GroupUserQueryObject"/>.</returns>
-        public GroupUserQueryObject OrWithGroupId(Guid groupId)
+        /// <param name="userId">The user ID to exclude.</param>
+        /// <returns>The query object with the applied exclusion filter.</returns>
+        public GroupUserQueryObject NotWithUser(Guid userId)
+        {
+            Not(entity => entity.UserId == userId);
+            return this;
+        }
+
+        #endregion
+
+        #region IGroupQuery
+
+        /// <summary>
+        /// Filters the query to include items with the specified group ID.
+        /// </summary>
+        /// <param name="groupId">The group ID to filter by.</param>
+        /// <returns>The query object with the applied filter.</returns>
+        public GroupUserQueryObject WithGroup(Guid groupId)
+        {
+            And(entity => entity.GroupId == groupId);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds an OR condition to the query to include items with the specified group ID.
+        /// </summary>
+        /// <param name="groupId">The group ID to filter by.</param>
+        /// <returns>The query object with the applied OR condition.</returns>
+        public GroupUserQueryObject OrWithGroup(Guid groupId)
         {
             Or(entity => entity.GroupId == groupId);
             return this;
         }
 
         /// <summary>
-        /// Adds a condition to compare the limit ID using an OR operation.
+        /// Filters the query to exclude items with the specified group ID.
         /// </summary>
-        /// <param name="limitId">The limit ID to compare.</param>
-        /// <returns>The current instance of <see cref="GroupUserQueryObject"/>.</returns>
-        public GroupUserQueryObject OrWithLimitId(Guid? limitId)
+        /// <param name="groupId">The group ID to exclude.</param>
+        /// <returns>The query object with the applied exclusion filter.</returns>
+        public GroupUserQueryObject NotWithGroup(Guid groupId)
+        {
+            Not(entity => entity.GroupId == groupId);
+            return this;
+        }
+
+        #endregion
+
+        #region ILimitQuery
+
+        /// <summary>
+        /// Filters the query to include items with the specified limit ID.
+        /// </summary>
+        /// <param name="limitId">The limit ID to filter by.</param>
+        /// <returns>The query object with the applied filter.</returns>
+        public GroupUserQueryObject WithLimit(Guid? limitId)
+        {
+            And(entity => entity.LimitId == limitId);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds an OR condition to the query to include items with the specified limit ID.
+        /// </summary>
+        /// <param name="limitId">The limit ID to filter by.</param>
+        /// <returns>The query object with the applied OR condition.</returns>
+        public GroupUserQueryObject OrWithLimit(Guid? limitId)
         {
             Or(entity => entity.LimitId == limitId);
             return this;
         }
 
         /// <summary>
-        /// Adds a condition to include entities that have a specific transaction group user ID using an OR operation.
+        /// Filters the query to exclude items with the specified limit ID.
         /// </summary>
-        /// <param name="transactionGroupUserId">The transaction group user ID to match.</param>
-        /// <returns>The current instance of <see cref="GroupUserQueryObject"/>.</returns>
+        /// <param name="limitId">The limit ID to exclude.</param>
+        /// <returns>The query object with the applied exclusion filter.</returns>
+        public GroupUserQueryObject NotWithLimit(Guid? limitId)
+        {
+            Not(entity => entity.LimitId == limitId);
+            return this;
+        }
+
+        #endregion
+
+        #region ITransactionGroupUserQuery
+
+        /// <summary>
+        /// Filters the query to include items with the specified transaction group user ID.
+        /// </summary>
+        /// <param name="transactionGroupUserId">The transaction group user ID to filter by.</param>
+        /// <returns>The query object with the applied filter.</returns>
+        public GroupUserQueryObject WithTransactionGroupUser(Guid transactionGroupUserId)
+        {
+            And(entity => entity.TransactionGroupUsers.Any(tgu => tgu.Id == transactionGroupUserId));
+            return this;
+        }
+
+        /// <summary>
+        /// Adds an OR condition to the query to include items with the specified transaction group user ID.
+        /// </summary>
+        /// <param name="transactionGroupUserId">The transaction group user ID to filter by.</param>
+        /// <returns>The query object with the applied OR condition.</returns>
         public GroupUserQueryObject OrWithTransactionGroupUser(Guid transactionGroupUserId)
         {
             Or(entity => entity.TransactionGroupUsers.Any(tgu => tgu.Id == transactionGroupUserId));
             return this;
         }
 
-        #endregion
-
-        #region NOT
-
         /// <summary>
-        /// Adds a condition to exclude entities with a specific group user ID using a NOT operation.
-        /// </summary>
-        /// <param name="id">The group user ID to exclude.</param>
-        /// <returns>The current instance of <see cref="GroupUserQueryObject"/>.</returns>
-        public GroupUserQueryObject NotWithId(Guid id)
-        {
-            Not(entity => entity.Id == id);
-            return this;
-        }
-
-        /// <summary>
-        /// Adds a condition to exclude entities with a specific user ID using a NOT operation.
-        /// </summary>
-        /// <param name="userId">The user ID to exclude.</param>
-        /// <returns>The current instance of <see cref="GroupUserQueryObject"/>.</returns>
-        public GroupUserQueryObject NotWithUserId(Guid userId)
-        {
-            Not(entity => entity.UserId == userId);
-            return this;
-        }
-
-        /// <summary>
-        /// Adds a condition to exclude entities with a specific group ID using a NOT operation.
-        /// </summary>
-        /// <param name="groupId">The group ID to exclude.</param>
-        /// <returns>The current instance of <see cref="GroupUserQueryObject"/>.</returns>
-        public GroupUserQueryObject NotWithGroupId(Guid groupId)
-        {
-            Not(entity => entity.GroupId == groupId);
-            return this;
-        }
-
-        /// <summary>
-        /// Adds a condition to exclude entities with a specific limit ID using a NOT operation.
-        /// </summary>
-        /// <param name="limitId">The limit ID to exclude.</param>
-        /// <returns>The current instance of <see cref="GroupUserQueryObject"/>.</returns>
-        public GroupUserQueryObject NotWithLimitId(Guid? limitId)
-        {
-            Not(entity => entity.LimitId == limitId);
-            return this;
-        }
-
-        /// <summary>
-        /// Adds a condition to exclude entities that have a specific transaction group user ID using a NOT operation.
+        /// Filters the query to exclude items with the specified transaction group user ID.
         /// </summary>
         /// <param name="transactionGroupUserId">The transaction group user ID to exclude.</param>
-        /// <returns>The current instance of <see cref="GroupUserQueryObject"/>.</returns>
+        /// <returns>The query object with the applied exclusion filter.</returns>
         public GroupUserQueryObject NotWithTransactionGroupUser(Guid transactionGroupUserId)
         {
             Not(entity => entity.TransactionGroupUsers.Any(tgu => tgu.Id == transactionGroupUserId));

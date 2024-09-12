@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using SpendWise.Common.Tests.Seeds;
 using SpendWise.Common.Tests.Helpers;
 using SpendWise.DAL.Entities;
-using SpendWise.DAL.QueryObjects;
+using SpendWise.Common.Enums;
 
 namespace SpendWise.DAL.Tests.UnitOfWorkTests
 {
@@ -33,6 +33,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             var groupUserToAdd = new GroupUserDto
             {
                 Id = Guid.NewGuid(),
+                Role = UserRole.GroupParticipant,
                 UserId = UserSeeds.UserAliceSmith.Id,
                 GroupId = GroupSeeds.GroupFamily.Id
             };
@@ -105,6 +106,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             var duplicateGroupUser = new GroupUserDto
             {
                 Id = Guid.NewGuid(),
+                Role = UserRole.GroupParticipant,
                 UserId = existingGroupUser.UserId, // Duplicate UserId
                 GroupId = existingGroupUser.GroupId // Duplicate GroupId
             };
@@ -163,6 +165,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             var invalidGroupUser = new GroupUserDto
             {
                 Id = Guid.NewGuid(),
+                Role = UserRole.GroupParticipant,
                 UserId = Guid.Empty, // Invalid UserId
                 GroupId = Guid.Empty // Invalid GroupId
             };
@@ -197,6 +200,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             var updatedGroupUser = new GroupUserDto
             {
                 Id = existingGroupUser.Id,
+                Role = UserRole.GroupParticipant,
                 UserId = Guid.NewGuid(), // Attempt to change UserId
                 GroupId = Guid.NewGuid() // Attempt to change GroupId
             };
@@ -295,6 +299,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             var newGroupUserDto = new GroupUserDto
             {
                 Id = Guid.NewGuid(),
+                Role = UserRole.GroupParticipant,
                 UserId = UserSeeds.UserAliceSmith.Id,
                 GroupId = GroupSeeds.GroupWork.Id
             };
@@ -302,6 +307,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             var updatedGroupUserDto = new GroupUserDto
             {
                 Id = newGroupUserDto.Id,
+                Role = UserRole.GroupParticipant,
                 UserId = newGroupUserDto.UserId,
                 GroupId = GroupSeeds.GroupFamily.Id
             };

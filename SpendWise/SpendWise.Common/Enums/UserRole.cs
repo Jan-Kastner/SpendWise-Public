@@ -6,18 +6,24 @@ namespace SpendWise.Common.Enums
     public enum UserRole
     {
         /// <summary>
-        /// Represents a standard user with basic access rights.
+        /// Role with full group management permissions, including adding/removing members, dissolving the group, and assigning roles to other members.
         /// </summary>
-        User = 1,
+        GroupFounder = 1,
 
         /// <summary>
-        /// Represents a group founder who has additional privileges related to group management.
+        /// Role with permissions to add/remove members and assign roles to other members, but without the ability to dissolve the group.
         /// </summary>
-        GroupFounder = 2,
+        GroupManager = 2,
 
         /// <summary>
-        /// Represents an admin user with elevated permissions to manage the application.
+        /// Role with permissions to add/remove members, but cannot assign roles or dissolve the group.
         /// </summary>
-        Admin = 3,
+        GroupCoordinator = 3,
+
+        /// <summary>
+        /// Role without any permissions to manage members or assign roles.
+        /// </summary>
+        GroupParticipant = 4,
     }
 }
+

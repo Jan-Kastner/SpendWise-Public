@@ -23,16 +23,11 @@ namespace SpendWise.DAL.Tests
         #region CRUD Operations Tests
 
         /// <summary>
-        /// Tests the CRUD (Create, Read, Update, Delete) operations for the <see cref="UserEntity"/> entity.
-        /// These tests verify that the database operations work as expected for users.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Verifies that adding a valid user successfully persists the user in the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddUser_ValidUser_SuccessfullyPersists()
+        [Fact]
+        public async Task AddUser_ValidUser_ShouldPersistSuccessfully()
         {
             // Arrange
             var baseTime = DateTime.UtcNow;
@@ -41,7 +36,7 @@ namespace SpendWise.DAL.Tests
                 DateTimeKind.Utc
             );
 
-            var userToAdd = new UserEntity
+            var newUser = new UserEntity
             {
                 Id = Guid.NewGuid(),
                 Name = "David",
@@ -59,36 +54,35 @@ namespace SpendWise.DAL.Tests
                 ResetPasswordTokenExpiry = null,
                 IsTwoFactorEnabled = false,
                 TwoFactorSecret = null,
-                Role = UserRole.User,
                 PreferredTheme = Theme.SystemDefault
             };
 
             // Act
-            SpendWiseDbContextSUT.Users.Add(userToAdd);
+            SpendWiseDbContextSUT.Users.Add(newUser);
             await SpendWiseDbContextSUT.SaveChangesAsync();
 
             // Assert
-            await using var dbx = await DbContextFactory.CreateDbContextAsync();
-            var actualUser = await dbx.Users.SingleOrDefaultAsync(i => i.Id == userToAdd.Id);
+            await using var dbContext = await DbContextFactory.CreateDbContextAsync();
+            var actualUser = await dbContext.Users.SingleOrDefaultAsync(u => u.Id == newUser.Id);
 
             Assert.NotNull(actualUser);
-            DeepAssert.Equal(userToAdd, actualUser);
+            DeepAssert.Equal(newUser, actualUser);
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that fetching a user by their ID returns the expected user.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task FetchUserById_ReturnsExpectedUser()
+        [Fact]
+        public async Task FetchUserById_ShouldReturnExpectedUser()
         {
             // Arrange
             var expectedUser = UserSeeds.UserJohnDoe;
-            var userIdToFetch = expectedUser.Id;
+            var userId = expectedUser.Id;
 
             // Act
             var actualUser = await SpendWiseDbContextSUT.Users
-                .Where(u => u.Id == userIdToFetch)
+                .Where(u => u.Id == userId)
                 .SingleOrDefaultAsync();
 
             // Assert
@@ -96,12 +90,12 @@ namespace SpendWise.DAL.Tests
             DeepAssert.Equal(expectedUser, actualUser);
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that updating an existing user successfully persists the changes in the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UpdateUser_ExistingUser_SuccessfullyPersistsChanges()
+        [Fact]
+        public async Task UpdateUser_ExistingUser_ShouldPersistChangesSuccessfully()
         {
             // Arrange
             var existingUser = await SpendWiseDbContextSUT.Users
@@ -122,17 +116,17 @@ namespace SpendWise.DAL.Tests
             await SpendWiseDbContextSUT.SaveChangesAsync();
 
             // Assert
-            await using var dbx = await DbContextFactory.CreateDbContextAsync();
-            var actualUser = await dbx.Users.SingleAsync(i => i.Id == updatedUser.Id);
+            await using var dbContext = await DbContextFactory.CreateDbContextAsync();
+            var actualUser = await dbContext.Users.SingleAsync(u => u.Id == updatedUser.Id);
             DeepAssert.Equal(updatedUser, actualUser);
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that deleting an existing user successfully removes them from the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task DeleteUser_ExistingUser_SuccessfullyRemovesUser()
+        [Fact]
+        public async Task DeleteUser_ExistingUser_ShouldRemoveSuccessfully()
         {
             // Arrange
             var userToDelete = await SpendWiseDbContextSUT.Users
@@ -146,23 +140,23 @@ namespace SpendWise.DAL.Tests
             await SpendWiseDbContextSUT.SaveChangesAsync();
 
             // Assert
-            Assert.False(await SpendWiseDbContextSUT.Users.AnyAsync(i => i.Id == userToDelete.Id));
+            Assert.False(await SpendWiseDbContextSUT.Users.AnyAsync(u => u.Id == userToDelete.Id));
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that fetching a user by their email returns the expected user.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task FetchUserByEmail_ReturnsExpectedUser()
+        [Fact]
+        public async Task FetchUserByEmail_ShouldReturnExpectedUser()
         {
             // Arrange
             var expectedUser = UserSeeds.UserJohnDoe;
-            var userEmailToFetch = expectedUser.Email;
+            var userEmail = expectedUser.Email;
 
             // Act
             var actualUser = await SpendWiseDbContextSUT.Users
-                .Where(u => u.Email == userEmailToFetch)
+                .Where(u => u.Email == userEmail)
                 .SingleOrDefaultAsync();
 
             // Assert
@@ -170,12 +164,12 @@ namespace SpendWise.DAL.Tests
             DeepAssert.Equal(expectedUser, actualUser);
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that adding a user with maximum field length successfully stores the data correctly.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddUser_WithMaximumFieldLength_StoresDataCorrectly()
+        [Fact]
+        public async Task AddUser_WithMaximumFieldLength_ShouldStoreDataCorrectly()
         {
             // Arrange
             var maxLengthName = new string('A', 100);
@@ -196,7 +190,6 @@ namespace SpendWise.DAL.Tests
                 ResetPasswordTokenExpiry = null,
                 IsTwoFactorEnabled = false,
                 TwoFactorSecret = null,
-                Role = UserRole.User,
                 PreferredTheme = Theme.SystemDefault
             };
 
@@ -219,16 +212,11 @@ namespace SpendWise.DAL.Tests
         #region Error Handling Tests
 
         /// <summary>
-        /// Tests the error handling scenarios for the <see cref="UserEntity"/> entity.
-        /// These tests verify that the database correctly throws exceptions when invalid data is used.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Verifies that attempting to add a user with a duplicate email address throws a <see cref="DbUpdateException"/>.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddUser_WithDuplicateEmail_ThrowsDbUpdateException()
+        [Fact]
+        public async Task AddUser_WithDuplicateEmail_ShouldThrowDbUpdateException()
         {
             // Arrange
             var userWithDuplicateEmail = new UserEntity
@@ -246,7 +234,6 @@ namespace SpendWise.DAL.Tests
                 ResetPasswordTokenExpiry = null,
                 IsTwoFactorEnabled = false,
                 TwoFactorSecret = null,
-                Role = UserRole.User,
                 PreferredTheme = Theme.SystemDefault
             };
 
@@ -256,12 +243,12 @@ namespace SpendWise.DAL.Tests
             await Assert.ThrowsAsync<DbUpdateException>(() => SpendWiseDbContextSUT.SaveChangesAsync());
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that attempting to add a user with an invalid registration date (e.g., a future date) throws a <see cref="DbUpdateException"/>.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddUser_WithInvalidRegistrationDate_ThrowsDbUpdateException()
+        [Fact]
+        public async Task AddUser_WithInvalidRegistrationDate_ShouldThrowDbUpdateException()
         {
             // Arrange
             var userWithInvalidDate = new UserEntity
@@ -279,7 +266,6 @@ namespace SpendWise.DAL.Tests
                 ResetPasswordTokenExpiry = null,
                 IsTwoFactorEnabled = false,
                 TwoFactorSecret = null,
-                Role = UserRole.User,
                 PreferredTheme = Theme.SystemDefault
             };
 
@@ -289,21 +275,21 @@ namespace SpendWise.DAL.Tests
             await Assert.ThrowsAsync<DbUpdateException>(() => SpendWiseDbContextSUT.SaveChangesAsync());
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that attempting to update a user with an invalid email address (e.g., too long) throws a <see cref="DbUpdateException"/>.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UpdateUser_WithInvalidEmail_ThrowsDbUpdateException()
+        [Fact]
+        public async Task UpdateUser_WithInvalidEmail_ShouldThrowDbUpdateException()
         {
             // Arrange
             var existingUser = await SpendWiseDbContextSUT.Users
                 .AsNoTracking()
-                .FirstAsync(l => l.Id == UserSeeds.UserJohnDoe.Id);
+                .FirstAsync(u => u.Id == UserSeeds.UserJohnDoe.Id);
 
             var invalidEmail = new string('B', 244) + "@example.com"; // Email too long
 
-            var updatedEntity = existingUser with
+            var updatedUser = existingUser with
             {
                 Email = invalidEmail
             };
@@ -311,34 +297,34 @@ namespace SpendWise.DAL.Tests
             // Act & Assert
             await Assert.ThrowsAsync<DbUpdateException>(async () =>
             {
-                SpendWiseDbContextSUT.Users.Update(updatedEntity);
+                SpendWiseDbContextSUT.Users.Update(updatedUser);
                 await SpendWiseDbContextSUT.SaveChangesAsync();
             });
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that attempting to update a user with a future registration date throws a <see cref="DbUpdateException"/>.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UpdateUser_WithFutureDateOfRegistration_ThrowsDbUpdateException()
+        [Fact]
+        public async Task UpdateUser_WithFutureRegistrationDate_ShouldThrowDbUpdateException()
         {
             // Arrange
             var existingUser = await SpendWiseDbContextSUT.Users
                 .AsNoTracking()
-                .FirstAsync(l => l.Id == UserSeeds.UserJohnDoe.Id);
+                .FirstAsync(u => u.Id == UserSeeds.UserJohnDoe.Id);
 
-            var invalidDate = DateTime.UtcNow.AddHours(1); // Future date
+            var futureDate = DateTime.UtcNow.AddHours(1); // Future date
 
-            var updatedEntity = existingUser with
+            var updatedUser = existingUser with
             {
-                DateOfRegistration = invalidDate
+                DateOfRegistration = futureDate
             };
 
             // Act & Assert
             await Assert.ThrowsAsync<DbUpdateException>(async () =>
             {
-                SpendWiseDbContextSUT.Users.Update(updatedEntity);
+                SpendWiseDbContextSUT.Users.Update(updatedUser);
                 await SpendWiseDbContextSUT.SaveChangesAsync();
             });
         }
@@ -348,16 +334,11 @@ namespace SpendWise.DAL.Tests
         #region Data Retrieval Tests
 
         /// <summary>
-        /// Tests the data retrieval scenarios for the <see cref="UserEntity"/> entity.
-        /// These tests verify that the correct data is retrieved from the database based on various conditions.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Verifies that fetching users within a specified date range returns the expected users.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task FetchUsersByDateOfRegistrationRange_ReturnsUsersWithinRange()
+        [Fact]
+        public async Task FetchUsersWithinDateRange_ShouldReturnUsersWithinRange()
         {
             // Arrange
             var startDate = new DateTime(2024, 6, 17, 0, 0, 0, DateTimeKind.Utc);
@@ -370,121 +351,125 @@ namespace SpendWise.DAL.Tests
             };
 
             // Act
-            var actualUsers = await SpendWiseDbContextSUT.Users
+            var usersInRange = await SpendWiseDbContextSUT.Users
                 .Where(u => u.DateOfRegistration >= startDate && u.DateOfRegistration < endDate)
                 .ToListAsync();
 
             // Assert
-            Assert.NotNull(actualUsers); // Ensure the result is not null
-            Assert.Equal(expectedUsers.Count, actualUsers.Count); // Verify the count matches
+            Assert.NotNull(usersInRange);
+            Assert.Equal(expectedUsers.Count, usersInRange.Count);
             foreach (var expectedUser in expectedUsers)
             {
-                DeepAssert.Contains(expectedUser, actualUsers); // Verify each expected user is present in the result
+                DeepAssert.Contains(expectedUser, usersInRange);
             }
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that fetching users who belong to multiple groups returns the expected users.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task FetchUsers_InMultipleGroups_ReturnsExpectedUsers()
+        [Fact]
+        public async Task FetchUsersInMultipleGroups_ShouldReturnExpectedUsers()
         {
-            // Act
+            // Arrange
             var expectedUser = UserSeeds.UserJohnDoe;
-            var actualUsersInMultipleGroups = await SpendWiseDbContextSUT.Users
+
+            // Act
+            var usersInMultipleGroups = await SpendWiseDbContextSUT.Users
                 .Where(u => u.GroupUsers.Count > 1)
                 .ToListAsync();
 
             // Assert
-            Assert.NotNull(actualUsersInMultipleGroups); // Ensure the result is not null
-            Assert.Single(actualUsersInMultipleGroups); // Ensure only one user is returned
-            DeepAssert.Contains(expectedUser, actualUsersInMultipleGroups); // Verify the expected user is present in the result
+            Assert.NotNull(usersInMultipleGroups);
+            Assert.Single(usersInMultipleGroups);
+            DeepAssert.Contains(expectedUser, usersInMultipleGroups);
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that fetching the total user count returns the correct number of users.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task FetchTotalUserCount_ReturnsCorrectNumber()
+        [Fact]
+        public async Task FetchTotalUserCount_ShouldReturnCorrectNumber()
         {
+            // Arrange
+            var expectedCount = 5; // Assuming 5 users in the seed data
+
             // Act
             var totalUserCount = await SpendWiseDbContextSUT.Users.CountAsync();
 
             // Assert
-            var expectedCount = 5; // Assuming 5 users in the seed data
             Assert.Equal(expectedCount, totalUserCount);
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that retrieving users by a substring of their email returns the expected users.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task RetrieveUsers_ByEmailSubstring_ReturnsExpectedUsers()
+        [Fact]
+        public async Task RetrieveUsersByEmailSubstring_ShouldReturnExpectedUsers()
         {
             // Arrange
-            var partialEmail = "john.doe";
+            var emailSubstring = "john.doe";
             var expectedUsers = new List<UserEntity> { UserSeeds.UserJohnDoe };
 
             // Act
-            var users = await SpendWiseDbContextSUT.Users
-                .Where(u => u.Email.Contains(partialEmail))
+            var usersByEmail = await SpendWiseDbContextSUT.Users
+                .Where(u => u.Email.Contains(emailSubstring))
                 .ToListAsync();
 
             // Assert
-            Assert.NotNull(users); // Ensure the result is not null
-            Assert.Equal(expectedUsers.Count, users.Count); // Verify the count matches
+            Assert.NotNull(usersByEmail);
+            Assert.Equal(expectedUsers.Count, usersByEmail.Count);
             foreach (var expectedUser in expectedUsers)
             {
-                DeepAssert.Contains(expectedUser, users); // Verify each expected user is present
+                DeepAssert.Contains(expectedUser, usersByEmail);
             }
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that retrieving users by a substring of their name or surname returns the expected users.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task RetrieveUsers_ByNameOrSurname_ReturnsExpectedUsers()
+        [Fact]
+        public async Task RetrieveUsersByNameOrSurname_ShouldReturnExpectedUsers()
         {
             // Arrange
             var expectedUsers = new List<UserEntity> { UserSeeds.UserJohnDoe, UserSeeds.UserBobBrown };
 
             // Act
-            var users = await SpendWiseDbContextSUT.Users
+            var usersByNameOrSurname = await SpendWiseDbContextSUT.Users
                 .Where(u => u.Name.Contains("John") || u.Surname.Contains("Brown"))
                 .ToListAsync();
 
             // Assert
-            Assert.NotNull(users); // Ensure the result is not null
-            Assert.Equal(expectedUsers.Count, users.Count); // Verify the count matches
+            Assert.NotNull(usersByNameOrSurname);
+            Assert.Equal(expectedUsers.Count, usersByNameOrSurname.Count);
             foreach (var expectedUser in expectedUsers)
             {
-                DeepAssert.Contains(expectedUser, users); // Verify each expected user is present
+                DeepAssert.Contains(expectedUser, usersByNameOrSurname);
             }
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that fetching users ordered by their registration date returns the users in the correct order.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task FetchUsers_OrderedByRegistrationDate_ReturnsUsersInCorrectOrder()
+        [Fact]
+        public async Task FetchUsersOrderedByRegistrationDate_ShouldReturnUsersInCorrectOrder()
         {
             // Act
-            var retrievedUsers = await SpendWiseDbContextSUT.Users
+            var orderedUsers = await SpendWiseDbContextSUT.Users
                 .OrderBy(u => u.DateOfRegistration)
                 .ToListAsync();
 
             // Assert
-            Assert.Equal(5, retrievedUsers.Count); // Ensure the correct number of users
-            DeepAssert.Equal(UserSeeds.UserJohnDoe, retrievedUsers[0]);
-            DeepAssert.Equal(UserSeeds.UserAliceSmith, retrievedUsers[1]);
-            DeepAssert.Equal(UserSeeds.UserBobBrown, retrievedUsers[2]);
-            DeepAssert.Equal(UserSeeds.UserCharlieBlack, retrievedUsers[3]);
-            DeepAssert.Equal(UserSeeds.UserDianaGreen, retrievedUsers[4]);
+            Assert.Equal(5, orderedUsers.Count);
+            DeepAssert.Equal(UserSeeds.UserJohnDoe, orderedUsers[0]);
+            DeepAssert.Equal(UserSeeds.UserAliceSmith, orderedUsers[1]);
+            DeepAssert.Equal(UserSeeds.UserBobBrown, orderedUsers[2]);
+            DeepAssert.Equal(UserSeeds.UserCharlieBlack, orderedUsers[3]);
+            DeepAssert.Equal(UserSeeds.UserDianaGreen, orderedUsers[4]);
         }
 
         #endregion
@@ -492,28 +477,21 @@ namespace SpendWise.DAL.Tests
         #region Update and Special Cases Tests
 
         /// <summary>
-        /// Tests the update and special case scenarios for the <see cref="UserEntity"/> entity and its related entities.
-        /// These tests ensure that updates to the database are handled correctly and that special conditions are met.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Verifies that when the last invitation for a user is removed, the user remains in the system with no invitations left.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task RemoveLastInvitation_UserRemainsWithOnlyOneInvitation()
+        [Fact]
+        public async Task RemoveLastInvitation_ShouldLeaveUserWithNoInvitations()
         {
             // Arrange
             var user = UserSeeds.UserCharlieBlack;
-
             var invitationToRemove = await SpendWiseDbContextSUT.Invitations
-                .AsNoTracking() // Ensure we are not tracking the original entity
+                .AsNoTracking()
                 .FirstAsync(i => i.Id == InvitationSeeds.InvitationDianaToCharlieIntoFamily.Id);
-
             var initialInvitationCount = await SpendWiseDbContextSUT.Invitations
                 .CountAsync(i => i.ReceiverId == user.Id);
 
-            Assert.True(initialInvitationCount > 0); // Ensure there is at least one invitation
+            Assert.True(initialInvitationCount > 0);
 
             // Act
             SpendWiseDbContextSUT.Invitations.Remove(invitationToRemove);
@@ -521,32 +499,28 @@ namespace SpendWise.DAL.Tests
 
             // Assert
             var remainingUser = await SpendWiseDbContextSUT.Users.SingleOrDefaultAsync(u => u.Id == user.Id);
-            Assert.NotNull(remainingUser); // Ensure the user still exists
-
+            Assert.NotNull(remainingUser);
             var remainingInvitationCount = await SpendWiseDbContextSUT.Invitations
                 .CountAsync(i => i.ReceiverId == user.Id);
-
-            Assert.Equal(0, remainingInvitationCount); // Verify no invitations are left
+            Assert.Equal(0, remainingInvitationCount);
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that when a group association for a user is removed, the user remains in the system with no group associations left.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task RemoveGroupUser_UserRemains_WithOnlyOneGroupAssociation()
+        [Fact]
+        public async Task RemoveGroupUser_ShouldLeaveUserWithNoGroupAssociations()
         {
             // Arrange
             var user = UserSeeds.UserBobBrown;
-
             var groupUserToRemove = await SpendWiseDbContextSUT.GroupUsers
                 .AsNoTracking()
                 .FirstAsync(l => l.Id == GroupUserSeeds.GroupUserBobInFamily.Id);
-
             var initialGroupUserCount = await SpendWiseDbContextSUT.GroupUsers
                 .CountAsync(gu => gu.UserId == user.Id);
 
-            Assert.True(initialGroupUserCount > 0); // Ensure there is at least one group user record
+            Assert.True(initialGroupUserCount > 0);
 
             // Act
             SpendWiseDbContextSUT.GroupUsers.Remove(groupUserToRemove);
@@ -554,12 +528,10 @@ namespace SpendWise.DAL.Tests
 
             // Assert
             var remainingUser = await SpendWiseDbContextSUT.Users.SingleOrDefaultAsync(u => u.Id == user.Id);
-            Assert.NotNull(remainingUser); // Ensure the user still exists
-
+            Assert.NotNull(remainingUser);
             var remainingGroupUserCount = await SpendWiseDbContextSUT.GroupUsers
                 .CountAsync(gu => gu.UserId == user.Id);
-
-            Assert.Equal(0, remainingGroupUserCount); // Verify the user has no remaining group associations
+            Assert.Equal(0, remainingGroupUserCount);
         }
 
         #endregion
@@ -567,22 +539,16 @@ namespace SpendWise.DAL.Tests
         #region Related Entities Handling Tests
 
         /// <summary>
-        /// Tests the handling of related entities when performing operations on the <see cref="UserEntity"/>.
-        /// These tests ensure that associated entities, such as invitations and group associations, are correctly managed when a user is deleted or retrieved.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Verifies that when a user is removed, all associated invitations (both received and sent) are also deleted.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task RemoveUser_DeletesAssociatedInvitations()
+        [Fact]
+        public async Task RemoveUser_ShouldDeleteAssociatedInvitations()
         {
             // Arrange
             var userToRemove = await SpendWiseDbContextSUT.Users
                 .AsNoTracking()
                 .FirstAsync(l => l.Id == UserSeeds.UserJohnDoe.Id);
-
             var initialInvitationCount = await SpendWiseDbContextSUT.Invitations
                 .CountAsync(i => i.ReceiverId == userToRemove.Id || i.SenderId == userToRemove.Id);
 
@@ -593,66 +559,65 @@ namespace SpendWise.DAL.Tests
             // Assert
             var remainingInvitationCount = await SpendWiseDbContextSUT.Invitations
                 .CountAsync(i => i.ReceiverId == userToRemove.Id || i.SenderId == userToRemove.Id);
-
-            Assert.Equal(0, remainingInvitationCount); // Verify no invitations are left
+            Assert.Equal(0, remainingInvitationCount);
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that when fetching a user, all related navigation properties (invitations and group associations) are correctly loaded.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task FetchUser_NavigationPropertiesAreCorrectlyLoaded()
+        [Fact]
+        public async Task FetchUser_ShouldLoadNavigationPropertiesCorrectly()
         {
             // Arrange
-            var userIdToFetch = UserSeeds.UserDianaGreen.Id;
+            var userId = UserSeeds.UserDianaGreen.Id;
             var expectedReceivedInvitations = new List<InvitationEntity>
-            {
-                InvitationSeeds.InvitationJohnToDianaIntoFamily,
-                InvitationSeeds.InvitationJohnToDianaIntoWork
-            };
+    {
+        InvitationSeeds.InvitationJohnToDianaIntoFamily,
+        InvitationSeeds.InvitationJohnToDianaIntoWork
+    };
             var expectedSentInvitations = new List<InvitationEntity>
-            {
-                InvitationSeeds.InvitationDianaToCharlieIntoFamily
-            };
+    {
+        InvitationSeeds.InvitationDianaToCharlieIntoFamily
+    };
             var expectedGroupUsers = new List<GroupUserEntity>
-            {
-                GroupUserSeeds.GroupUserDianaInFamily
-            };
+    {
+        GroupUserSeeds.GroupUserDianaInFamily
+    };
 
             // Act
-            var actualUser = await SpendWiseDbContextSUT.Users
-                .Where(u => u.Id == userIdToFetch)
+            var user = await SpendWiseDbContextSUT.Users
+                .Where(u => u.Id == userId)
                 .Include(u => u.ReceivedInvitations)
                 .Include(u => u.SentInvitations)
                 .Include(u => u.GroupUsers)
                 .SingleOrDefaultAsync();
 
             // Assert
-            Assert.NotNull(actualUser); // Ensure the user is not null
+            Assert.NotNull(user);
 
             // Check ReceivedInvitations
-            Assert.NotNull(actualUser.ReceivedInvitations);
-            foreach (var expectedReceivedInvitation in expectedReceivedInvitations)
+            Assert.NotNull(user.ReceivedInvitations);
+            foreach (var expectedInvitation in expectedReceivedInvitations)
             {
-                DeepAssert.Contains(expectedReceivedInvitation, actualUser.ReceivedInvitations);
+                DeepAssert.Contains(expectedInvitation, user.ReceivedInvitations);
             }
 
             // Check SentInvitations
-            Assert.NotNull(actualUser.SentInvitations);
-            Assert.Single(actualUser.SentInvitations);
-            foreach (var expectedSentInvitation in expectedSentInvitations)
+            Assert.NotNull(user.SentInvitations);
+            Assert.Single(user.SentInvitations);
+            foreach (var expectedInvitation in expectedSentInvitations)
             {
-                DeepAssert.Contains(expectedSentInvitation, actualUser.SentInvitations);
+                DeepAssert.Contains(expectedInvitation, user.SentInvitations);
             }
 
             // Check GroupUsers
-            Assert.NotNull(actualUser.GroupUsers);
-            Assert.Single(actualUser.GroupUsers);
-            Assert.Equal(expectedGroupUsers.Count(), actualUser.GroupUsers.Count());
+            Assert.NotNull(user.GroupUsers);
+            Assert.Single(user.GroupUsers);
+            Assert.Equal(expectedGroupUsers.Count(), user.GroupUsers.Count());
             foreach (var expectedGroupUser in expectedGroupUsers)
             {
-                DeepAssert.Contains(expectedGroupUser, actualUser.GroupUsers);
+                DeepAssert.Contains(expectedGroupUser, user.GroupUsers);
             }
         }
 
@@ -661,27 +626,20 @@ namespace SpendWise.DAL.Tests
         #region Consistency Tests
 
         /// <summary>
-        /// Tests to ensure the consistency of operations within the database. 
-        /// These tests focus on verifying that operations are handled correctly even under concurrent scenarios.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Verifies that multiple users can be added concurrently, and all users are successfully persisted in the database without any data loss or corruption.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddUsers_Concurrently_UsersAreSuccessfullyPersisted()
+        [Fact]
+        public async Task AddUsersConcurrently_ShouldPersistAllUsersSuccessfully()
         {
             // Arrange
             var baseTime = DateTime.UtcNow;
-            // Ensure the base time is accurate to the millisecond for consistency
             baseTime = new DateTime(
                 baseTime.Ticks - (baseTime.Ticks % TimeSpan.TicksPerMillisecond),
                 DateTimeKind.Utc
             );
 
-            // Create a list of users to be added concurrently
-            var expectedUsersList = Enumerable.Range(0, 10).Select(i => new UserEntity
+            var usersToAdd = Enumerable.Range(0, 10).Select(i => new UserEntity
             {
                 Id = Guid.NewGuid(),
                 Name = $"Bob{i}",
@@ -696,32 +654,27 @@ namespace SpendWise.DAL.Tests
                 ResetPasswordTokenExpiry = null,
                 IsTwoFactorEnabled = false,
                 TwoFactorSecret = null,
-                Role = UserRole.User,
                 PreferredTheme = Theme.SystemDefault
             }).ToList();
 
             // Act
-            // Simultaneously add all users to the database in parallel tasks
-            var addUserTasks = expectedUsersList.Select(user => Task.Run(async () =>
+            var addUserTasks = usersToAdd.Select(user => Task.Run(async () =>
             {
                 await using var dbContext = await DbContextFactory.CreateDbContextAsync();
                 dbContext.Users.Add(user);
                 await dbContext.SaveChangesAsync();
             }));
 
-            await Task.WhenAll(addUserTasks); // Wait for all tasks to complete
+            await Task.WhenAll(addUserTasks);
 
             // Assert
             await using var finalDbContext = await DbContextFactory.CreateDbContextAsync();
             var persistedUsers = await finalDbContext.Users
-                .Where(u => expectedUsersList.Select(expectedUser => expectedUser.Id).Contains(u.Id))
+                .Where(u => usersToAdd.Select(user => user.Id).Contains(u.Id))
                 .ToListAsync();
 
-            // Verify that the number of persisted users matches the expected number
-            Assert.Equal(expectedUsersList.Count(), persistedUsers.Count());
-
-            // Verify that each expected user was successfully persisted with correct data
-            foreach (var expectedUser in expectedUsersList)
+            Assert.Equal(usersToAdd.Count(), persistedUsers.Count());
+            foreach (var expectedUser in usersToAdd)
             {
                 var actualUser = persistedUsers.SingleOrDefault(u => u.Id == expectedUser.Id);
                 Assert.NotNull(actualUser);
@@ -729,16 +682,16 @@ namespace SpendWise.DAL.Tests
             }
         }
 
-        [Fact]
         /// <summary>
         /// Checks the integrity constraints after deleting a user, ensuring that the user and all related entities (invitations, group associations) are correctly removed.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task DeleteUser_CheckIntegrityConstraints_AfterDeletion()
+        [Fact]
+        public async Task DeleteUser_ShouldRemoveUserAndRelatedEntities()
         {
             // Arrange
             var userToDelete = await SpendWiseDbContextSUT.Users
-                .AsNoTracking() // Ensure we are not tracking the original entity
+                .AsNoTracking()
                 .FirstAsync(u => u.Id == UserSeeds.UserJohnDoe.Id);
 
             Assert.NotNull(userToDelete);
@@ -749,18 +702,17 @@ namespace SpendWise.DAL.Tests
 
             // Assert
             await using var dbContext = await DbContextFactory.CreateDbContextAsync();
-
             var deletedUser = await dbContext.Users.SingleOrDefaultAsync(u => u.Id == userToDelete.Id);
-            Assert.Null(deletedUser); // Ensure the user is deleted
+            Assert.Null(deletedUser);
 
             var receivedInvitations = await dbContext.Invitations.Where(i => i.ReceiverId == userToDelete.Id).ToListAsync();
-            Assert.Empty(receivedInvitations); // Ensure related invitations are removed
+            Assert.Empty(receivedInvitations);
 
             var sentInvitations = await dbContext.Invitations.Where(i => i.SenderId == userToDelete.Id).ToListAsync();
-            Assert.Empty(sentInvitations); // Ensure related invitations are removed
+            Assert.Empty(sentInvitations);
 
             var groupUsers = await dbContext.GroupUsers.Where(gu => gu.UserId == userToDelete.Id).ToListAsync();
-            Assert.Empty(groupUsers); // Ensure related group users are removed
+            Assert.Empty(groupUsers);
         }
 
         #endregion

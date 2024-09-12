@@ -15,7 +15,7 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
         {
         }
 
-        #region AND Tests
+        #region IdQuery Tests
 
         /// <summary>
         /// Verifies that querying a transaction group user by its ID 
@@ -23,67 +23,21 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task QueryObject_WithId_ReturnsCorrectEntry()
+        public async Task WithId_ShouldReturnCorrectTransactionGroupUser()
         {
             // Arrange
-            var existingEntry = TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana;
+            var transactionGroupUserId = TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana.Id;
             var queryObject = new TransactionGroupUserQueryObject();
 
             // Act
-            var result = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.WithId(existingEntry.Id));
+            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
+                .GetAsync(queryObject.WithId(transactionGroupUserId));
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Single(result);
-            Assert.Equal(existingEntry.Id, result.First().Id);
+            Assert.NotNull(transactionGroupUsers);
+            Assert.Single(transactionGroupUsers);
+            Assert.Equal(transactionGroupUserId, transactionGroupUsers.First().Id);
         }
-
-        /// <summary>
-        /// Verifies that querying transaction group users by transaction ID 
-        /// returns all correct entries associated with that transaction.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task QueryObject_WithTransactionId_ReturnsCorrectEntries()
-        {
-            // Arrange
-            var transactionId = TransactionSeeds.TransactionDianaDinner.Id;
-            var queryObject = new TransactionGroupUserQueryObject();
-
-            // Act
-            var result = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.WithTransactionId(transactionId));
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.All(result, entry => Assert.Equal(transactionId, entry.TransactionId));
-        }
-
-        /// <summary>
-        /// Verifies that querying transaction group users by group user ID 
-        /// returns all correct entries associated with that group user.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task QueryObject_WithGroupUserId_ReturnsCorrectEntries()
-        {
-            // Arrange
-            var groupUserId = GroupUserSeeds.GroupUserDianaInFamily.Id;
-            var queryObject = new TransactionGroupUserQueryObject();
-
-            // Act
-            var result = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.WithGroupUserId(groupUserId));
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.All(result, entry => Assert.Equal(groupUserId, entry.GroupUserId));
-        }
-
-        #endregion
-
-        #region OR Tests
 
         /// <summary>
         /// Verifies that querying transaction group users by multiple IDs 
@@ -91,21 +45,183 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task QueryObject_OrWithId_ReturnsCorrectEntries()
+        public async Task OrWithId_ShouldReturnCorrectTransactionGroupUsers()
         {
             // Arrange
-            var existingEntry1 = TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana;
-            var existingEntry2 = TransactionGroupUserSeeds.TransactionGroupUserFoodFamilyJohn;
+            var transactionGroupUserId1 = TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana.Id;
+            var transactionGroupUserId2 = TransactionGroupUserSeeds.TransactionGroupUserFoodFamilyJohn.Id;
             var queryObject = new TransactionGroupUserQueryObject();
 
             // Act
-            var result = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.OrWithId(existingEntry1.Id).OrWithId(existingEntry2.Id));
+            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
+                .GetAsync(queryObject.OrWithId(transactionGroupUserId1).OrWithId(transactionGroupUserId2));
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Contains(result, e => e.Id == existingEntry1.Id);
-            Assert.Contains(result, e => e.Id == existingEntry2.Id);
+            Assert.NotNull(transactionGroupUsers);
+            Assert.All(transactionGroupUsers, tgu => Assert.True(tgu.Id == transactionGroupUserId1 || tgu.Id == transactionGroupUserId2));
+        }
+
+        /// <summary>
+        /// Verifies that querying transaction group users by ID excludes the entry with the specified ID.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Fact]
+        public async Task NotWithId_ShouldReturnCorrectTransactionGroupUsers()
+        {
+            // Arrange
+            var excludedTransactionGroupUserId = TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana.Id;
+            var queryObject = new TransactionGroupUserQueryObject();
+
+            // Act
+            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
+                .GetAsync(queryObject.NotWithId(excludedTransactionGroupUserId));
+
+            // Assert
+            Assert.NotNull(transactionGroupUsers);
+            Assert.DoesNotContain(transactionGroupUsers, tgu => tgu.Id == excludedTransactionGroupUserId);
+        }
+
+        #endregion
+
+        #region IsReadQuery Tests
+
+        /// <summary>
+        /// Verifies that querying transaction group users by IsRead returns the correct entries.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Fact]
+        public async Task IsRead_ShouldReturnCorrectTransactionGroupUsers()
+        {
+            // Arrange
+            var queryObject = new TransactionGroupUserQueryObject();
+
+            // Act
+            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
+                .GetAsync(queryObject.IsRead());
+
+            // Assert
+            Assert.NotNull(transactionGroupUsers);
+            Assert.All(transactionGroupUsers, tgu => Assert.True(tgu.IsRead));
+        }
+
+        /// <summary>
+        /// Verifies that querying transaction group users by IsRead using OR returns the correct entries.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Fact]
+        public async Task OrIsRead_ShouldReturnCorrectTransactionGroupUsers()
+        {
+            // Arrange
+            var queryObject = new TransactionGroupUserQueryObject();
+
+            // Act
+            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
+                .GetAsync(queryObject.OrIsRead());
+
+            // Assert
+            Assert.NotNull(transactionGroupUsers);
+            Assert.All(transactionGroupUsers, tgu => Assert.True(tgu.IsRead));
+        }
+
+        /// <summary>
+        /// Verifies that querying transaction group users by IsRead using NOT returns the correct entries.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Fact]
+        public async Task NotIsRead_ShouldReturnCorrectTransactionGroupUsers()
+        {
+            // Arrange
+            var queryObject = new TransactionGroupUserQueryObject();
+
+            // Act
+            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
+                .GetAsync(queryObject.NotIsRead());
+
+            // Assert
+            Assert.NotNull(transactionGroupUsers);
+            Assert.All(transactionGroupUsers, tgu => Assert.False(tgu.IsRead));
+        }
+
+        /// <summary>
+        /// Verifies that querying transaction group users by IsNotRead returns the correct entries.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Fact]
+        public async Task IsNotRead_ShouldReturnCorrectTransactionGroupUsers()
+        {
+            // Arrange
+            var queryObject = new TransactionGroupUserQueryObject();
+
+            // Act
+            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
+                .GetAsync(queryObject.IsNotRead());
+
+            // Assert
+            Assert.NotNull(transactionGroupUsers);
+            Assert.All(transactionGroupUsers, tgu => Assert.False(tgu.IsRead));
+        }
+
+        /// <summary>
+        /// Verifies that querying transaction group users by IsNotRead using OR returns the correct entries.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Fact]
+        public async Task OrIsNotRead_ShouldReturnCorrectTransactionGroupUsers()
+        {
+            // Arrange
+            var queryObject = new TransactionGroupUserQueryObject();
+
+            // Act
+            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
+                .GetAsync(queryObject.OrIsNotRead());
+
+            // Assert
+            Assert.NotNull(transactionGroupUsers);
+            Assert.All(transactionGroupUsers, tgu => Assert.False(tgu.IsRead));
+        }
+
+        /// <summary>
+        /// Verifies that querying transaction group users by IsNotRead using NOT returns the correct entries.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Fact]
+        public async Task NotIsNotRead_ShouldReturnCorrectTransactionGroupUsers()
+        {
+            // Arrange
+            var queryObject = new TransactionGroupUserQueryObject();
+
+            // Act
+            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
+                .GetAsync(queryObject.NotIsNotRead());
+
+            // Assert
+            Assert.NotNull(transactionGroupUsers);
+            Assert.All(transactionGroupUsers, tgu => Assert.True(tgu.IsRead));
+        }
+
+        #endregion
+
+        #region TransactionQuery Tests
+
+        /// <summary>
+        /// Verifies that querying transaction group users by transaction ID 
+        /// returns all correct entries associated with that transaction.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Fact]
+        public async Task WithTransactionId_ShouldReturnCorrectTransactionGroupUsers()
+        {
+            // Arrange
+            var transactionId = TransactionSeeds.TransactionDianaDinner.Id;
+            var queryObject = new TransactionGroupUserQueryObject();
+
+            // Act
+            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
+                .GetAsync(queryObject.WithTransaction(transactionId));
+
+            // Assert
+            Assert.NotNull(transactionGroupUsers);
+            Assert.All(transactionGroupUsers, tgu => Assert.Equal(transactionId, tgu.TransactionId));
         }
 
         /// <summary>
@@ -114,7 +230,7 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task QueryObject_OrWithTransactionId_ReturnsCorrectEntries()
+        public async Task OrWithTransactionId_ShouldReturnCorrectTransactionGroupUsers()
         {
             // Arrange
             var transactionId1 = TransactionSeeds.TransactionDianaDinner.Id;
@@ -122,13 +238,57 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionGroupUserQueryObject();
 
             // Act
-            var result = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.OrWithTransactionId(transactionId1).OrWithTransactionId(transactionId2));
+            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
+                .GetAsync(queryObject.OrWithTransaction(transactionId1).OrWithTransaction(transactionId2));
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Contains(result, e => e.TransactionId == transactionId1);
-            Assert.Contains(result, e => e.TransactionId == transactionId2);
+            Assert.NotNull(transactionGroupUsers);
+            Assert.All(transactionGroupUsers, tgu => Assert.True(tgu.TransactionId == transactionId1 || tgu.TransactionId == transactionId2));
+        }
+
+        /// <summary>
+        /// Verifies that querying transaction group users by transaction ID excludes entries with the specified transaction ID.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Fact]
+        public async Task NotWithTransactionId_ShouldReturnCorrectTransactionGroupUsers()
+        {
+            // Arrange
+            var excludedTransactionId = TransactionSeeds.TransactionDianaDinner.Id;
+            var queryObject = new TransactionGroupUserQueryObject();
+
+            // Act
+            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
+                .GetAsync(queryObject.NotWithTransaction(excludedTransactionId));
+
+            // Assert
+            Assert.NotNull(transactionGroupUsers);
+            Assert.DoesNotContain(transactionGroupUsers, tgu => tgu.TransactionId == excludedTransactionId);
+        }
+
+        #endregion
+
+        #region GroupUserQuery Tests
+
+        /// <summary>
+        /// Verifies that querying transaction group users by group user ID 
+        /// returns all correct entries associated with that group user.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Fact]
+        public async Task WithGroupUserId_ShouldReturnCorrectTransactionGroupUsers()
+        {
+            // Arrange
+            var groupUserId = GroupUserSeeds.GroupUserDianaInFamily.Id;
+            var queryObject = new TransactionGroupUserQueryObject();
+
+            // Act
+            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
+                .GetAsync(queryObject.WithGroupUser(groupUserId));
+
+            // Assert
+            Assert.NotNull(transactionGroupUsers);
+            Assert.All(transactionGroupUsers, tgu => Assert.Equal(groupUserId, tgu.GroupUserId));
         }
 
         /// <summary>
@@ -137,7 +297,7 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task QueryObject_OrWithGroupUserId_ReturnsCorrectEntries()
+        public async Task OrWithGroupUserId_ShouldReturnCorrectTransactionGroupUsers()
         {
             // Arrange
             var groupUserId1 = GroupUserSeeds.GroupUserDianaInFamily.Id;
@@ -145,57 +305,12 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionGroupUserQueryObject();
 
             // Act
-            var result = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.OrWithGroupUserId(groupUserId1).OrWithGroupUserId(groupUserId2));
+            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
+                .GetAsync(queryObject.OrWithGroupUser(groupUserId1).OrWithGroupUser(groupUserId2));
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Contains(result, e => e.GroupUserId == groupUserId1);
-            Assert.Contains(result, e => e.GroupUserId == groupUserId2);
-        }
-
-        #endregion
-
-        #region NOT Tests
-
-        /// <summary>
-        /// Verifies that querying transaction group users by ID excludes the entry with the specified ID.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task QueryObject_NotWithId_ReturnsEntriesExcludingId()
-        {
-            // Arrange
-            var existingEntry = TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana;
-            var queryObject = new TransactionGroupUserQueryObject();
-
-            // Act
-            var result = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.NotWithId(existingEntry.Id));
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.DoesNotContain(result, e => e.Id == existingEntry.Id);
-        }
-
-        /// <summary>
-        /// Verifies that querying transaction group users by transaction ID excludes entries with the specified transaction ID.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task QueryObject_NotWithTransactionId_ReturnsEntriesExcludingTransactionId()
-        {
-            // Arrange
-            var transactionId = TransactionSeeds.TransactionDianaDinner.Id;
-            var queryObject = new TransactionGroupUserQueryObject();
-
-            // Act
-            var result = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.NotWithTransactionId(transactionId));
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.DoesNotContain(result, e => e.TransactionId == transactionId);
+            Assert.NotNull(transactionGroupUsers);
+            Assert.All(transactionGroupUsers, tgu => Assert.True(tgu.GroupUserId == groupUserId1 || tgu.GroupUserId == groupUserId2));
         }
 
         /// <summary>
@@ -203,19 +318,116 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task QueryObject_NotWithGroupUserId_ReturnsEntriesExcludingGroupUserId()
+        public async Task NotWithGroupUserId_ShouldReturnCorrectTransactionGroupUsers()
         {
             // Arrange
-            var groupUserId = GroupUserSeeds.GroupUserDianaInFamily.Id;
+            var excludedGroupUserId = GroupUserSeeds.GroupUserDianaInFamily.Id;
             var queryObject = new TransactionGroupUserQueryObject();
 
             // Act
-            var result = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.NotWithGroupUserId(groupUserId));
+            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
+                .GetAsync(queryObject.NotWithGroupUser(excludedGroupUserId));
 
             // Assert
-            Assert.NotNull(result);
-            Assert.DoesNotContain(result, e => e.GroupUserId == groupUserId);
+            Assert.NotNull(transactionGroupUsers);
+            Assert.DoesNotContain(transactionGroupUsers, tgu => tgu.GroupUserId == excludedGroupUserId);
+        }
+
+        #endregion
+
+        #region Complex Queries
+
+        /// <summary>
+        /// Verifies that querying transaction group users by a combination of 
+        /// transaction ID and group user ID using AND and OR operations returns correct entries.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Fact]
+        public async Task WithTransactionIdOrGroupUserId_ShouldReturnCorrectTransactionGroupUsers()
+        {
+            // Arrange
+            var transactionId = TransactionSeeds.TransactionDianaDinner.Id;
+            var groupUserId = GroupUserSeeds.GroupUserJohnInFamily.Id;
+            var queryObject = new TransactionGroupUserQueryObject();
+
+            // Act
+            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
+                .GetAsync(queryObject.WithTransaction(transactionId)
+                                     .OrWithGroupUser(groupUserId));
+
+            // Assert
+            Assert.NotNull(transactionGroupUsers);
+            Assert.All(transactionGroupUsers, e =>
+            {
+                bool isTransactionIdMatch = e.TransactionId == transactionId;
+                bool isGroupUserIdMatch = e.GroupUserId == groupUserId;
+
+                Assert.True(isTransactionIdMatch || isGroupUserIdMatch);
+            });
+        }
+
+        /// <summary>
+        /// Verifies that querying transaction group users by a combination of 
+        /// group user ID and not with a specific transaction ID returns correct entries.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Fact]
+        public async Task OrGroupUserIdNotTransactionId_ShouldReturnCorrectTransactionGroupUsers()
+        {
+            // Arrange
+            var groupUserId = GroupUserSeeds.GroupUserDianaInFamily.Id;
+            var excludedTransactionId = TransactionSeeds.TransactionJohnFood.Id; // This transaction should be excluded
+            var queryObject = new TransactionGroupUserQueryObject();
+
+            // Act
+            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
+                .GetAsync(queryObject.OrWithGroupUser(groupUserId)
+                                     .NotWithTransaction(excludedTransactionId));
+
+            // Assert
+            Assert.NotNull(transactionGroupUsers);
+            Assert.All(transactionGroupUsers, e =>
+            {
+                bool isGroupUserIdMatch = e.GroupUserId == groupUserId;
+                bool isTransactionIdMatch = e.TransactionId == excludedTransactionId;
+
+                Assert.True(isGroupUserIdMatch && !isTransactionIdMatch);
+            });
+        }
+
+        /// <summary>
+        /// Verifies that querying transaction group users by multiple group user IDs
+        /// and excluding specific transaction IDs returns the correct entries.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Fact]
+        public async Task OrGroupUserIdsNotTransactionIds_ShouldReturnCorrectTransactionGroupUsers()
+        {
+            // Arrange
+            var groupUserId1 = GroupUserSeeds.GroupUserDianaInFamily.Id;
+            var groupUserId2 = GroupUserSeeds.GroupUserJohnInFriends.Id;
+            var excludedTransactionId1 = TransactionSeeds.TransactionDianaDinner.Id; // Exclude this one
+            var excludedTransactionId2 = TransactionSeeds.TransactionJohnFood.Id; // Exclude this one
+            var queryObject = new TransactionGroupUserQueryObject();
+
+            // Act
+            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
+                .GetAsync(queryObject.OrWithGroupUser(groupUserId1)
+                                     .OrWithGroupUser(groupUserId2)
+                                     .NotWithTransaction(excludedTransactionId1)
+                                     .NotWithTransaction(excludedTransactionId2));
+
+            // Assert
+            Assert.NotNull(transactionGroupUsers);
+            Assert.All(transactionGroupUsers, e =>
+            {
+                bool isGroupUserId1Match = e.GroupUserId == groupUserId1;
+                bool isGroupUserId2Match = e.GroupUserId == groupUserId2;
+                bool isTransactionId1Match = e.TransactionId == excludedTransactionId1;
+                bool isTransactionId2Match = e.TransactionId == excludedTransactionId2;
+
+                Assert.True((isGroupUserId1Match || isGroupUserId2Match) && !isTransactionId1Match && !isTransactionId2Match);
+            });
         }
 
         #endregion

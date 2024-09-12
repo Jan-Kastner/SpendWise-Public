@@ -94,6 +94,10 @@ namespace SpendWise.DAL.Configurations
                 entity.Property(gu => gu.GroupId)
                     .IsRequired()
                     .HasColumnType("uuid");
+
+                // Configures Role property: required with a default value of UserRole.User
+                entity.Property(gu => gu.Role)
+                    .IsRequired();
             });
 
             // Configuration for InvitationEntity
@@ -220,10 +224,6 @@ namespace SpendWise.DAL.Configurations
                 // Configures TwoFactorSecret property: can be null
                 entity.Property(u => u.TwoFactorSecret)
                     .HasMaxLength(255); // You can adjust the max length as per your requirement
-
-                // Configures Role property: required with a default value of UserRole.User
-                entity.Property(u => u.Role)
-                    .IsRequired();
 
                 // Configures PreferredTheme property: required with a default value of Theme.SystemDefault
                 entity.Property(u => u.PreferredTheme)

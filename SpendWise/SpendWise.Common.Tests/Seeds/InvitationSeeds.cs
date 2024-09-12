@@ -18,7 +18,7 @@ namespace SpendWise.Common.Tests.Seeds
             ReceiverId = UserSeeds.UserCharlieBlack.Id,
             GroupId = GroupSeeds.GroupFamily.Id,
             SentDate = new DateTime(2024, 7, 1, 12, 0, 0, DateTimeKind.Utc),
-            ResponseDate = null,
+            ResponseDate = new DateTime(2024, 7, 2, 12, 0, 0, DateTimeKind.Utc),
             IsAccepted = true,
             Sender = UserSeeds.UserDianaGreen,
             Receiver = UserSeeds.UserCharlieBlack,

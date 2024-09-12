@@ -1,7 +1,7 @@
 namespace SpendWise.DAL.Entities
 {
     /// <summary>
-    /// Represents a base interface for all entities in the SpendWise application.
+    /// Represents a base entity with a unique identifier.
     /// </summary>
     public interface IEntity
     {

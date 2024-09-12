@@ -28,6 +28,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             var transactionGroupUserToAdd = new TransactionGroupUserDto
             {
                 Id = Guid.NewGuid(),
+                IsRead = false,
                 TransactionId = TransactionSeeds.TransactionJohnTaxi.Id,
                 GroupUserId = GroupUserSeeds.GroupUserJohnInWork.Id
             };
@@ -64,6 +65,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             var updatedTransactionGroupUser = new TransactionGroupUserDto
             {
                 Id = existingTransactionGroupUser.Id,
+                IsRead = false,
                 TransactionId = TransactionSeeds.TransactionJohnTaxi.Id,
                 GroupUserId = GroupUserSeeds.GroupUserJohnInWork.Id
             };

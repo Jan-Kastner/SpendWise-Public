@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Xunit.Abstractions;
 using SpendWise.Common.Tests.Helpers;
 
-namespace SpendWise.DAL.Tests
+namespace SpendWise.DAL.Tests.EntityTests
 {
     /// <summary>
     /// Contains unit tests for the <see cref="TransactionGroupUserEntity"/> entity.
@@ -22,21 +22,17 @@ namespace SpendWise.DAL.Tests
         #region CRUD Operations Tests
 
         /// <summary>
-        /// Tests the CRUD (Create, Read, Update, Delete) operations for the <see cref="TransactionGroupUserEntity"/> entity.
-        /// These tests verify that the database operations work as expected for transaction group users.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Verifies that adding a valid transaction group user successfully persists the user in the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddTransactionGroupUser_ValidData_SuccessfullyPersists()
+        [Fact]
+        public async Task AddTransactionGroupUser_ShouldPersistValidUser()
         {
             // Arrange
             var transactionGroupUserToAdd = new TransactionGroupUserEntity
             {
                 Id = Guid.NewGuid(),
+                IsRead = false,
                 TransactionId = TransactionSeeds.TransactionJohnTaxi.Id,
                 GroupUserId = GroupUserSeeds.GroupUserJohnInWork.Id,
                 Transaction = null!,
@@ -55,12 +51,12 @@ namespace SpendWise.DAL.Tests
             DeepAssert.Equal(transactionGroupUserToAdd, actualTransactionGroupUser);
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that updating an existing transaction group user successfully persists the changes in the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UpdateTransactionGroupUser_ExistingUser_SuccessfullyPersistsChanges()
+        [Fact]
+        public async Task UpdateTransactionGroupUser_ShouldPersistChanges()
         {
             // Arrange
             var existingTransactionGroupUser = TransactionGroupUserSeeds.TransactionGroupUserTransportWorkJohn;
@@ -70,6 +66,7 @@ namespace SpendWise.DAL.Tests
             var updatedTransactionGroupUser = new TransactionGroupUserEntity
             {
                 Id = existingTransactionGroupUser.Id,
+                IsRead = false,
                 TransactionId = newTransactionId,
                 GroupUserId = newGroupUserId,
                 Transaction = null!,
@@ -90,12 +87,12 @@ namespace SpendWise.DAL.Tests
             Assert.Equal(newGroupUserId, actualTransactionGroupUser.GroupUserId);
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that deleting an existing transaction group user successfully removes it from the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task DeleteTransactionGroupUser_ExistingUser_SuccessfullyRemoves()
+        [Fact]
+        public async Task DeleteTransactionGroupUser_ShouldRemoveUser()
         {
             // Arrange
             var transactionGroupUserToRemove = await SpendWiseDbContextSUT.TransactionGroupUsers
@@ -117,22 +114,18 @@ namespace SpendWise.DAL.Tests
         #region Error Handling Tests
 
         /// <summary>
-        /// Tests the error handling for the <see cref="TransactionGroupUserEntity"/> entity.
-        /// These tests verify that the database throws the appropriate exceptions when invalid operations are attempted.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Verifies that adding a transaction group user with a duplicate TransactionId and GroupUserId throws a <see cref="DbUpdateException"/>.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddTransactionGroupUser_WithDuplicateTransactionIdAndGroupUserId_ThrowsDbUpdateException()
+        [Fact]
+        public async Task AddTransactionGroupUser_WithDuplicateTransactionIdAndGroupUserId_ShouldThrowDbUpdateException()
         {
             // Arrange
             var existingTransactionGroupUser = TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana;
             var duplicateTransactionGroupUser = new TransactionGroupUserEntity
             {
                 Id = Guid.NewGuid(),
+                IsRead = false,
                 TransactionId = existingTransactionGroupUser.TransactionId,
                 GroupUserId = existingTransactionGroupUser.GroupUserId,
                 Transaction = null!,
@@ -149,12 +142,12 @@ namespace SpendWise.DAL.Tests
             Assert.NotNull(exception);
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that adding a transaction group user with a non-existing GroupUserId throws a <see cref="DbUpdateException"/>.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddTransactionGroupUser_WithNonExistingGroupUser_ThrowsDbUpdateException()
+        [Fact]
+        public async Task AddTransactionGroupUser_WithNonExistingGroupUser_ShouldThrowDbUpdateException()
         {
             // Arrange
             var nonExistingGroupUserId = Guid.NewGuid();
@@ -163,6 +156,7 @@ namespace SpendWise.DAL.Tests
             var invalidTransactionGroupUser = new TransactionGroupUserEntity
             {
                 Id = Guid.NewGuid(),
+                IsRead = false,
                 TransactionId = transactionId,
                 GroupUserId = nonExistingGroupUserId,
                 Transaction = null!,
@@ -179,12 +173,12 @@ namespace SpendWise.DAL.Tests
             Assert.NotNull(exception);
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that adding a transaction group user with a non-existing TransactionId throws a <see cref="DbUpdateException"/>.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddTransactionGroupUser_WithNonExistingTransaction_ThrowsDbUpdateException()
+        [Fact]
+        public async Task AddTransactionGroupUser_WithNonExistingTransaction_ShouldThrowDbUpdateException()
         {
             // Arrange
             var groupUserId = GroupUserSeeds.GroupUserBobInFamily.Id;
@@ -193,6 +187,7 @@ namespace SpendWise.DAL.Tests
             var invalidTransactionGroupUser = new TransactionGroupUserEntity
             {
                 Id = Guid.NewGuid(),
+                IsRead = false,
                 TransactionId = nonExistingTransactionId,
                 GroupUserId = groupUserId,
                 Transaction = null!,
@@ -209,12 +204,12 @@ namespace SpendWise.DAL.Tests
             Assert.NotNull(exception);
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that updating a transaction group user with a non-existing GroupUserId throws a <see cref="DbUpdateException"/>.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UpdateTransactionGroupUser_WithNonExistentGroupUser_ThrowsDbUpdateException()
+        [Fact]
+        public async Task UpdateTransactionGroupUser_WithNonExistentGroupUser_ShouldThrowDbUpdateException()
         {
             // Arrange
             var existingTransactionGroupUser = await SpendWiseDbContextSUT.TransactionGroupUsers
@@ -240,12 +235,12 @@ namespace SpendWise.DAL.Tests
             Assert.NotNull(exception);
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that updating a transaction group user with a non-existing TransactionId throws a <see cref="DbUpdateException"/>.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UpdateTransactionGroupUser_WithNonExistentTransaction_ThrowsDbUpdateException()
+        [Fact]
+        public async Task UpdateTransactionGroupUser_WithNonExistentTransaction_ShouldThrowDbUpdateException()
         {
             // Arrange
             var existingTransactionGroupUser = await SpendWiseDbContextSUT.TransactionGroupUsers
@@ -276,24 +271,19 @@ namespace SpendWise.DAL.Tests
         #region Data Retrieval Tests
 
         /// <summary>
-        /// Tests the data retrieval operations for the <see cref="TransactionGroupUserEntity"/> entity.
-        /// These tests ensure that queries return the correct and expected data from the database.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Verifies that fetching transaction group users by a specific group ID returns the correct data.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task FetchTransactionGroupUsers_ByGroupId_ReturnsCorrectData()
+        [Fact]
+        public async Task FetchTransactionGroupUsers_ByGroupId_ShouldReturnCorrectData()
         {
             // Arrange
             var groupId = GroupSeeds.GroupFamily.Id;
             var expectedTransactionGroupUsers = new List<TransactionGroupUserEntity>
-    {
-        TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana,
-        TransactionGroupUserSeeds.TransactionGroupUserFoodFamilyJohn
-    };
+            {
+                TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana,
+                TransactionGroupUserSeeds.TransactionGroupUserFoodFamilyJohn
+            };
 
             // Act
             var groupUsers = await SpendWiseDbContextSUT.GroupUsers
@@ -314,40 +304,40 @@ namespace SpendWise.DAL.Tests
             }
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that fetching transaction group users by a specific transaction ID returns the correct data.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task FetchTransactionGroupUsers_ByTransactionId_ReturnsCorrectData()
+        [Fact]
+        public async Task FetchTransactionGroupUsers_ByTransactionId_ShouldReturnCorrectData()
         {
             // Arrange
             var transactionId = TransactionSeeds.TransactionJohnTransport.Id;
             var expectedTransactionGroupUsers = new List<TransactionGroupUserEntity>
-    {
-        TransactionGroupUserSeeds.TransactionGroupUserTransportFriendsJohn,
-        TransactionGroupUserSeeds.TransactionGroupUserTransportWorkJohn
-    };
+            {
+                TransactionGroupUserSeeds.TransactionGroupUserTransportFriendsJohn,
+                TransactionGroupUserSeeds.TransactionGroupUserTransportWorkJohn
+            };
 
             // Act
-            var transactionGroupUsers = await SpendWiseDbContextSUT.TransactionGroupUsers
+            var actualTransactionGroupUsers = await SpendWiseDbContextSUT.TransactionGroupUsers
                 .Where(tgu => tgu.TransactionId == transactionId)
                 .ToListAsync();
 
             // Assert
-            Assert.Equal(expectedTransactionGroupUsers.Count, transactionGroupUsers.Count);
+            Assert.Equal(expectedTransactionGroupUsers.Count, actualTransactionGroupUsers.Count);
             foreach (var expectedTgu in expectedTransactionGroupUsers)
             {
-                Assert.Contains(transactionGroupUsers, tgu => tgu.Id == expectedTgu.Id);
+                Assert.Contains(actualTransactionGroupUsers, tgu => tgu.Id == expectedTgu.Id);
             }
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that fetching transaction group users ordered by transaction ID returns them in the correct order.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task FetchTransactionGroupUsers_OrderedByTransactionId_ReturnsInCorrectOrder()
+        [Fact]
+        public async Task FetchTransactionGroupUsers_OrderedByTransactionId_ShouldReturnInCorrectOrder()
         {
             // Arrange
             var groupId = GroupSeeds.GroupFamily.Id;
@@ -368,24 +358,24 @@ namespace SpendWise.DAL.Tests
             }
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that fetching transaction group users with specific filters returns the expected results.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task FetchTransactionGroupUsers_WithFilters_ReturnsExpectedResults()
+        [Fact]
+        public async Task FetchTransactionGroupUsers_WithFilters_ShouldReturnExpectedResults()
         {
             // Arrange
             var groupUserId = GroupUserSeeds.GroupUserDianaInFamily.Id;
             var transactionId = TransactionSeeds.TransactionDianaDinner.Id;
 
             // Act
-            var filteredTransactionGroupUsers = await SpendWiseDbContextSUT.TransactionGroupUsers
+            var actualTransactionGroupUsers = await SpendWiseDbContextSUT.TransactionGroupUsers
                 .Where(tgu => tgu.GroupUserId == groupUserId && tgu.TransactionId == transactionId)
                 .ToListAsync();
 
             // Assert
-            foreach (var tgu in filteredTransactionGroupUsers)
+            foreach (var tgu in actualTransactionGroupUsers)
             {
                 Assert.Equal(groupUserId, tgu.GroupUserId);
                 Assert.Equal(transactionId, tgu.TransactionId);
@@ -397,21 +387,17 @@ namespace SpendWise.DAL.Tests
         #region Update and Special Cases Tests
 
         /// <summary>
-        /// Tests for handling update operations and special cases for the <see cref="TransactionGroupUserEntity"/> entity.
-        /// These tests cover scenarios such as verifying the entity state after saving and handling non-existing entities.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Verifies that when a <see cref="TransactionGroupUserEntity"/> is added and saved, its entity state is set to Unchanged.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddTransactionGroupUser_WhenSaved_EntityStateIsUnchanged()
+        [Fact]
+        public async Task AddTransactionGroupUser_WhenSaved_ShouldSetEntityStateToUnchanged()
         {
             // Arrange
-            var entity = new TransactionGroupUserEntity
+            var newTransactionGroupUser = new TransactionGroupUserEntity
             {
                 Id = Guid.NewGuid(),
+                IsRead = false,
                 TransactionId = TransactionSeeds.TransactionJohnTaxi.Id,
                 GroupUserId = GroupUserSeeds.GroupUserJohnInWork.Id,
                 Transaction = null!,
@@ -419,26 +405,27 @@ namespace SpendWise.DAL.Tests
             };
 
             // Act
-            SpendWiseDbContextSUT.TransactionGroupUsers.Add(entity);
+            SpendWiseDbContextSUT.TransactionGroupUsers.Add(newTransactionGroupUser);
             await SpendWiseDbContextSUT.SaveChangesAsync();
 
             // Assert
-            var entry = SpendWiseDbContextSUT.Entry(entity);
+            var entry = SpendWiseDbContextSUT.Entry(newTransactionGroupUser);
             Assert.Equal(EntityState.Unchanged, entry.State);
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that updating a <see cref="TransactionGroupUserEntity"/> with a non-existing ID throws a <see cref="DbUpdateConcurrencyException"/>.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UpdateTransactionGroupUser_NonExistingId_ThrowsDbUpdateConcurrencyException()
+        [Fact]
+        public async Task UpdateTransactionGroupUser_WithNonExistingId_ShouldThrowDbUpdateConcurrencyException()
         {
             // Arrange
             var nonExistingId = Guid.NewGuid();
             var updatedTransactionGroupUser = new TransactionGroupUserEntity
             {
                 Id = nonExistingId,
+                IsRead = false,
                 TransactionId = TransactionSeeds.TransactionJohnTaxi.Id,
                 GroupUserId = GroupUserSeeds.GroupUserJohnInWork.Id,
                 Transaction = null!,
@@ -458,16 +445,11 @@ namespace SpendWise.DAL.Tests
         #region Related Entities Handling Tests
 
         /// <summary>
-        /// Tests for handling related entities in <see cref="TransactionGroupUserEntity"/>.
-        /// These tests ensure that related entities such as <see cref="TransactionEntity"/> and <see cref="GroupUserEntity"/> are correctly loaded and associated.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Verifies that fetching a <see cref="TransactionGroupUserEntity"/> with an included <see cref="TransactionEntity"/> returns the correct transaction.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task FetchTransactionGroupUser_WithTransaction_ReturnsCorrectTransaction()
+        [Fact]
+        public async Task FetchTransactionGroupUser_WithTransaction_ShouldReturnCorrectTransaction()
         {
             // Arrange
             var transactionGroupUserId = TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana.Id;
@@ -482,12 +464,12 @@ namespace SpendWise.DAL.Tests
             Assert.NotNull(transactionGroupUser.Transaction);
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that fetching a <see cref="TransactionGroupUserEntity"/> with an included <see cref="GroupUserEntity"/> returns the correct group user.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task FetchTransactionGroupUser_WithGroupUser_ReturnsCorrectGroupUser()
+        [Fact]
+        public async Task FetchTransactionGroupUser_WithGroupUser_ShouldReturnCorrectGroupUser()
         {
             // Arrange
             var transactionGroupUserId = TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana.Id;
@@ -502,12 +484,12 @@ namespace SpendWise.DAL.Tests
             Assert.NotNull(transactionGroupUser.GroupUser);
         }
 
-        [Fact]
         /// <summary>
         /// Verifies that navigation properties in a <see cref="TransactionGroupUserEntity"/> are correctly loaded, including both <see cref="TransactionEntity"/> and <see cref="GroupUserEntity"/>.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task FetchTransactionGroupUser_NavigationPropertiesAreCorrectlyLoaded()
+        [Fact]
+        public async Task FetchTransactionGroupUser_NavigationProperties_ShouldBeCorrectlyLoaded()
         {
             // Arrange
             var existingTransactionGroupUser = TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana;
@@ -533,16 +515,11 @@ namespace SpendWise.DAL.Tests
         #region Consistency Tests
 
         /// <summary>
-        /// Tests for ensuring consistency in <see cref="TransactionGroupUserEntity"/>.
-        /// These tests verify that the related transaction and group user exist in the database, ensuring data integrity.
-        /// </summary>
-
-        [Fact]
-        /// <summary>
         /// Verifies that deleting an existing transaction group user successfully removes it from the database.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task DeleteTransactionGroupUser_CheckIntegrityConstraints_AfterDeletion()
+        [Fact]
+        public async Task DeleteTransactionGroupUser_ShouldMaintainIntegrityConstraints()
         {
             // Arrange
             var transactionGroupUserToRemove = await SpendWiseDbContextSUT.TransactionGroupUsers
@@ -566,6 +543,5 @@ namespace SpendWise.DAL.Tests
         }
 
         #endregion
-
     }
 }

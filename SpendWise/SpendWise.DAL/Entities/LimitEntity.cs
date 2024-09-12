@@ -5,7 +5,7 @@ namespace SpendWise.DAL.Entities
     /// <summary>
     /// Represents a limit entity within the SpendWise application.
     /// </summary>
-    public record LimitEntity : IEntity
+    public record LimitEntity : ILimitEntity
     {
         /// <summary>
         /// Gets or sets the unique identifier for the limit.
@@ -15,7 +15,7 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the unique identifier for the associated group-user relationship.
         /// </summary>
-        public required Guid GroupUserId { get; set; }
+        public required Guid GroupUserId { get; init; }
 
         // /// <summary>
         // /// Gets or sets the unique identifier for the group-user associated with the limit. Can be null.

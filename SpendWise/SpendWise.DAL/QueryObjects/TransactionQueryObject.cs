@@ -2,7 +2,6 @@ using System;
 using System.Linq.Expressions;
 using SpendWise.Common.Enums;
 using SpendWise.DAL.Entities;
-using SpendWise.DAL.QueryObjects;
 
 namespace SpendWise.DAL.QueryObjects
 {
@@ -10,253 +9,268 @@ namespace SpendWise.DAL.QueryObjects
     /// Represents a query object for the <see cref="TransactionEntity"/>.
     /// Enables query construction using methods for AND, OR, and NOT operations.
     /// </summary>
-    public class TransactionQueryObject : QueryObject<TransactionEntity>
+    public class TransactionQueryObject : BaseQueryObject<TransactionEntity, TransactionQueryObject>, ITransactionQueryObject<TransactionQueryObject>
     {
-        #region AND
+        #region IIdQuery
 
         /// <summary>
-        /// Adds a condition to compare the transaction ID using an AND operation.
+        /// Filters the query to include items with the specified ID.
         /// </summary>
-        /// <param name="id">The transaction ID to compare.</param>
-        /// <returns>The current instance of <see cref="TransactionQueryObject"/>.</returns>
-        public TransactionQueryObject WithId(Guid id)
-        {
-            And(entity => entity.Id == id);
-            return this;
-        }
+        /// <param name="id">The ID to filter by.</param>
+        /// <returns>The query object with the applied filter.</returns>
+        public new TransactionQueryObject WithId(Guid id) => base.WithId(id);
 
         /// <summary>
-        /// Adds a condition to compare the transaction amount using an AND operation.
+        /// Adds an OR condition to the query to include items with the specified ID.
         /// </summary>
-        /// <param name="amount">The amount to compare.</param>
-        /// <returns>The current instance of <see cref="TransactionQueryObject"/>.</returns>
-        public TransactionQueryObject WithAmount(decimal amount)
-        {
-            And(entity => entity.Amount == amount);
-            return this;
-        }
+        /// <param name="id">The ID to filter by.</param>
+        /// <returns>The query object with the applied OR condition.</returns>
+        public new TransactionQueryObject OrWithId(Guid id) => base.OrWithId(id);
 
         /// <summary>
-        /// Adds a condition to compare the transaction date using an AND operation.
+        /// Filters the query to exclude items with the specified ID.
         /// </summary>
-        /// <param name="date">The date to compare.</param>
-        /// <returns>The current instance of <see cref="TransactionQueryObject"/>.</returns>
-        public TransactionQueryObject WithDate(DateTime date)
-        {
-            And(entity => entity.Date.Date == date.Date);
-            return this;
-        }
+        /// <param name="id">The ID to exclude.</param>
+        /// <returns>The query object with the applied exclusion filter.</returns>
+        public new TransactionQueryObject NotWithId(Guid id) => base.NotWithId(id);
+
+        #endregion
+
+        #region IAmountQuery
 
         /// <summary>
-        /// Adds a condition to filter transactions by description using an AND operation.
+        /// Filters the query to include items with the specified amount.
+        /// </summary>
+        /// <param name="amount">The amount to filter by.</param>
+        /// <returns>The query object with the applied filter.</returns>
+        public new TransactionQueryObject WithAmount(decimal amount) => base.WithAmount(amount);
+
+        /// <summary>
+        /// Adds an OR condition to the query to include items with the specified amount.
+        /// </summary>
+        /// <param name="amount">The amount to filter by.</param>
+        /// <returns>The query object with the applied OR condition.</returns>
+        public new TransactionQueryObject OrWithAmount(decimal amount) => base.OrWithAmount(amount);
+
+        /// <summary>
+        /// Filters the query to exclude items with the specified amount.
+        /// </summary>
+        /// <param name="amount">The amount to exclude.</param>
+        /// <returns>The query object with the applied exclusion filter.</returns>
+        public new TransactionQueryObject NotWithAmount(decimal amount) => base.NotWithAmount(amount);
+
+        #endregion
+
+        #region IDateQuery
+
+        /// <summary>
+        /// Filters the query to include items with the specified date.
+        /// </summary>
+        /// <param name="date">The date to filter by.</param>
+        /// <returns>The query object with the applied filter.</returns>
+        public new TransactionQueryObject WithDate(DateTime date) => base.WithDate(date);
+
+        /// <summary>
+        /// Adds an OR condition to the query to include items with the specified date.
+        /// </summary>
+        /// <param name="date">The date to filter by.</param>
+        /// <returns>The query object with the applied OR condition.</returns>
+        public new TransactionQueryObject OrWithDate(DateTime date) => base.OrWithDate(date);
+
+        /// <summary>
+        /// Filters the query to exclude items with the specified date.
+        /// </summary>
+        /// <param name="date">The date to exclude.</param>
+        /// <returns>The query object with the applied exclusion filter.</returns>
+        public new TransactionQueryObject NotWithDate(DateTime date) => base.NotWithDate(date);
+
+        #endregion
+
+        #region IDescriptionQuery
+
+        /// <summary>
+        /// Filters the query to include items with the specified description.
         /// </summary>
         /// <param name="description">The description to filter by.</param>
-        /// <returns>The current instance of <see cref="TransactionQueryObject"/>.</returns>
-        public TransactionQueryObject WithDescription(string description)
-        {
-            And(entity => entity.Description != null && entity.Description.Contains(description));
-            return this;
-        }
+        /// <returns>The query object with the applied filter.</returns>
+        public new TransactionQueryObject WithDescription(string? description) => base.WithDescription(description);
 
         /// <summary>
-        /// Adds a condition to filter transactions with a null description using an AND operation.
+        /// Adds an OR condition to the query to include items with the specified description.
         /// </summary>
-        /// <returns>The current instance of <see cref="TransactionQueryObject"/>.</returns>
-        public TransactionQueryObject WithNullDescription()
-        {
-            And(entity => entity.Description == null);
-            return this;
-        }
+        /// <param name="description">The description to filter by.</param>
+        /// <returns>The query object with the applied OR condition.</returns>
+        public new TransactionQueryObject OrWithDescription(string? description) => base.OrWithDescription(description);
 
         /// <summary>
-        /// Adds a condition to compare the transaction type using an AND operation.
+        /// Filters the query to exclude items with the specified description.
         /// </summary>
-        /// <param name="type">The transaction type to compare.</param>
-        /// <returns>The current instance of <see cref="TransactionQueryObject"/>.</returns>
-        public TransactionQueryObject WithType(TransactionType type)
-        {
-            And(entity => entity.Type == type);
-            return this;
-        }
+        /// <param name="description">The description to exclude.</param>
+        /// <returns>The query object with the applied exclusion filter.</returns>
+        public new TransactionQueryObject NotWithDescription(string? description) => base.NotWithDescription(description);
 
         /// <summary>
-        /// Adds a condition to compare the transaction category ID using an AND operation.
+        /// Filters the query to include items with a partial match of the specified text in the description.
         /// </summary>
-        /// <param name="categoryId">The category ID to compare.</param>
-        /// <returns>The current instance of <see cref="TransactionQueryObject"/>.</returns>
-        public TransactionQueryObject WithCategoryId(Guid? categoryId)
+        /// <param name="text">The text to partially match in the description.</param>
+        /// <returns>The query object with the applied filter.</returns>
+        public new TransactionQueryObject WithDescriptionPartialMatch(string text) => base.WithDescriptionPartialMatch(text);
+
+        /// <summary>
+        /// Adds an OR condition to the query to include items with a partial match of the specified text in the description.
+        /// </summary>
+        /// <param name="text">The text to partially match in the description.</param>
+        /// <returns>The query object with the applied OR condition.</returns>
+        public new TransactionQueryObject OrWithDescriptionPartialMatch(string text) => base.OrWithDescriptionPartialMatch(text);
+
+        /// <summary>
+        /// Filters the query to exclude items with a partial match of the specified text in the description.
+        /// </summary>
+        /// <param name="text">The text to partially match in the description.</param>
+        /// <returns>The query object with the applied exclusion filter.</returns>
+        public new TransactionQueryObject NotWithDescriptionPartialMatch(string text) => base.NotWithDescriptionPartialMatch(text);
+
+        /// <summary>
+        /// Filters the query to include items without a description.
+        /// </summary>
+        /// <returns>The query object with the applied filter.</returns>
+        public new TransactionQueryObject WithoutDescription() => base.WithoutDescription();
+
+        /// <summary>
+        /// Adds an OR condition to the query to include items without a description.
+        /// </summary>
+        /// <returns>The query object with the applied OR condition.</returns>
+        public new TransactionQueryObject OrWithoutDescription() => base.OrWithoutDescription();
+
+        /// <summary>
+        /// Filters the query to exclude items without a description.
+        /// </summary>
+        /// <returns>The query object with the applied exclusion filter.</returns>
+        public new TransactionQueryObject NotWithoutDescription() => base.NotWithoutDescription();
+
+        #endregion
+
+        #region ITypeQuery
+
+        /// <summary>
+        /// Filters the query to include items with the specified transaction type.
+        /// </summary>
+        /// <param name="type">The transaction type to filter by.</param>
+        /// <returns>The query object with the applied filter.</returns>
+        public new TransactionQueryObject WithType(TransactionType type) => base.WithType(type);
+
+        /// <summary>
+        /// Adds an OR condition to the query to include items with the specified transaction type.
+        /// </summary>
+        /// <param name="type">The transaction type to filter by.</param>
+        /// <returns>The query object with the applied OR condition.</returns>
+        public new TransactionQueryObject OrWithType(TransactionType type) => base.OrWithType(type);
+
+        /// <summary>
+        /// Filters the query to exclude items with the specified transaction type.
+        /// </summary>
+        /// <param name="type">The transaction type to exclude.</param>
+        /// <returns>The query object with the applied exclusion filter.</returns>
+        public new TransactionQueryObject NotWithType(TransactionType type) => base.NotWithType(type);
+
+        #endregion
+
+        #region ICategoryQuery
+
+        /// <summary>
+        /// Filters the query to include items with the specified category ID.
+        /// </summary>
+        /// <param name="categoryId">The category ID to filter by.</param>
+        /// <returns>The query object with the applied filter.</returns>
+        public TransactionQueryObject WithCategory(Guid? categoryId)
         {
             And(entity => entity.CategoryId == categoryId);
             return this;
         }
 
         /// <summary>
-        /// Adds a condition to check if a specific group user is associated with the transaction using an AND operation.
+        /// Adds an OR condition to the query to include items with the specified category ID.
         /// </summary>
-        /// <param name="transactionGroupUserId">The transaction group user ID to compare.</param>
-        /// <returns>The current instance of <see cref="TransactionQueryObject"/>.</returns>
-        public TransactionQueryObject WithTransactionGroupUser(Guid transactionGroupUserId)
-        {
-            And(entity => entity.TransactionGroupUsers.Any(tgu => tgu.Id == transactionGroupUserId));
-            return this;
-        }
-
-        #endregion
-
-        #region OR
-
-        /// <summary>
-        /// Adds a condition to compare the transaction ID using an OR operation.
-        /// </summary>
-        /// <param name="id">The transaction ID to compare.</param>
-        /// <returns>The current instance of <see cref="TransactionQueryObject"/>.</returns>
-        public TransactionQueryObject OrWithId(Guid id)
-        {
-            Or(entity => entity.Id == id);
-            return this;
-        }
-
-        /// <summary>
-        /// Adds a condition to compare the transaction amount using an OR operation.
-        /// </summary>
-        /// <param name="amount">The amount to compare.</param>
-        /// <returns>The current instance of <see cref="TransactionQueryObject"/>.</returns>
-        public TransactionQueryObject OrWithAmount(decimal amount)
-        {
-            Or(entity => entity.Amount == amount);
-            return this;
-        }
-
-        /// <summary>
-        /// Adds a condition to compare the transaction date using an OR operation.
-        /// </summary>
-        /// <param name="date">The date to compare.</param>
-        /// <returns>The current instance of <see cref="TransactionQueryObject"/>.</returns>
-        public TransactionQueryObject OrWithDate(DateTime date)
-        {
-            Or(entity => entity.Date.Date == date.Date);
-            return this;
-        }
-
-        /// <summary>
-        /// Adds a condition to filter transactions by description using an OR operation.
-        /// </summary>
-        /// <param name="description">The description to filter by.</param>
-        /// <returns>The current instance of <see cref="TransactionQueryObject"/>.</returns>
-        public TransactionQueryObject OrWithDescription(string description)
-        {
-            Or(entity => entity.Description != null && entity.Description.Contains(description));
-            return this;
-        }
-
-        /// <summary>
-        /// Adds a condition to compare the transaction type using an OR operation.
-        /// </summary>
-        /// <param name="type">The transaction type to compare.</param>
-        /// <returns>The current instance of <see cref="TransactionQueryObject"/>.</returns>
-        public TransactionQueryObject OrWithType(TransactionType type)
-        {
-            Or(entity => entity.Type == type);
-            return this;
-        }
-
-        /// <summary>
-        /// Adds a condition to compare the transaction category ID using an OR operation.
-        /// </summary>
-        /// <param name="categoryId">The category ID to compare.</param>
-        /// <returns>The current instance of <see cref="TransactionQueryObject"/>.</returns>
-        public TransactionQueryObject OrWithCategoryId(Guid? categoryId)
+        /// <param name="categoryId">The category ID to filter by.</param>
+        /// <returns>The query object with the applied OR condition.</returns>
+        public TransactionQueryObject OrWithCategory(Guid? categoryId)
         {
             Or(entity => entity.CategoryId == categoryId);
             return this;
         }
 
         /// <summary>
-        /// Adds a condition to check if a specific group user is associated with the transaction using an OR operation.
-        /// </summary>
-        /// <param name="transactionGroupUserId">The transaction group user ID to compare.</param>
-        /// <returns>The current instance of <see cref="TransactionQueryObject"/>.</returns>
-        public TransactionQueryObject OrWithTransactionGroupUser(Guid transactionGroupUserId)
-        {
-            Or(entity => entity.TransactionGroupUsers.Any(tgu => tgu.Id == transactionGroupUserId));
-            return this;
-        }
-
-        #endregion
-
-        #region NOT
-
-        /// <summary>
-        /// Adds a condition to exclude transactions with a specific ID using a NOT operation.
-        /// </summary>
-        /// <param name="id">The transaction ID to exclude.</param>
-        /// <returns>The current instance of <see cref="TransactionQueryObject"/>.</returns>
-        public TransactionQueryObject NotWithId(Guid id)
-        {
-            Not(entity => entity.Id == id);
-            return this;
-        }
-
-        /// <summary>
-        /// Adds a condition to exclude transactions with a specific amount using a NOT operation.
-        /// </summary>
-        /// <param name="amount">The amount to exclude.</param>
-        /// <returns>The current instance of <see cref="TransactionQueryObject"/>.</returns>
-        public TransactionQueryObject NotWithAmount(decimal amount)
-        {
-            Not(entity => entity.Amount == amount);
-            return this;
-        }
-
-        /// <summary>
-        /// Adds a condition to exclude transactions with a specific date using a NOT operation.
-        /// </summary>
-        /// <param name="date">The date to exclude.</param>
-        /// <returns>The current instance of <see cref="TransactionQueryObject"/>.</returns>
-        public TransactionQueryObject NotWithDate(DateTime date)
-        {
-            Not(entity => entity.Date.Date == date.Date);
-            return this;
-        }
-
-        /// <summary>
-        /// Adds a condition to exclude transactions by description using a NOT operation.
-        /// </summary>
-        /// <param name="description">The description to exclude.</param>
-        /// <returns>The current instance of <see cref="TransactionQueryObject"/>.</returns>
-        public TransactionQueryObject NotWithDescription(string description)
-        {
-            Not(entity => entity.Description != null && entity.Description.Contains(description));
-            return this;
-        }
-
-        /// <summary>
-        /// Adds a condition to exclude transactions with a specific type using a NOT operation.
-        /// </summary>
-        /// <param name="type">The transaction type to exclude.</param>
-        /// <returns>The current instance of <see cref="TransactionQueryObject"/>.</returns>
-        public TransactionQueryObject NotWithType(TransactionType type)
-        {
-            Not(entity => entity.Type == type);
-            return this;
-        }
-
-        /// <summary>
-        /// Adds a condition to exclude transactions with a specific category ID using a NOT operation.
+        /// Filters the query to exclude items with the specified category ID.
         /// </summary>
         /// <param name="categoryId">The category ID to exclude.</param>
-        /// <returns>The current instance of <see cref="TransactionQueryObject"/>.</returns>
-        public TransactionQueryObject NotWithCategoryId(Guid? categoryId)
+        /// <returns>The query object with the applied exclusion filter.</returns>
+        public TransactionQueryObject NotWithCategory(Guid? categoryId)
         {
             Not(entity => entity.CategoryId == categoryId);
             return this;
         }
 
         /// <summary>
-        /// Adds a condition to exclude transactions associated with a specific group user using a NOT operation.
+        /// Filters the query to include items without a category.
+        /// </summary>
+        /// <returns>The query object with the applied filter.</returns>
+        public TransactionQueryObject WithoutCategory()
+        {
+            And(entity => entity.CategoryId == null);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds an OR condition to the query to include items without a category.
+        /// </summary>
+        /// <returns>The query object with the applied OR condition.</returns>
+        public TransactionQueryObject OrWithoutCategory()
+        {
+            Or(entity => entity.CategoryId == null);
+            return this;
+        }
+
+        /// <summary>
+        /// Filters the query to exclude items without a category.
+        /// </summary>
+        /// <returns>The query object with the applied exclusion filter.</returns>
+        public TransactionQueryObject NotWithoutCategory()
+        {
+            Not(entity => entity.CategoryId == null);
+            return this;
+        }
+
+        #endregion
+
+        #region ITransactionGroupUserQuery
+
+        /// <summary>
+        /// Filters the query to include items with the specified transaction group user ID.
+        /// </summary>
+        /// <param name="transactionGroupUserId">The transaction group user ID to filter by.</param>
+        /// <returns>The query object with the applied filter.</returns>
+        public TransactionQueryObject WithTransactionGroupUser(Guid transactionGroupUserId)
+        {
+            And(entity => entity.TransactionGroupUsers.Any(tgu => tgu.Id == transactionGroupUserId));
+            return this;
+        }
+
+        /// <summary>
+        /// Adds an OR condition to the query to include items with the specified transaction group user ID.
+        /// </summary>
+        /// <param name="transactionGroupUserId">The transaction group user ID to filter by.</param>
+        /// <returns>The query object with the applied OR condition.</returns>
+        public TransactionQueryObject OrWithTransactionGroupUser(Guid transactionGroupUserId)
+        {
+            Or(entity => entity.TransactionGroupUsers.Any(tgu => tgu.Id == transactionGroupUserId));
+            return this;
+        }
+
+        /// <summary>
+        /// Filters the query to exclude items with the specified transaction group user ID.
         /// </summary>
         /// <param name="transactionGroupUserId">The transaction group user ID to exclude.</param>
-        /// <returns>The current instance of <see cref="TransactionQueryObject"/>.</returns>
+        /// <returns>The query object with the applied exclusion filter.</returns>
         public TransactionQueryObject NotWithTransactionGroupUser(Guid transactionGroupUserId)
         {
             Not(entity => entity.TransactionGroupUsers.Any(tgu => tgu.Id == transactionGroupUserId));

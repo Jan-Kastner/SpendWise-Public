@@ -241,11 +241,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
 
             // Verify the initial state before deletion
             var initialInvitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(new InvitationQueryObject().WithGroupId(groupId));
+                .GetAsync(new InvitationQueryObject().WithGroup(groupId));
             Assert.NotEmpty(initialInvitations); // Ensure there are invitations related to the group
 
             var initialGroupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
-                .GetAsync(new GroupUserQueryObject().WithGroupId(groupId));
+                .GetAsync(new GroupUserQueryObject().WithGroup(groupId));
             Assert.NotEmpty(initialGroupUsers); // Ensure there are users related to the group
 
             // Act
@@ -257,11 +257,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             Assert.Null(deletedGroup); // Ensure the group is deleted
 
             var invitationsAfterDelete = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(new InvitationQueryObject().WithGroupId(groupId));
+                .GetAsync(new InvitationQueryObject().WithGroup(groupId));
             Assert.Empty(invitationsAfterDelete); // Ensure all invitations related to the group are removed
 
             var usersAfterDelete = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
-                .GetAsync(new GroupUserQueryObject().WithGroupId(groupId));
+                .GetAsync(new GroupUserQueryObject().WithGroup(groupId));
             Assert.Empty(usersAfterDelete); // Ensure all users related to the group are removed
         }
 
