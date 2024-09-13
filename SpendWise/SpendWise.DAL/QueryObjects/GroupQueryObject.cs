@@ -1,5 +1,6 @@
 using System;
 using SpendWise.DAL.Entities;
+using System.Linq.Expressions;
 
 namespace SpendWise.DAL.QueryObjects
 {
@@ -16,21 +17,21 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="id">The ID to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public new GroupQueryObject WithId(Guid id) => base.WithId(id);
+        public GroupQueryObject WithId(Guid id) => ApplyIdFilter(id, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified ID.
         /// </summary>
         /// <param name="id">The ID to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new GroupQueryObject OrWithId(Guid id) => base.OrWithId(id);
+        public GroupQueryObject OrWithId(Guid id) => ApplyIdFilter(id, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with the specified ID.
         /// </summary>
         /// <param name="id">The ID to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new GroupQueryObject NotWithId(Guid id) => base.NotWithId(id);
+        public GroupQueryObject NotWithId(Guid id) => ApplyIdFilter(id, filter => Not(filter));
 
         #endregion
 
@@ -41,42 +42,42 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="name">The name to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public new GroupQueryObject WithName(string name) => base.WithName(name);
+        public GroupQueryObject WithName(string name) => ApplyNameFilter(name, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified name.
         /// </summary>
         /// <param name="name">The name to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new GroupQueryObject OrWithName(string name) => base.OrWithName(name);
+        public GroupQueryObject OrWithName(string name) => ApplyNameFilter(name, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with the specified name.
         /// </summary>
         /// <param name="name">The name to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new GroupQueryObject NotWithName(string name) => base.NotWithName(name);
+        public GroupQueryObject NotWithName(string name) => ApplyNameFilter(name, filter => Not(filter));
 
         /// <summary>
         /// Filters the query to include items with a partial match of the specified text in the name.
         /// </summary>
         /// <param name="text">The text to partially match in the name.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public new GroupQueryObject WithNamePartialMatch(string text) => base.WithNamePartialMatch(text);
+        public GroupQueryObject WithNamePartialMatch(string text) => ApplyNameFilter(text, filter => And(filter), true);
 
         /// <summary>
         /// Adds an OR condition to the query to include items with a partial match of the specified text in the name.
         /// </summary>
         /// <param name="text">The text to partially match in the name.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new GroupQueryObject OrWithNamePartialMatch(string text) => base.OrWithNamePartialMatch(text);
+        public GroupQueryObject OrWithNamePartialMatch(string text) => ApplyNameFilter(text, filter => Or(filter), true);
 
         /// <summary>
         /// Filters the query to exclude items with a partial match of the specified text in the name.
         /// </summary>
         /// <param name="text">The text to partially match in the name.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new GroupQueryObject NotWithNamePartialMatch(string text) => base.NotWithNamePartialMatch(text);
+        public GroupQueryObject NotWithNamePartialMatch(string text) => ApplyNameFilter(text, filter => Not(filter), true);
 
         #endregion
 
@@ -87,60 +88,60 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="description">The description to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public new GroupQueryObject WithDescription(string? description) => base.WithDescription(description);
+        public GroupQueryObject WithDescription(string? description) => ApplyDescriptionFilter(description, filter => And(filter), false);
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified description.
         /// </summary>
         /// <param name="description">The description to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new GroupQueryObject OrWithDescription(string? description) => base.OrWithDescription(description);
+        public GroupQueryObject OrWithDescription(string? description) => ApplyDescriptionFilter(description, filter => Or(filter), false);
 
         /// <summary>
         /// Filters the query to exclude items with the specified description.
         /// </summary>
         /// <param name="description">The description to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new GroupQueryObject NotWithDescription(string? description) => base.NotWithDescription(description);
+        public GroupQueryObject NotWithDescription(string? description) => ApplyDescriptionFilter(description, filter => Not(filter), false);
 
         /// <summary>
         /// Filters the query to include items with a partial match of the specified text in the description.
         /// </summary>
         /// <param name="text">The text to partially match in the description.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public new GroupQueryObject WithDescriptionPartialMatch(string text) => base.WithDescriptionPartialMatch(text);
+        public GroupQueryObject WithDescriptionPartialMatch(string text) => ApplyDescriptionFilter(text, filter => And(filter), true);
 
         /// <summary>
         /// Adds an OR condition to the query to include items with a partial match of the specified text in the description.
         /// </summary>
         /// <param name="text">The text to partially match in the description.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new GroupQueryObject OrWithDescriptionPartialMatch(string text) => base.OrWithDescriptionPartialMatch(text);
+        public GroupQueryObject OrWithDescriptionPartialMatch(string text) => ApplyDescriptionFilter(text, filter => Or(filter), true);
 
         /// <summary>
         /// Filters the query to exclude items with a partial match of the specified text in the description.
         /// </summary>
         /// <param name="text">The text to partially match in the description.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new GroupQueryObject NotWithDescriptionPartialMatch(string text) => base.NotWithDescriptionPartialMatch(text);
+        public GroupQueryObject NotWithDescriptionPartialMatch(string text) => ApplyDescriptionFilter(text, filter => Not(filter), true);
 
         /// <summary>
         /// Filters the query to include items without a description.
         /// </summary>
         /// <returns>The query object with the applied filter.</returns>
-        public new GroupQueryObject WithoutDescription() => base.WithoutDescription();
+        public GroupQueryObject WithoutDescription() => ApplyDescriptionFilter(null, filter => And(filter), false, true);
 
         /// <summary>
         /// Adds an OR condition to the query to include items without a description.
         /// </summary>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new GroupQueryObject OrWithoutDescription() => base.OrWithoutDescription();
+        public GroupQueryObject OrWithoutDescription() => ApplyDescriptionFilter(null, filter => Or(filter), false, true);
 
         /// <summary>
         /// Filters the query to exclude items without a description.
         /// </summary>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new GroupQueryObject NotWithoutDescription() => base.NotWithoutDescription();
+        public GroupQueryObject NotWithoutDescription() => ApplyDescriptionFilter(null, filter => Not(filter), false, true);
 
         #endregion
 

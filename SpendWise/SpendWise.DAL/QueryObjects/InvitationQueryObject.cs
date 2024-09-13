@@ -17,21 +17,21 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="id">The ID to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public new InvitationQueryObject WithId(Guid id) => base.WithId(id);
+        public InvitationQueryObject WithId(Guid id) => ApplyIdFilter(id, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified ID.
         /// </summary>
         /// <param name="id">The ID to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new InvitationQueryObject OrWithId(Guid id) => base.OrWithId(id);
+        public InvitationQueryObject OrWithId(Guid id) => ApplyIdFilter(id, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with the specified ID.
         /// </summary>
         /// <param name="id">The ID to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new InvitationQueryObject NotWithId(Guid id) => base.NotWithId(id);
+        public InvitationQueryObject NotWithId(Guid id) => ApplyIdFilter(id, filter => Not(filter));
 
         #endregion
 
@@ -42,21 +42,21 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="sentDate">The sent date to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public new InvitationQueryObject WithSentDate(DateTime sentDate) => base.WithSentDate(sentDate);
+        public InvitationQueryObject WithSentDate(DateTime sentDate) => ApplySentDateFilter(sentDate, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified sent date.
         /// </summary>
         /// <param name="sentDate">The sent date to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new InvitationQueryObject OrWithSentDate(DateTime sentDate) => base.OrWithSentDate(sentDate);
+        public InvitationQueryObject OrWithSentDate(DateTime sentDate) => ApplySentDateFilter(sentDate, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with the specified sent date.
         /// </summary>
         /// <param name="sentDate">The sent date to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new InvitationQueryObject NotWithSentDate(DateTime sentDate) => base.NotWithSentDate(sentDate);
+        public InvitationQueryObject NotWithSentDate(DateTime sentDate) => ApplySentDateFilter(sentDate, filter => Not(filter));
 
         #endregion
 
@@ -67,21 +67,21 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="responseDate">The response date to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public new InvitationQueryObject WithResponseDate(DateTime? responseDate) => base.WithResponseDate(responseDate);
+        public InvitationQueryObject WithResponseDate(DateTime? responseDate) => ApplyResponseDateFilter(responseDate, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified response date.
         /// </summary>
         /// <param name="responseDate">The response date to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new InvitationQueryObject OrWithResponseDate(DateTime? responseDate) => base.OrWithResponseDate(responseDate);
+        public InvitationQueryObject OrWithResponseDate(DateTime? responseDate) => ApplyResponseDateFilter(responseDate, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with the specified response date.
         /// </summary>
         /// <param name="responseDate">The response date to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new InvitationQueryObject NotWithResponseDate(DateTime? responseDate) => base.NotWithResponseDate(responseDate);
+        public InvitationQueryObject NotWithResponseDate(DateTime? responseDate) => ApplyResponseDateFilter(responseDate, filter => Not(filter));
 
         #endregion
 
@@ -91,55 +91,55 @@ namespace SpendWise.DAL.QueryObjects
         /// Filters the query to include items that are accepted.
         /// </summary>
         /// <returns>The query object with the applied filter.</returns>
-        public InvitationQueryObject IsAccepted() => base.WithIsAccepted(true);
+        public InvitationQueryObject IsAccepted() => ApplyIsAcceptedFilter(true, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items that are accepted.
         /// </summary>
         /// <returns>The query object with the applied OR condition.</returns>
-        public InvitationQueryObject OrIsAccepted() => base.OrWithIsAccepted(true);
+        public InvitationQueryObject OrIsAccepted() => ApplyIsAcceptedFilter(true, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items that are accepted.
         /// </summary>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public InvitationQueryObject NotIsAccepted() => base.NotWithIsAccepted(true);
+        public InvitationQueryObject NotIsAccepted() => ApplyIsAcceptedFilter(true, filter => Not(filter));
 
         /// <summary>
         /// Filters the query to include items that are not accepted.
         /// </summary>
         /// <returns>The query object with the applied filter.</returns>
-        public InvitationQueryObject IsNotAccepted() => base.WithIsAccepted(false);
+        public InvitationQueryObject IsNotAccepted() => ApplyIsAcceptedFilter(false, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items that are not accepted.
         /// </summary>
         /// <returns>The query object with the applied OR condition.</returns>
-        public InvitationQueryObject OrIsNotAccepted() => base.OrWithIsAccepted(false);
+        public InvitationQueryObject OrIsNotAccepted() => ApplyIsAcceptedFilter(false, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items that are not accepted.
         /// </summary>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public InvitationQueryObject NotIsNotAccepted() => base.NotWithIsAccepted(false);
+        public InvitationQueryObject NotIsNotAccepted() => ApplyIsAcceptedFilter(false, filter => Not(filter));
 
         /// <summary>
         /// Filters the query to include items that are pending.
         /// </summary>
         /// <returns>The query object with the applied filter.</returns>
-        public InvitationQueryObject IsPending() => base.WithIsAccepted(null);
+        public InvitationQueryObject IsPending() => ApplyIsAcceptedFilter(null, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items that are pending.
         /// </summary>
         /// <returns>The query object with the applied OR condition.</returns>
-        public InvitationQueryObject OrIsPending() => base.OrWithIsAccepted(null);
+        public InvitationQueryObject OrIsPending() => ApplyIsAcceptedFilter(null, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items that are pending.
         /// </summary>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public InvitationQueryObject NotIsPending() => base.NotWithIsAccepted(null);
+        public InvitationQueryObject NotIsPending() => ApplyIsAcceptedFilter(null, filter => Not(filter));
 
         #endregion
 

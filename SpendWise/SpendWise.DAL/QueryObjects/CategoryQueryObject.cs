@@ -1,7 +1,6 @@
-using System;
-using System.Linq.Expressions;
 using SpendWise.DAL.Entities;
 using SpendWise.DAL.QueryObjects;
+using System;
 
 namespace SpendWise.DAL.QueryObjects
 {
@@ -18,21 +17,21 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="id">The ID to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public new CategoryQueryObject WithId(Guid id) => base.WithId(id);
+        public CategoryQueryObject WithId(Guid id) => ApplyIdFilter(id, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified ID.
         /// </summary>
         /// <param name="id">The ID to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new CategoryQueryObject OrWithId(Guid id) => base.OrWithId(id);
+        public CategoryQueryObject OrWithId(Guid id) => ApplyIdFilter(id, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with the specified ID.
         /// </summary>
         /// <param name="id">The ID to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new CategoryQueryObject NotWithId(Guid id) => base.NotWithId(id);
+        public CategoryQueryObject NotWithId(Guid id) => ApplyIdFilter(id, filter => Not(filter));
 
         #endregion
 
@@ -43,42 +42,42 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="name">The name to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public new CategoryQueryObject WithName(string name) => base.WithName(name);
+        public CategoryQueryObject WithName(string name) => ApplyNameFilter(name, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified name.
         /// </summary>
         /// <param name="name">The name to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new CategoryQueryObject OrWithName(string name) => base.OrWithName(name);
+        public CategoryQueryObject OrWithName(string name) => ApplyNameFilter(name, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with the specified name.
         /// </summary>
         /// <param name="name">The name to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new CategoryQueryObject NotWithName(string name) => base.NotWithName(name);
+        public CategoryQueryObject NotWithName(string name) => ApplyNameFilter(name, filter => Not(filter));
 
         /// <summary>
         /// Filters the query to include items with a partial match of the specified text in the name.
         /// </summary>
         /// <param name="text">The text to partially match in the name.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public new CategoryQueryObject WithNamePartialMatch(string text) => base.WithNamePartialMatch(text);
+        public CategoryQueryObject WithNamePartialMatch(string text) => ApplyNameFilter(text, filter => And(filter), true);
 
         /// <summary>
         /// Adds an OR condition to the query to include items with a partial match of the specified text in the name.
         /// </summary>
         /// <param name="text">The text to partially match in the name.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new CategoryQueryObject OrWithNamePartialMatch(string text) => base.OrWithNamePartialMatch(text);
+        public CategoryQueryObject OrWithNamePartialMatch(string text) => ApplyNameFilter(text, filter => Or(filter), true);
 
         /// <summary>
         /// Filters the query to exclude items with a partial match of the specified text in the name.
         /// </summary>
         /// <param name="text">The text to partially match in the name.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new CategoryQueryObject NotWithNamePartialMatch(string text) => base.NotWithNamePartialMatch(text);
+        public CategoryQueryObject NotWithNamePartialMatch(string text) => ApplyNameFilter(text, filter => Not(filter), true);
 
         #endregion
 
@@ -89,60 +88,60 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="description">The description to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public new CategoryQueryObject WithDescription(string? description) => base.WithDescription(description);
+        public CategoryQueryObject WithDescription(string? description) => ApplyDescriptionFilter(description, filter => And(filter), false);
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified description.
         /// </summary>
         /// <param name="description">The description to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new CategoryQueryObject OrWithDescription(string? description) => base.OrWithDescription(description);
+        public CategoryQueryObject OrWithDescription(string? description) => ApplyDescriptionFilter(description, filter => Or(filter), false);
 
         /// <summary>
         /// Filters the query to exclude items with the specified description.
         /// </summary>
         /// <param name="description">The description to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new CategoryQueryObject NotWithDescription(string? description) => base.NotWithDescription(description);
+        public CategoryQueryObject NotWithDescription(string? description) => ApplyDescriptionFilter(description, filter => Not(filter), false);
 
         /// <summary>
         /// Filters the query to include items with a partial match of the specified text in the description.
         /// </summary>
         /// <param name="text">The text to partially match in the description.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public new CategoryQueryObject WithDescriptionPartialMatch(string text) => base.WithDescriptionPartialMatch(text);
+        public CategoryQueryObject WithDescriptionPartialMatch(string text) => ApplyDescriptionFilter(text, filter => And(filter), true);
 
         /// <summary>
         /// Adds an OR condition to the query to include items with a partial match of the specified text in the description.
         /// </summary>
         /// <param name="text">The text to partially match in the description.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new CategoryQueryObject OrWithDescriptionPartialMatch(string text) => base.OrWithDescriptionPartialMatch(text);
+        public CategoryQueryObject OrWithDescriptionPartialMatch(string text) => ApplyDescriptionFilter(text, filter => Or(filter), true);
 
         /// <summary>
         /// Filters the query to exclude items with a partial match of the specified text in the description.
         /// </summary>
         /// <param name="text">The text to partially match in the description.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new CategoryQueryObject NotWithDescriptionPartialMatch(string text) => base.NotWithDescriptionPartialMatch(text);
+        public CategoryQueryObject NotWithDescriptionPartialMatch(string text) => ApplyDescriptionFilter(text, filter => Not(filter), true);
 
         /// <summary>
         /// Filters the query to include items without a description.
         /// </summary>
         /// <returns>The query object with the applied filter.</returns>
-        public new CategoryQueryObject WithoutDescription() => base.WithoutDescription();
+        public CategoryQueryObject WithoutDescription() => ApplyDescriptionFilter(null, filter => And(filter), false, true);
 
         /// <summary>
         /// Adds an OR condition to the query to include items without a description.
         /// </summary>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new CategoryQueryObject OrWithoutDescription() => base.OrWithoutDescription();
+        public CategoryQueryObject OrWithoutDescription() => ApplyDescriptionFilter(null, filter => Or(filter), false, true);
 
         /// <summary>
         /// Filters the query to exclude items without a description.
         /// </summary>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new CategoryQueryObject NotWithoutDescription() => base.NotWithoutDescription();
+        public CategoryQueryObject NotWithoutDescription() => ApplyDescriptionFilter(null, filter => Not(filter), false, true);
 
         #endregion
 
@@ -153,21 +152,21 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="color">The color to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public new CategoryQueryObject WithColor(string color) => base.WithColor(color);
+        public CategoryQueryObject WithColor(string color) => ApplyColorFilter(color, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified color.
         /// </summary>
         /// <param name="color">The color to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new CategoryQueryObject OrWithColor(string color) => base.OrWithColor(color);
+        public CategoryQueryObject OrWithColor(string color) => ApplyColorFilter(color, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with the specified color.
         /// </summary>
         /// <param name="color">The color to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new CategoryQueryObject NotWithColor(string color) => base.NotWithColor(color);
+        public CategoryQueryObject NotWithColor(string color) => ApplyColorFilter(color, filter => Not(filter));
 
         #endregion
 
@@ -177,37 +176,37 @@ namespace SpendWise.DAL.QueryObjects
         /// Filters the query to include items with an icon.
         /// </summary>
         /// <returns>The query object with the applied filter.</returns>
-        public new CategoryQueryObject WithIcon() => base.WithIcon();
+        public CategoryQueryObject WithIcon() => ApplyIconFilter(true, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with an icon.
         /// </summary>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new CategoryQueryObject OrWithIcon() => base.OrWithIcon();
+        public CategoryQueryObject OrWithIcon() => ApplyIconFilter(true, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with an icon.
         /// </summary>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new CategoryQueryObject NotWithIcon() => base.NotWithIcon();
+        public CategoryQueryObject NotWithIcon() => ApplyIconFilter(true, filter => Not(filter));
 
         /// <summary>
         /// Filters the query to include items without an icon.
         /// </summary>
         /// <returns>The query object with the applied filter.</returns>
-        public new CategoryQueryObject WithoutIcon() => base.WithoutIcon();
+        public CategoryQueryObject WithoutIcon() => ApplyIconFilter(false, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items without an icon.
         /// </summary>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new CategoryQueryObject OrWithoutIcon() => base.OrWithoutIcon();
+        public CategoryQueryObject OrWithoutIcon() => ApplyIconFilter(false, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items without an icon.
         /// </summary>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new CategoryQueryObject NotWithoutIcon() => base.NotWithoutIcon();
+        public CategoryQueryObject NotWithoutIcon() => ApplyIconFilter(false, filter => Not(filter));
 
         #endregion
     }

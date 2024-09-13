@@ -18,21 +18,21 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="id">The ID to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public new GroupUserQueryObject WithId(Guid id) => base.WithId(id);
+        public GroupUserQueryObject WithId(Guid id) => ApplyIdFilter(id, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified ID.
         /// </summary>
         /// <param name="id">The ID to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new GroupUserQueryObject OrWithId(Guid id) => base.OrWithId(id);
+        public GroupUserQueryObject OrWithId(Guid id) => ApplyIdFilter(id, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with the specified ID.
         /// </summary>
         /// <param name="id">The ID to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new GroupUserQueryObject NotWithId(Guid id) => base.NotWithId(id);
+        public GroupUserQueryObject NotWithId(Guid id) => ApplyIdFilter(id, filter => Not(filter));
 
         #endregion
 
@@ -43,21 +43,21 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="role">The user role to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public new GroupUserQueryObject WithUserRole(UserRole role) => base.WithUserRole(role);
+        public GroupUserQueryObject WithUserRole(UserRole role) => ApplyUserRoleFilter(role, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified user role.
         /// </summary>
         /// <param name="role">The user role to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new GroupUserQueryObject OrWithUserRole(UserRole role) => base.OrWithUserRole(role);
+        public GroupUserQueryObject OrWithUserRole(UserRole role) => ApplyUserRoleFilter(role, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with the specified user role.
         /// </summary>
         /// <param name="role">The user role to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new GroupUserQueryObject NotWithUserRole(UserRole role) => base.NotWithUserRole(role);
+        public GroupUserQueryObject NotWithUserRole(UserRole role) => ApplyUserRoleFilter(role, filter => Not(filter));
 
         #endregion
 

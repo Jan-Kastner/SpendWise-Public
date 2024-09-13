@@ -18,21 +18,21 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="id">The ID to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public new TransactionQueryObject WithId(Guid id) => base.WithId(id);
+        public TransactionQueryObject WithId(Guid id) => ApplyIdFilter(id, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified ID.
         /// </summary>
         /// <param name="id">The ID to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new TransactionQueryObject OrWithId(Guid id) => base.OrWithId(id);
+        public TransactionQueryObject OrWithId(Guid id) => ApplyIdFilter(id, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with the specified ID.
         /// </summary>
         /// <param name="id">The ID to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new TransactionQueryObject NotWithId(Guid id) => base.NotWithId(id);
+        public TransactionQueryObject NotWithId(Guid id) => ApplyIdFilter(id, filter => Not(filter));
 
         #endregion
 
@@ -43,21 +43,21 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="amount">The amount to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public new TransactionQueryObject WithAmount(decimal amount) => base.WithAmount(amount);
+        public TransactionQueryObject WithAmount(decimal amount) => ApplyAmountFilter(amount, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified amount.
         /// </summary>
         /// <param name="amount">The amount to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new TransactionQueryObject OrWithAmount(decimal amount) => base.OrWithAmount(amount);
+        public TransactionQueryObject OrWithAmount(decimal amount) => ApplyAmountFilter(amount, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with the specified amount.
         /// </summary>
         /// <param name="amount">The amount to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new TransactionQueryObject NotWithAmount(decimal amount) => base.NotWithAmount(amount);
+        public TransactionQueryObject NotWithAmount(decimal amount) => ApplyAmountFilter(amount, filter => Not(filter));
 
         #endregion
 
@@ -68,21 +68,21 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="date">The date to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public new TransactionQueryObject WithDate(DateTime date) => base.WithDate(date);
+        public TransactionQueryObject WithDate(DateTime date) => ApplyDateFilter(date, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified date.
         /// </summary>
         /// <param name="date">The date to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new TransactionQueryObject OrWithDate(DateTime date) => base.OrWithDate(date);
+        public TransactionQueryObject OrWithDate(DateTime date) => ApplyDateFilter(date, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with the specified date.
         /// </summary>
         /// <param name="date">The date to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new TransactionQueryObject NotWithDate(DateTime date) => base.NotWithDate(date);
+        public TransactionQueryObject NotWithDate(DateTime date) => ApplyDateFilter(date, filter => Not(filter));
 
         #endregion
 
@@ -93,60 +93,60 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="description">The description to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public new TransactionQueryObject WithDescription(string? description) => base.WithDescription(description);
+        public TransactionQueryObject WithDescription(string? description) => ApplyDescriptionFilter(description, filter => And(filter), false);
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified description.
         /// </summary>
         /// <param name="description">The description to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new TransactionQueryObject OrWithDescription(string? description) => base.OrWithDescription(description);
+        public TransactionQueryObject OrWithDescription(string? description) => ApplyDescriptionFilter(description, filter => Or(filter), false);
 
         /// <summary>
         /// Filters the query to exclude items with the specified description.
         /// </summary>
         /// <param name="description">The description to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new TransactionQueryObject NotWithDescription(string? description) => base.NotWithDescription(description);
+        public TransactionQueryObject NotWithDescription(string? description) => ApplyDescriptionFilter(description, filter => Not(filter), false);
 
         /// <summary>
         /// Filters the query to include items with a partial match of the specified text in the description.
         /// </summary>
         /// <param name="text">The text to partially match in the description.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public new TransactionQueryObject WithDescriptionPartialMatch(string text) => base.WithDescriptionPartialMatch(text);
+        public TransactionQueryObject WithDescriptionPartialMatch(string text) => ApplyDescriptionFilter(text, filter => And(filter), true);
 
         /// <summary>
         /// Adds an OR condition to the query to include items with a partial match of the specified text in the description.
         /// </summary>
         /// <param name="text">The text to partially match in the description.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new TransactionQueryObject OrWithDescriptionPartialMatch(string text) => base.OrWithDescriptionPartialMatch(text);
+        public TransactionQueryObject OrWithDescriptionPartialMatch(string text) => ApplyDescriptionFilter(text, filter => Or(filter), true);
 
         /// <summary>
         /// Filters the query to exclude items with a partial match of the specified text in the description.
         /// </summary>
         /// <param name="text">The text to partially match in the description.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new TransactionQueryObject NotWithDescriptionPartialMatch(string text) => base.NotWithDescriptionPartialMatch(text);
+        public TransactionQueryObject NotWithDescriptionPartialMatch(string text) => ApplyDescriptionFilter(text, filter => Not(filter), true);
 
         /// <summary>
         /// Filters the query to include items without a description.
         /// </summary>
         /// <returns>The query object with the applied filter.</returns>
-        public new TransactionQueryObject WithoutDescription() => base.WithoutDescription();
+        public TransactionQueryObject WithoutDescription() => ApplyDescriptionFilter(null, filter => And(filter), false, true);
 
         /// <summary>
         /// Adds an OR condition to the query to include items without a description.
         /// </summary>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new TransactionQueryObject OrWithoutDescription() => base.OrWithoutDescription();
+        public TransactionQueryObject OrWithoutDescription() => ApplyDescriptionFilter(null, filter => Or(filter), false, true);
 
         /// <summary>
         /// Filters the query to exclude items without a description.
         /// </summary>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new TransactionQueryObject NotWithoutDescription() => base.NotWithoutDescription();
+        public TransactionQueryObject NotWithoutDescription() => ApplyDescriptionFilter(null, filter => Not(filter), false, true);
 
         #endregion
 
@@ -157,21 +157,21 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="type">The transaction type to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public new TransactionQueryObject WithType(TransactionType type) => base.WithType(type);
+        public TransactionQueryObject WithType(TransactionType type) => ApplyTransactionTypeFilter(type, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified transaction type.
         /// </summary>
         /// <param name="type">The transaction type to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new TransactionQueryObject OrWithType(TransactionType type) => base.OrWithType(type);
+        public TransactionQueryObject OrWithType(TransactionType type) => ApplyTransactionTypeFilter(type, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with the specified transaction type.
         /// </summary>
         /// <param name="type">The transaction type to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new TransactionQueryObject NotWithType(TransactionType type) => base.NotWithType(type);
+        public TransactionQueryObject NotWithType(TransactionType type) => ApplyTransactionTypeFilter(type, filter => Not(filter));
 
         #endregion
 

@@ -18,21 +18,21 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="id">The ID to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public new LimitQueryObject WithId(Guid id) => base.WithId(id);
+        public LimitQueryObject WithId(Guid id) => ApplyIdFilter(id, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified ID.
         /// </summary>
         /// <param name="id">The ID to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new LimitQueryObject OrWithId(Guid id) => base.OrWithId(id);
+        public LimitQueryObject OrWithId(Guid id) => ApplyIdFilter(id, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with the specified ID.
         /// </summary>
         /// <param name="id">The ID to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new LimitQueryObject NotWithId(Guid id) => base.NotWithId(id);
+        public LimitQueryObject NotWithId(Guid id) => ApplyIdFilter(id, filter => Not(filter));
 
         #endregion
 
@@ -43,21 +43,21 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="amount">The amount to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public new LimitQueryObject WithAmount(decimal amount) => base.WithAmount(amount);
+        public LimitQueryObject WithAmount(decimal amount) => ApplyAmountFilter(amount, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified amount.
         /// </summary>
         /// <param name="amount">The amount to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new LimitQueryObject OrWithAmount(decimal amount) => base.OrWithAmount(amount);
+        public LimitQueryObject OrWithAmount(decimal amount) => ApplyAmountFilter(amount, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with the specified amount.
         /// </summary>
         /// <param name="amount">The amount to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new LimitQueryObject NotWithAmount(decimal amount) => base.NotWithAmount(amount);
+        public LimitQueryObject NotWithAmount(decimal amount) => ApplyAmountFilter(amount, filter => Not(filter));
 
         #endregion
 
@@ -68,21 +68,21 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="noticeType">The notice type to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public new LimitQueryObject WithNoticeType(NoticeType noticeType) => base.WithNoticeType(noticeType);
+        public LimitQueryObject WithNoticeType(NoticeType noticeType) => ApplyNoticeTypeFilter(noticeType, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified notice type.
         /// </summary>
         /// <param name="noticeType">The notice type to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new LimitQueryObject OrWithNoticeType(NoticeType noticeType) => base.OrWithNoticeType(noticeType);
+        public LimitQueryObject OrWithNoticeType(NoticeType noticeType) => ApplyNoticeTypeFilter(noticeType, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with the specified notice type.
         /// </summary>
         /// <param name="noticeType">The notice type to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new LimitQueryObject NotWithNoticeType(NoticeType noticeType) => base.NotWithNoticeType(noticeType);
+        public LimitQueryObject NotWithNoticeType(NoticeType noticeType) => ApplyNoticeTypeFilter(noticeType, filter => Not(filter));
 
         #endregion
 

@@ -12,7 +12,7 @@ using SpendWise.DAL.dbContext;
 namespace SpendWise.DAL.Migrations
 {
     [DbContext(typeof(SpendWiseDbContext))]
-    [Migration("20240912094448_InitialMigration")]
+    [Migration("20240913132124_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />

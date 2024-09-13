@@ -17,21 +17,21 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="id">The ID to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public new TransactionGroupUserQueryObject WithId(Guid id) => base.WithId(id);
+        public TransactionGroupUserQueryObject WithId(Guid id) => ApplyIdFilter(id, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified ID.
         /// </summary>
         /// <param name="id">The ID to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public new TransactionGroupUserQueryObject OrWithId(Guid id) => base.OrWithId(id);
+        public TransactionGroupUserQueryObject OrWithId(Guid id) => ApplyIdFilter(id, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with the specified ID.
         /// </summary>
         /// <param name="id">The ID to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public new TransactionGroupUserQueryObject NotWithId(Guid id) => base.NotWithId(id);
+        public TransactionGroupUserQueryObject NotWithId(Guid id) => ApplyIdFilter(id, filter => Not(filter));
 
         #endregion
 
@@ -41,37 +41,37 @@ namespace SpendWise.DAL.QueryObjects
         /// Filters the query to include items that are read.
         /// </summary>
         /// <returns>The query object with the applied filter.</returns>
-        public TransactionGroupUserQueryObject IsRead() => WithIsRead(true);
+        public TransactionGroupUserQueryObject IsRead() => ApplyIsReadFilter(true, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items that are read.
         /// </summary>
         /// <returns>The query object with the applied OR condition.</returns>
-        public TransactionGroupUserQueryObject OrIsRead() => OrWithIsRead(true);
+        public TransactionGroupUserQueryObject OrIsRead() => ApplyIsReadFilter(true, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items that are read.
         /// </summary>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public TransactionGroupUserQueryObject NotIsRead() => NotWithIsRead(true);
+        public TransactionGroupUserQueryObject NotIsRead() => ApplyIsReadFilter(true, filter => Not(filter));
 
         /// <summary>
         /// Filters the query to include items that are not read.
         /// </summary>
         /// <returns>The query object with the applied filter.</returns>
-        public TransactionGroupUserQueryObject IsNotRead() => WithIsRead(false);
+        public TransactionGroupUserQueryObject IsNotRead() => ApplyIsReadFilter(false, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items that are not read.
         /// </summary>
         /// <returns>The query object with the applied OR condition.</returns>
-        public TransactionGroupUserQueryObject OrIsNotRead() => OrWithIsRead(false);
+        public TransactionGroupUserQueryObject OrIsNotRead() => ApplyIsReadFilter(false, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items that are not read.
         /// </summary>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public TransactionGroupUserQueryObject NotIsNotRead() => NotWithIsRead(false);
+        public TransactionGroupUserQueryObject NotIsNotRead() => ApplyIsReadFilter(false, filter => Not(filter));
 
         #endregion
 
