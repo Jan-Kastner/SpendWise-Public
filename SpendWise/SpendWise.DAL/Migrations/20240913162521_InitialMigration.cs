@@ -223,15 +223,15 @@ namespace SpendWise.DAL.Migrations
                 column: "GroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GroupUserEntity_UserId",
-                table: "GroupUsers",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TGroupUserEntity_Unique_UserId_GroupId",
+                name: "IX_GroupUserEntity_Unique_UserId_GroupId",
                 table: "GroupUsers",
                 columns: new[] { "UserId", "GroupId" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupUserEntity_UserId",
+                table: "GroupUsers",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_InvitationEntity_GroupId",
@@ -276,7 +276,7 @@ namespace SpendWise.DAL.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_Email",
+                name: "IX_UserEntity_Email",
                 table: "Users",
                 column: "Email",
                 unique: true);

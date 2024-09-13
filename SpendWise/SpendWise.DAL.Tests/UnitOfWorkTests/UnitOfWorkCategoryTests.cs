@@ -1,4 +1,3 @@
-using Xunit;
 using Xunit.Abstractions;
 using SpendWise.DAL.DTOs;
 using Microsoft.EntityFrameworkCore;
@@ -229,12 +228,8 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         {
             // Arrange
             var existingCategory = _mapper.Map<CategoryDto>(CategorySeeds.CategoryFood);
-            var updatedCategory = new CategoryDto
+            var updatedCategory = existingCategory with
             {
-                Id = existingCategory.Id,
-                Name = existingCategory.Name,
-                Description = existingCategory.Description,
-                Color = existingCategory.Color,
                 Icon = new byte[] { 0x02, 0x03 }
             };
 
@@ -312,7 +307,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
 
             var queryObject = new TransactionQueryObject();
             var transactionsAfterDelete = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.WithCategory(null));
+                .GetAsync(queryObject.WithoutCategory());
 
             // Assert
             foreach (var transaction in categoryToDelete.Transactions)

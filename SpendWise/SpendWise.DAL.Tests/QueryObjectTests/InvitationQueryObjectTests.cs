@@ -221,6 +221,66 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             Assert.All(invitations, i => Assert.False(i.ResponseDate.HasValue && i.ResponseDate.Value.Date == responseDate.Date));
         }
 
+        /// <summary>
+        /// Verifies that querying invitations without any response date (null)
+        /// returns all correct entries with null response date.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Fact]
+        public async Task WithoutResponseDate_ShouldReturnInvitationsWithNullResponseDate()
+        {
+            // Arrange
+            var queryObject = new InvitationQueryObject();
+
+            // Act
+            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
+                .GetAsync(queryObject.WithoutResponseDate());
+
+            // Assert
+            Assert.NotNull(invitations);
+            Assert.All(invitations, i => Assert.Null(i.ResponseDate));
+        }
+
+        /// <summary>
+        /// Verifies that querying invitations with an OR condition for null response date
+        /// returns all correct entries with null response date.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Fact]
+        public async Task OrWithoutResponseDate_ShouldReturnInvitationsWithNullResponseDate()
+        {
+            // Arrange
+            var queryObject = new InvitationQueryObject();
+
+            // Act
+            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
+                .GetAsync(queryObject.OrWithoutResponseDate());
+
+            // Assert
+            Assert.NotNull(invitations);
+            Assert.All(invitations, i => Assert.Null(i.ResponseDate));
+        }
+
+        /// <summary>
+        /// Verifies that querying invitations excluding null response date
+        /// does not return entries with null response date.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Fact]
+        public async Task NotWithoutResponseDate_ShouldExcludeInvitationsWithNullResponseDate()
+        {
+            // Arrange
+            var queryObject = new InvitationQueryObject();
+
+            // Act
+            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
+                .GetAsync(queryObject.NotWithoutResponseDate());
+
+            // Assert
+            Assert.NotNull(invitations);
+            Assert.All(invitations, i => Assert.NotNull(i.ResponseDate));
+        }
+
         #endregion
 
         #region IsAcceptedQuery Tests

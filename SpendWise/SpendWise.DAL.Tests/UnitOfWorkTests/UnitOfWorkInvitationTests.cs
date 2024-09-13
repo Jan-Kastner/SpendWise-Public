@@ -1,11 +1,9 @@
-using Xunit;
 using Xunit.Abstractions;
 using SpendWise.DAL.DTOs;
 using Microsoft.EntityFrameworkCore;
 using SpendWise.Common.Tests.Seeds;
 using SpendWise.Common.Tests.Helpers;
 using SpendWise.DAL.Entities;
-using SpendWise.DAL.QueryObjects;
 
 namespace SpendWise.DAL.Tests.UnitOfWorkTests
 {
@@ -249,6 +247,33 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             });
         }
 
+        [Fact]
+        /// <summary>
+        /// Verifies that adding an invitation with a future sent date throws a DbUpdateException.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task AddInvitation_WithFutureSentDate_ThrowsDbUpdateException()
+        {
+            // Arrange
+            var invitationToAdd = new InvitationDto
+            {
+                Id = Guid.NewGuid(),
+                SenderId = UserSeeds.UserJohnDoe.Id,
+                ReceiverId = UserSeeds.UserAliceSmith.Id,
+                GroupId = GroupSeeds.GroupFamily.Id,
+                SentDate = DateTime.UtcNow.AddDays(1), // Set sent date to a future date
+                ResponseDate = null,
+                IsAccepted = null
+            };
+
+            // Act & Assert
+            await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            {
+                await _unitOfWork.Repository<InvitationEntity, InvitationDto>().InsertAsync(invitationToAdd);
+                await _unitOfWork.SaveChangesAsync(); // Attempt to persist changes
+            });
+        }
+
         #endregion
 
         #region Update and Special Cases Tests
@@ -310,33 +335,6 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
 
         [Fact]
         /// <summary>
-        /// Verifies that adding an invitation with a future sent date throws a DbUpdateException.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddInvitation_WithFutureSentDate_ThrowsDbUpdateException()
-        {
-            // Arrange
-            var invitationToAdd = new InvitationDto
-            {
-                Id = Guid.NewGuid(),
-                SenderId = UserSeeds.UserJohnDoe.Id,
-                ReceiverId = UserSeeds.UserAliceSmith.Id,
-                GroupId = GroupSeeds.GroupFamily.Id,
-                SentDate = DateTime.UtcNow.AddDays(1), // Set sent date to a future date
-                ResponseDate = null,
-                IsAccepted = null
-            };
-
-            // Act & Assert
-            await Assert.ThrowsAsync<DbUpdateException>(async () =>
-            {
-                await _unitOfWork.Repository<InvitationEntity, InvitationDto>().InsertAsync(invitationToAdd);
-                await _unitOfWork.SaveChangesAsync(); // Attempt to persist changes
-            });
-        }
-
-        [Fact]
-        /// <summary>
         /// Verifies that attempting to change the UserId or GroupId of an existing GroupUser does not change those properties.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
@@ -345,15 +343,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             // Arrange
             var existingInvitation = _mapper.Map<InvitationDto>(InvitationSeeds.InvitationDianaToCharlieIntoFamily);
 
-            var updatedInvitation = new InvitationDto
+            var updatedInvitation = existingInvitation with
             {
-                Id = existingInvitation.Id,
                 SenderId = Guid.NewGuid(), // Attempt to change SenderId
                 ReceiverId = Guid.NewGuid(), // Attempt to change RecieverId
                 GroupId = Guid.NewGuid(), // Attempt to change GroupId
-                SentDate = existingInvitation.SentDate,
-                ResponseDate = null,
-                IsAccepted = null
             };
 
             // Act
@@ -493,7 +487,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             }
             catch
             {
-                throw; // Rethrow exception to indicate failure
+                throw;
             }
 
             // Assert

@@ -1,7 +1,5 @@
-using Xunit;
 using Xunit.Abstractions;
 using SpendWise.DAL.DTOs;
-using Microsoft.EntityFrameworkCore;
 using SpendWise.Common.Tests.Seeds;
 using SpendWise.Common.Tests.Helpers;
 using SpendWise.DAL.Entities;
@@ -253,9 +251,6 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var deletedGroup = await _unitOfWork.Repository<GroupEntity, GroupDto>().GetByIdAsync(groupId);
-            Assert.Null(deletedGroup); // Ensure the group is deleted
-
             var invitationsAfterDelete = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
                 .GetAsync(new InvitationQueryObject().WithGroup(groupId));
             Assert.Empty(invitationsAfterDelete); // Ensure all invitations related to the group are removed

@@ -12,7 +12,7 @@ using SpendWise.DAL.dbContext;
 namespace SpendWise.DAL.Migrations
 {
     [DbContext(typeof(SpendWiseDbContext))]
-    [Migration("20240913132124_InitialMigration")]
+    [Migration("20240913162521_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -111,7 +111,7 @@ namespace SpendWise.DAL.Migrations
 
                     b.HasIndex("UserId", "GroupId")
                         .IsUnique()
-                        .HasDatabaseName("IX_TGroupUserEntity_Unique_UserId_GroupId");
+                        .HasDatabaseName("IX_GroupUserEntity_Unique_UserId_GroupId");
 
                     b.ToTable("GroupUsers");
                 });
@@ -314,7 +314,8 @@ namespace SpendWise.DAL.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("IX_UserEntity_Email");
 
                     b.ToTable("Users", t =>
                         {

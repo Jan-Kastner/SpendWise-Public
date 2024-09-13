@@ -83,6 +83,24 @@ namespace SpendWise.DAL.QueryObjects
         /// <returns>The query object with the applied exclusion filter.</returns>
         public InvitationQueryObject NotWithResponseDate(DateTime? responseDate) => ApplyResponseDateFilter(responseDate, filter => Not(filter));
 
+        /// <summary>
+        /// Filters the query to include items without any response date (null).
+        /// </summary>
+        /// <returns>The query object with the applied filter.</returns>
+        public InvitationQueryObject WithoutResponseDate() => ApplyResponseDateFilter(null, filter => And(filter), isNullCheck: true);
+
+        /// <summary>
+        /// Adds an OR condition to the query to include items without any response date (null).
+        /// </summary>
+        /// <returns>The query object with the applied OR condition.</returns>
+        public InvitationQueryObject OrWithoutResponseDate() => ApplyResponseDateFilter(null, filter => Or(filter), isNullCheck: true);
+
+        /// <summary>
+        /// Filters the query to exclude items without any response date (null).
+        /// </summary>
+        /// <returns>The query object with the applied exclusion filter.</returns>
+        public InvitationQueryObject NotWithoutResponseDate() => ApplyResponseDateFilter(null, filter => Not(filter), isNullCheck: true);
+
         #endregion
 
         #region IIsAcceptedQuery

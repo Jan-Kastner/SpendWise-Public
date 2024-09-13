@@ -44,7 +44,7 @@ namespace SpendWise.DAL.Configurations
                 // Creates a unique index on the combination of UserId and GroupId properties
                 entity.HasIndex(gu => new { gu.UserId, gu.GroupId })
                     .IsUnique()
-                    .HasDatabaseName("IX_TGroupUserEntity_Unique_UserId_GroupId");
+                    .HasDatabaseName("IX_GroupUserEntity_Unique_UserId_GroupId");
             });
 
             // Configuration for InvitationEntity
@@ -74,6 +74,15 @@ namespace SpendWise.DAL.Configurations
                 entity.HasIndex(tgu => new { tgu.TransactionId, tgu.GroupUserId })
                       .IsUnique()
                       .HasDatabaseName("IX_TransactionGroupUser_Unique_TransactionId_GroupUserId");
+            });
+
+            // Configuration for UserEntity
+            modelBuilder.Entity<UserEntity>(entity =>
+            {
+                // Creates a unique index on the Email property of UserEntity
+                entity.HasIndex(u => u.Email)
+                    .IsUnique()
+                    .HasDatabaseName("IX_UserEntity_Email");
             });
         }
     }

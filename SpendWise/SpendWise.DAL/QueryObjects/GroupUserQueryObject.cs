@@ -144,7 +144,7 @@ namespace SpendWise.DAL.QueryObjects
         /// <returns>The query object with the applied filter.</returns>
         public GroupUserQueryObject WithLimit(Guid? limitId)
         {
-            And(entity => entity.LimitId == limitId);
+            And(entity => entity.LimitId != null && entity.LimitId == limitId);
             return this;
         }
 
@@ -155,7 +155,7 @@ namespace SpendWise.DAL.QueryObjects
         /// <returns>The query object with the applied OR condition.</returns>
         public GroupUserQueryObject OrWithLimit(Guid? limitId)
         {
-            Or(entity => entity.LimitId == limitId);
+            Or(entity => entity.LimitId != null && entity.LimitId == limitId);
             return this;
         }
 
@@ -166,7 +166,37 @@ namespace SpendWise.DAL.QueryObjects
         /// <returns>The query object with the applied exclusion filter.</returns>
         public GroupUserQueryObject NotWithLimit(Guid? limitId)
         {
-            Not(entity => entity.LimitId == limitId);
+            Not(entity => entity.LimitId != null && entity.LimitId == limitId);
+            return this;
+        }
+
+        /// <summary>
+        /// Filters the query to include items without any limit ID (null).
+        /// </summary>
+        /// <returns>The query object with the applied filter.</returns>
+        public GroupUserQueryObject WithoutLimit()
+        {
+            And(entity => entity.LimitId == null);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds an OR condition to the query to include items without any limit ID (null).
+        /// </summary>
+        /// <returns>The query object with the applied OR condition.</returns>
+        public GroupUserQueryObject OrWithoutLimit()
+        {
+            Or(entity => entity.LimitId == null);
+            return this;
+        }
+
+        /// <summary>
+        /// Filters the query to exclude items without any limit ID (null).
+        /// </summary>
+        /// <returns>The query object with the applied exclusion filter.</returns>
+        public GroupUserQueryObject NotWithoutLimit()
+        {
+            Not(entity => entity.LimitId == null);
             return this;
         }
 

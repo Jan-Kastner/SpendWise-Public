@@ -186,12 +186,20 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="responseDate">The response date to filter by.</param>
         /// <param name="filterAction">The action to apply the filter.</param>
+        /// <param name="isNullCheck">Indicates whether to check for null response dates.</param>
         /// <returns>The query object with the applied filter.</returns>
-        protected TReturn ApplyResponseDateFilter(DateTime? responseDate, Action<Expression<Func<TEntity, bool>>> filterAction)
+        protected TReturn ApplyResponseDateFilter(DateTime? responseDate, Action<Expression<Func<TEntity, bool>>> filterAction, bool isNullCheck = false)
         {
             if (typeof(IResponseDate).IsAssignableFrom(typeof(TEntity)))
             {
-                filterAction(entity => ((IResponseDate)entity).ResponseDate.HasValue && ((IResponseDate)entity).ResponseDate!.Value.Date == responseDate!.Value.Date);
+                if (isNullCheck)
+                {
+                    filterAction(entity => !((IResponseDate)entity).ResponseDate.HasValue);
+                }
+                else
+                {
+                    filterAction(entity => ((IResponseDate)entity).ResponseDate.HasValue && responseDate.HasValue && ((IResponseDate)entity).ResponseDate!.Value.Date == responseDate.Value.Date);
+                }
             }
             else
             {

@@ -184,7 +184,7 @@ namespace SpendWise.DAL.QueryObjects
         /// <returns>The query object with the applied filter.</returns>
         public TransactionQueryObject WithCategory(Guid? categoryId)
         {
-            And(entity => entity.CategoryId == categoryId);
+            And(entity => entity.CategoryId != null && entity.CategoryId == categoryId);
             return this;
         }
 
@@ -195,7 +195,7 @@ namespace SpendWise.DAL.QueryObjects
         /// <returns>The query object with the applied OR condition.</returns>
         public TransactionQueryObject OrWithCategory(Guid? categoryId)
         {
-            Or(entity => entity.CategoryId == categoryId);
+            Or(entity => entity.CategoryId != null && entity.CategoryId == categoryId);
             return this;
         }
 
@@ -206,7 +206,7 @@ namespace SpendWise.DAL.QueryObjects
         /// <returns>The query object with the applied exclusion filter.</returns>
         public TransactionQueryObject NotWithCategory(Guid? categoryId)
         {
-            Not(entity => entity.CategoryId == categoryId);
+            Not(entity => entity.CategoryId != null && entity.CategoryId == categoryId);
             return this;
         }
 

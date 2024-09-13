@@ -351,6 +351,66 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             Assert.All(groupUsers, gu => Assert.NotEqual(excludedLimitId, gu.LimitId));
         }
 
+        /// <summary>
+        /// Verifies that querying group users without any limit ID (null)
+        /// returns all correct entries with null limit ID.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Fact]
+        public async Task WithoutLimit_ShouldReturnGroupUsersWithNullLimitId()
+        {
+            // Arrange
+            var queryObject = new GroupUserQueryObject();
+
+            // Act
+            var groupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
+                .GetAsync(queryObject.WithoutLimit());
+
+            // Assert
+            Assert.NotNull(groupUsers);
+            Assert.All(groupUsers, gu => Assert.Null(gu.LimitId));
+        }
+
+        /// <summary>
+        /// Verifies that querying group users with an OR condition for null limit ID
+        /// returns all correct entries with null limit ID.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Fact]
+        public async Task OrWithoutLimit_ShouldReturnGroupUsersWithNullLimitId()
+        {
+            // Arrange
+            var queryObject = new GroupUserQueryObject();
+
+            // Act
+            var groupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
+                .GetAsync(queryObject.OrWithoutLimit());
+
+            // Assert
+            Assert.NotNull(groupUsers);
+            Assert.All(groupUsers, gu => Assert.Null(gu.LimitId));
+        }
+
+        /// <summary>
+        /// Verifies that querying group users excluding null limit ID
+        /// does not return entries with null limit ID.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Fact]
+        public async Task NotWithoutLimit_ShouldExcludeGroupUsersWithNullLimitId()
+        {
+            // Arrange
+            var queryObject = new GroupUserQueryObject();
+
+            // Act
+            var groupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
+                .GetAsync(queryObject.NotWithoutLimit());
+
+            // Assert
+            Assert.NotNull(groupUsers);
+            Assert.All(groupUsers, gu => Assert.NotNull(gu.LimitId));
+        }
+
         #endregion
 
         #region TransactionGroupUserQuery Tests

@@ -46,8 +46,11 @@ namespace SpendWise.DAL.Mappers
                 .ForMember(dest => dest.SenderId, opt => opt.Ignore())
                 .ForMember(dest => dest.GroupId, opt => opt.Ignore())
                 .ForMember(dest => dest.SentDate, opt => opt.Ignore());
-            CreateMap<LimitEntity, LimitEntity>();
-            CreateMap<TransactionGroupUserEntity, TransactionGroupUserEntity>();
+            CreateMap<LimitEntity, LimitEntity>()
+                .ForMember(dest => dest.GroupUserId, opt => opt.Ignore());
+            CreateMap<TransactionGroupUserEntity, TransactionGroupUserEntity>()
+                .ForMember(dest => dest.GroupUserId, opt => opt.Ignore())
+                .ForMember(dest => dest.TransactionId, opt => opt.Ignore());
             CreateMap<TransactionEntity, TransactionEntity>();
             CreateMap<UserEntity, UserEntity>();
         }
