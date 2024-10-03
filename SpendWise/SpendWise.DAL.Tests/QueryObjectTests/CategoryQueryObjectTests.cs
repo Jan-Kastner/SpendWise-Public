@@ -27,7 +27,6 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var categoryId = CategorySeeds.CategoryFood.Id;
             var queryObject = new CategoryQueryObject();
 
-
             // Act
             var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
                 .GetAsync(queryObject.WithId(categoryId));

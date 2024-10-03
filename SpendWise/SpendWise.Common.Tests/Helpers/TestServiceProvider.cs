@@ -6,6 +6,10 @@ using SpendWise.DAL.Repositories;
 using SpendWise.DAL.UnitOfWork;
 using SpendWise.Common.Tests.Factories;
 using SpendWise.DAL.dbContext;
+using SpendWise.BLL.Services;
+using SpendWise.BLL.Services.Interfaces;
+using AutoMapper;
+using SpendWise.BLL.Mappers;
 
 namespace SpendWise.Common.Tests.Helpers
 {
@@ -29,13 +33,12 @@ namespace SpendWise.Common.Tests.Helpers
             // Register the DbContext using the factory.
             services.AddScoped<IDbContext>(provider =>
             {
-                var factory = provider.GetRequiredService<
-                    IDbContextFactory<SpendWiseTestDbContext>>();
+                var factory = provider.GetRequiredService<IDbContextFactory<SpendWiseTestDbContext>>();
                 return factory.CreateDbContext();
             });
 
-            // Register AutoMapper with the mapping profile.
-            services.AddAutoMapper(typeof(MappingProfile));
+            // Register AutoMapper with the mapping profiles.
+            services.AddAutoMapper(typeof(MappingProfile), typeof(CategoryMappingProfile));
 
             // Register the generic repository.
             services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
@@ -48,6 +51,9 @@ namespace SpendWise.Common.Tests.Helpers
             {
                 loggingBuilder.AddConsole(); // Configure console logging
             });
+
+            // Register the CategoryService
+            services.AddScoped<ICategoryService, CategoryService>();
 
             return services.BuildServiceProvider();
         }

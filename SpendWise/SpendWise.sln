@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpendWise.Common.Tests", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpendWise.Common", "SpendWise.Common\SpendWise.Common.csproj", "{EF1222C5-A0D7-4672-893F-DD17093641A9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpendWise.BLL", "SpendWise.BLL\SpendWise.BLL.csproj", "{BFC449A1-28EA-409A-8063-E74E9B4357AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpendWise.BLL.Tests", "SpendWise.BLL.Tests\SpendWise.BLL.Tests.csproj", "{3F38B1CA-E30D-442E-B4CB-44691BE2BF20}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,5 +44,13 @@ Global
 		{EF1222C5-A0D7-4672-893F-DD17093641A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF1222C5-A0D7-4672-893F-DD17093641A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF1222C5-A0D7-4672-893F-DD17093641A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFC449A1-28EA-409A-8063-E74E9B4357AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFC449A1-28EA-409A-8063-E74E9B4357AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFC449A1-28EA-409A-8063-E74E9B4357AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFC449A1-28EA-409A-8063-E74E9B4357AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F38B1CA-E30D-442E-B4CB-44691BE2BF20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F38B1CA-E30D-442E-B4CB-44691BE2BF20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F38B1CA-E30D-442E-B4CB-44691BE2BF20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F38B1CA-E30D-442E-B4CB-44691BE2BF20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

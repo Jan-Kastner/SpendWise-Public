@@ -6,14 +6,13 @@
     <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
-    <IsTestProject>false</IsTestProject>
+    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="CompareNetObjects" Version="4.83.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
-    <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -25,8 +24,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SpendWise.DAL\SpendWise.DAL.csproj" />
+    <ProjectReference Include="..\SpendWise.Common.Tests\SpendWise.Common.Tests.csproj" />
     <ProjectReference Include="..\SpendWise.BLL\SpendWise.BLL.csproj" />
   </ItemGroup>
+
+  <Target Name="CopyAppSettings" AfterTargets="Build">
+    <ItemGroup>
+      <AppSettingsFile Include="..\SpendWise.DAL\appsettings.json" />
+    </ItemGroup>
+    <Copy SourceFiles="@(AppSettingsFile)" DestinationFolder="$(OutDir)" />
+  </Target>
 
 </Project>
