@@ -1,9 +1,9 @@
-namespace SpendWise.BLL.DTOs.Category
+namespace SpendWise.BLL.DTOs
 {
     /// <summary>
     /// Represents a data transfer object (DTO) for updating a category.
     /// </summary>
-    public record CategoryUpdateDto
+    public record CategoryUpdateDto : IUpdatableDto
     {
         /// <summary>
         /// Gets or sets the unique identifier for the category.

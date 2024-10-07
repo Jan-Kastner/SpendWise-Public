@@ -5,6 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using SpendWise.DAL.dbContext;
 using LinqKit;
 using SpendWise.DAL.QueryObjects;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpendWise.DAL.Repositories
 {
@@ -40,16 +44,22 @@ namespace SpendWise.DAL.Repositories
         /// <returns>A task representing the asynchronous operation, containing a list of DTOs.</returns>
         public async Task<List<TDto>> GetAsync(IQueryObject<TEntity>? queryObject = null)
         {
-            IQueryable<TEntity> query = _dbSet;
-
-            // Použijte jakékoli dodatečné filtrování z queryObject, pokud je k dispozici
-            if (queryObject != null)
+            try
             {
-                var expression = queryObject.ToExpression();
-                query = query.Where(expression);
+                IQueryable<TEntity> query = _dbSet;
+
+                if (queryObject != null)
+                {
+                    var expression = queryObject.ToExpression();
+                    query = query.Where(expression);
+                }
+
+                return await query.Select(entity => _mapper.Map<TDto>(entity)).ToListAsync();
             }
-            // Ujistěte se, že voláte ToListAsync na IQueryable, které podporuje async
-            return await query.Select(entity => _mapper.Map<TDto>(entity)).ToListAsync();
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving entities.", ex);
+            }
         }
 
         /// <summary>
@@ -59,11 +69,15 @@ namespace SpendWise.DAL.Repositories
         /// <returns>A task representing the asynchronous operation, containing the DTO of the found entity.</returns>
         public async Task<TDto?> GetByIdAsync(Guid id)
         {
-            // Find the entity by ID
-            var entity = await _dbSet.FindAsync(id).ConfigureAwait(false);
-
-            // Return the mapped DTO or null if entity is not found
-            return entity == null ? null : _mapper.Map<TDto>(entity);
+            try
+            {
+                var entity = await _dbSet.FindAsync(id).ConfigureAwait(false);
+                return entity == null ? null : _mapper.Map<TDto>(entity);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while retrieving the entity with ID {id}.", ex);
+            }
         }
 
         /// <summary>
@@ -72,8 +86,17 @@ namespace SpendWise.DAL.Repositories
         /// <param name="entity">The entity to check for existence.</param>
         /// <returns>A task representing the asynchronous operation, containing a boolean result.</returns>
         public async ValueTask<bool> ExistsAsync(TEntity entity)
-            => entity.Id != Guid.Empty
-               && await _dbSet.AnyAsync(e => e.Id == entity.Id).ConfigureAwait(false);
+        {
+            try
+            {
+                return entity.Id != Guid.Empty
+                       && await _dbSet.AnyAsync(e => e.Id == entity.Id).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while checking the existence of the entity.", ex);
+            }
+        }
 
         /// <summary>
         /// Inserts a new entity into the database from a DTO.
@@ -82,15 +105,17 @@ namespace SpendWise.DAL.Repositories
         /// <returns>A task representing the asynchronous operation, containing the inserted DTO.</returns>
         public async Task<TDto> InsertAsync(TDto dto)
         {
-            // Map DTO to entity
-            var entity = _mapper.Map<TEntity>(dto);
-            await _dbSet.AddAsync(entity).ConfigureAwait(false);
-
-            // Save changes to the database
-            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
-
-            // Return the inserted DTO
-            return _mapper.Map<TDto>(entity);
+            try
+            {
+                var entity = _mapper.Map<TEntity>(dto);
+                await _dbSet.AddAsync(entity).ConfigureAwait(false);
+                await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+                return _mapper.Map<TDto>(entity);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while inserting the entity.", ex);
+            }
         }
 
         /// <summary>
@@ -100,17 +125,18 @@ namespace SpendWise.DAL.Repositories
         /// <returns>A task representing the asynchronous operation, containing the updated DTO.</returns>
         public async Task<TDto> UpdateAsync(TDto dto)
         {
-            var entity = _mapper.Map<TEntity>(dto);
-            TEntity existingEntity = await _dbSet.SingleAsync(e => e.Id == entity.Id).ConfigureAwait(false);
-
-            // Map updated values from entity to existing entity
-            _mapper.Map(entity, existingEntity);
-
-            // Save changes to the database
-            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
-
-            // Return the updated DTO
-            return _mapper.Map<TDto>(existingEntity);
+            try
+            {
+                var entity = _mapper.Map<TEntity>(dto);
+                TEntity existingEntity = await _dbSet.SingleAsync(e => e.Id == entity.Id).ConfigureAwait(false);
+                _mapper.Map(entity, existingEntity);
+                await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+                return _mapper.Map<TDto>(existingEntity);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while updating the entity.", ex);
+            }
         }
 
         /// <summary>
@@ -120,13 +146,20 @@ namespace SpendWise.DAL.Repositories
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task DeleteAsync(Guid entityId)
         {
-            var entity = await _dbSet.FirstOrDefaultAsync(i => i.Id == entityId).ConfigureAwait(false);
-            if (entity == null)
+            try
             {
-                throw new KeyNotFoundException($"Entity with ID {entityId} not found.");
+                var entity = await _dbSet.FirstOrDefaultAsync(i => i.Id == entityId).ConfigureAwait(false);
+                if (entity == null)
+                {
+                    throw new KeyNotFoundException($"Entity with ID {entityId} not found.");
+                }
+                _dbSet.Remove(entity);
+                await _dbContext.SaveChangesAsync().ConfigureAwait(false);
             }
-            _dbSet.Remove(entity);
-            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while deleting the entity with ID {entityId}.", ex);
+            }
         }
     }
 }

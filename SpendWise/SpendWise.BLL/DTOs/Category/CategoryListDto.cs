@@ -1,12 +1,12 @@
-namespace SpendWise.BLL.DTOs.Category
+namespace SpendWise.BLL.DTOs
 {
     /// <summary>
-    /// Represents a list data transfer object (DTO) for a category.
+    /// Represents a summary of a category for listing purposes.
     /// </summary>
-    public record CategoryListDto
+    public record CategoryListDto : IQueryableDto
     {
         /// <summary>
-        /// Gets or sets the unique identifier for the category.
+        /// Gets or sets the unique identifier of the category.
         /// </summary>
         public Guid Id { get; set; }
 

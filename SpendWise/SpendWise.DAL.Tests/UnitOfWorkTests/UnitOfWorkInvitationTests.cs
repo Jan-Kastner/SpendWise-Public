@@ -123,10 +123,10 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
 
         [Fact]
         /// <summary>
-        /// Verifies that adding an invitation with an invalid SenderId throws a ForeignDbUpdateException.
+        /// Verifies that adding an invitation with an invalid SenderId throws a ForeignException.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddInvitation_WithInvalidSenderId_ThrowsDbUpdateException()
+        public async Task AddInvitation_WithInvalidSenderId_ThrowsException()
         {
             // Arrange
             var invalidInvitation = new InvitationDto
@@ -141,7 +141,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             };
 
             // Act & Assert
-            await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<InvitationEntity, InvitationDto>().InsertAsync(invalidInvitation);
                 await _unitOfWork.SaveChangesAsync(); // Persist changes, expecting an exception
@@ -150,10 +150,10 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
 
         [Fact]
         /// <summary>
-        /// Verifies that adding an invitation with an invalid ReceiverId throws a ForeignDbUpdateException.
+        /// Verifies that adding an invitation with an invalid ReceiverId throws a ForeignException.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddInvitation_WithInvalidReceiverId_ThrowsDbUpdateException()
+        public async Task AddInvitation_WithInvalidReceiverId_ThrowsException()
         {
             // Arrange
             var invalidInvitation = new InvitationDto
@@ -168,7 +168,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             };
 
             // Act & Assert
-            await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<InvitationEntity, InvitationDto>().InsertAsync(invalidInvitation);
                 await _unitOfWork.SaveChangesAsync(); // Persist changes, expecting an exception
@@ -177,10 +177,10 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
 
         [Fact]
         /// <summary>
-        /// Verifies that adding an invitation with an invalid GroupId throws a ForeignDbUpdateException.
+        /// Verifies that adding an invitation with an invalid GroupId throws a ForeignException.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddInvitation_WithInvalidGroupId_ThrowsDbUpdateException()
+        public async Task AddInvitation_WithInvalidGroupId_ThrowsException()
         {
             // Arrange
             var invalidInvitation = new InvitationDto
@@ -195,7 +195,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             };
 
             // Act & Assert
-            await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<InvitationEntity, InvitationDto>().InsertAsync(invalidInvitation);
                 await _unitOfWork.SaveChangesAsync(); // Persist changes, expecting an exception
@@ -204,10 +204,10 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
 
         [Fact]
         /// <summary>
-        /// Verifies that attempting to update a non-existent invitation throws an InvalidOperationException.
+        /// Verifies that attempting to update a non-existent invitation throws an Exception.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UpdateInvitation_NonExistentInvitation_ThrowsInvalidOperationException()
+        public async Task UpdateInvitation_NonExistentInvitation_ThrowsException()
         {
             // Arrange
             var nonExistentInvitation = new InvitationDto
@@ -222,7 +222,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             };
 
             // Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<InvitationEntity, InvitationDto>().UpdateAsync(nonExistentInvitation);
                 await _unitOfWork.SaveChangesAsync(); // Persist changes, expecting an exception
@@ -231,16 +231,16 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
 
         [Fact]
         /// <summary>
-        /// Verifies that attempting to delete a non-existent invitation throws a KeyNotFoundException.
+        /// Verifies that attempting to delete a non-existent invitation throws a Exception.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task DeleteInvitation_NonExistentInvitation_ThrowsKeyNotFoundException()
+        public async Task DeleteInvitation_NonExistentInvitation_ThrowsException()
         {
             // Arrange
             var nonExistentInvitationId = Guid.NewGuid(); // Non-existent ID
 
             // Act & Assert
-            await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<InvitationEntity, InvitationDto>().DeleteAsync(nonExistentInvitationId);
                 await _unitOfWork.SaveChangesAsync(); // Persist changes, expecting an exception
@@ -249,10 +249,10 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
 
         [Fact]
         /// <summary>
-        /// Verifies that adding an invitation with a future sent date throws a DbUpdateException.
+        /// Verifies that adding an invitation with a future sent date throws a Exception.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddInvitation_WithFutureSentDate_ThrowsDbUpdateException()
+        public async Task AddInvitation_WithFutureSentDate_ThrowsException()
         {
             // Arrange
             var invitationToAdd = new InvitationDto
@@ -267,7 +267,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             };
 
             // Act & Assert
-            await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<InvitationEntity, InvitationDto>().InsertAsync(invitationToAdd);
                 await _unitOfWork.SaveChangesAsync(); // Attempt to persist changes

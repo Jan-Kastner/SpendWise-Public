@@ -95,10 +95,10 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
 
         [Fact]
         /// <summary>
-        /// Verifies that adding a GroupUser with a duplicate UserId and GroupId throws a DbUpdateException.
+        /// Verifies that adding a GroupUser with a duplicate UserId and GroupId throws a Exception.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddGroupUser_DuplicateUserIdAndGroupId_ThrowsDbUpdateException()
+        public async Task AddGroupUser_DuplicateUserIdAndGroupId_ThrowsException()
         {
             // Arrange
             var existingGroupUser = _mapper.Map<GroupUserDto>(GroupUserSeeds.GroupUserBobInFamily);
@@ -111,7 +111,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             };
 
             // Act & Assert
-            await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>().InsertAsync(duplicateGroupUser);
                 await _unitOfWork.SaveChangesAsync();
@@ -137,16 +137,16 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
 
         [Fact]
         /// <summary>
-        /// Verifies that deleting a GroupUser with a non-existent ID throws a KeyNotFoundException.
+        /// Verifies that deleting a GroupUser with a non-existent ID throws a Exception.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task DeleteGroupUser_NonExistentId_ThrowsKeyNotFoundException()
+        public async Task DeleteGroupUser_NonExistentId_ThrowsException()
         {
             // Arrange
             var nonExistentId = Guid.NewGuid();
 
             // Act & Assert
-            await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>().DeleteAsync(nonExistentId);
                 await _unitOfWork.SaveChangesAsync();
@@ -155,10 +155,10 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
 
         [Fact]
         /// <summary>
-        /// Verifies that adding a GroupUser with invalid data throws a DbUpdateException.
+        /// Verifies that adding a GroupUser with invalid data throws a Exception.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddGroupUser_InvalidData_ThrowsDbUpdateException()
+        public async Task AddGroupUser_InvalidData_ThrowsException()
         {
             // Arrange
             var invalidGroupUser = new GroupUserDto
@@ -170,7 +170,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             };
 
             // Act & Assert
-            await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>().InsertAsync(invalidGroupUser);
                 await _unitOfWork.SaveChangesAsync();

@@ -121,11 +121,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         #region Error Handling Tests
 
         /// <summary>
-        /// Tests that adding a transaction with an invalid CategoryId throws a DbUpdateException.
+        /// Tests that adding a transaction with an invalid CategoryId throws a Exception.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task AddTransaction_WithInvalidCategoryId_ThrowsDbUpdateException()
+        public async Task AddTransaction_WithInvalidCategoryId_ThrowsException()
         {
             var invalidTransaction = new TransactionDto
             {
@@ -137,7 +137,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 CategoryId = Guid.NewGuid() // Invalid CategoryId
             };
 
-            await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<TransactionEntity, TransactionDto>().InsertAsync(invalidTransaction);
                 await _unitOfWork.SaveChangesAsync();
@@ -145,11 +145,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         }
 
         /// <summary>
-        /// Tests that updating a non-existent transaction throws an InvalidOperationException.
+        /// Tests that updating a non-existent transaction throws an Exception.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task UpdateTransaction_NonExistentTransaction_ThrowsInvalidOperationException()
+        public async Task UpdateTransaction_NonExistentTransaction_ThrowsException()
         {
             var nonExistentTransaction = new TransactionDto
             {
@@ -161,7 +161,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 CategoryId = null
             };
 
-            await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<TransactionEntity, TransactionDto>().UpdateAsync(nonExistentTransaction);
                 await _unitOfWork.SaveChangesAsync();
@@ -169,15 +169,15 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         }
 
         /// <summary>
-        /// Tests that deleting a non-existent transaction throws a KeyNotFoundException.
+        /// Tests that deleting a non-existent transaction throws a Exception.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task DeleteTransaction_NonExistentTransaction_ThrowsKeyNotFoundException()
+        public async Task DeleteTransaction_NonExistentTransaction_ThrowsException()
         {
             var nonExistentTransactionId = Guid.NewGuid(); // Non-existent ID
 
-            await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<TransactionEntity, TransactionDto>().DeleteAsync(nonExistentTransactionId);
                 await _unitOfWork.SaveChangesAsync();

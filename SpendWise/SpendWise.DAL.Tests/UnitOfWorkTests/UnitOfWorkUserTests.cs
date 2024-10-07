@@ -128,11 +128,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         #region Error Handling Tests
 
         /// <summary>
-        /// Tests that adding a user with a future date of registration throws a DbUpdateException.
+        /// Tests that adding a user with a future date of registration throws a Exception.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task AddUser_WithFutureDateOfRegistration_ThrowsDbUpdateException()
+        public async Task AddUser_WithFutureDateOfRegistration_ThrowsException()
         {
             var invalidUser = new UserDto
             {
@@ -152,7 +152,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 PreferredTheme = Theme.SystemDefault
             };
 
-            await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<UserEntity, UserDto>().InsertAsync(invalidUser);
                 await _unitOfWork.SaveChangesAsync();
@@ -160,11 +160,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         }
 
         /// <summary>
-        /// Tests that updating a non-existent user throws an InvalidOperationException.
+        /// Tests that updating a non-existent user throws an Exception.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task UpdateUser_NonExistentUser_ThrowsInvalidOperationException()
+        public async Task UpdateUser_NonExistentUser_ThrowsException()
         {
             var nonExistentUser = new UserDto
             {
@@ -184,7 +184,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 PreferredTheme = Theme.SystemDefault
             };
 
-            await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<UserEntity, UserDto>().UpdateAsync(nonExistentUser);
                 await _unitOfWork.SaveChangesAsync();
@@ -192,15 +192,15 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         }
 
         /// <summary>
-        /// Tests that deleting a non-existent user throws a KeyNotFoundException.
+        /// Tests that deleting a non-existent user throws a Exception.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task DeleteUser_NonExistentUser_ThrowsKeyNotFoundException()
+        public async Task DeleteUser_NonExistentUser_ThrowsException()
         {
             var nonExistentUserId = Guid.NewGuid(); // Non-existent ID
 
-            await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<UserEntity, UserDto>().DeleteAsync(nonExistentUserId);
                 await _unitOfWork.SaveChangesAsync();
@@ -208,11 +208,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         }
 
         /// <summary>
-        /// Tests that adding a user with a duplicate email throws a DbUpdateException.
+        /// Tests that adding a user with a duplicate email throws a Exception.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task AddUser_WithDuplicateEmail_ThrowsDbUpdateException()
+        public async Task AddUser_WithDuplicateEmail_ThrowsException()
         {
             var existingUser = _mapper.Map<UserDto>(UserSeeds.UserJohnDoe);
             var duplicateUser = existingUser with
@@ -221,7 +221,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 Email = existingUser.Email, // Duplicate email
             };
 
-            await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<UserEntity, UserDto>().InsertAsync(duplicateUser);
                 await _unitOfWork.SaveChangesAsync();

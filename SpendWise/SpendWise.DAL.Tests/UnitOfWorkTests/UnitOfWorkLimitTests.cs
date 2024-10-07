@@ -116,11 +116,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         #region Error Handling Tests
 
         /// <summary>
-        /// Tests that adding a limit with an invalid GroupUserId throws a DbUpdateException.
+        /// Tests that adding a limit with an invalid GroupUserId throws a Exception.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task AddLimit_WithInvalidGroupUserId_ThrowsDbUpdateException()
+        public async Task AddLimit_WithInvalidGroupUserId_ThrowsException()
         {
             // Arrange
             var invalidLimit = new LimitDto
@@ -132,7 +132,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             };
 
             // Act & Assert
-            await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<LimitEntity, LimitDto>().InsertAsync(invalidLimit);
                 await _unitOfWork.SaveChangesAsync();
@@ -140,11 +140,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         }
 
         /// <summary>
-        /// Tests that updating a non-existent limit throws an InvalidOperationException.
+        /// Tests that updating a non-existent limit throws an Exception.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task UpdateLimit_NonExistentLimit_ThrowsInvalidOperationException()
+        public async Task UpdateLimit_NonExistentLimit_ThrowsException()
         {
             // Arrange
             var nonExistentLimit = new LimitDto
@@ -156,7 +156,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             };
 
             // Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<LimitEntity, LimitDto>().UpdateAsync(nonExistentLimit);
                 await _unitOfWork.SaveChangesAsync();
@@ -164,17 +164,17 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         }
 
         /// <summary>
-        /// Tests that deleting a non-existent limit throws a KeyNotFoundException.
+        /// Tests that deleting a non-existent limit throws a Exception.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task DeleteLimit_NonExistentLimit_ThrowsKeyNotFoundException()
+        public async Task DeleteLimit_NonExistentLimit_ThrowsException()
         {
             // Arrange
             var nonExistentLimitId = Guid.NewGuid(); // Non-existent ID
 
             // Act & Assert
-            await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<LimitEntity, LimitDto>().DeleteAsync(nonExistentLimitId);
                 await _unitOfWork.SaveChangesAsync();

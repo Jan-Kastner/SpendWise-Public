@@ -107,11 +107,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         #region Error Handling Tests
 
         /// <summary>
-        /// Tests that adding a TransactionGroupUser with an invalid GroupUserId throws a DbUpdateException.
+        /// Tests that adding a TransactionGroupUser with an invalid GroupUserId throws a Exception.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task AddTransactionGroupUser_WithInvalidGroupUserId_ThrowsDbUpdateException()
+        public async Task AddTransactionGroupUser_WithInvalidGroupUserId_ThrowsException()
         {
             var invalidTransactionGroupUser = new TransactionGroupUserDto
             {
@@ -121,7 +121,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 GroupUserId = Guid.NewGuid() // Invalid GroupUserId
             };
 
-            await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().InsertAsync(invalidTransactionGroupUser);
                 await _unitOfWork.SaveChangesAsync();
@@ -129,11 +129,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         }
 
         /// <summary>
-        /// Tests that updating a non-existent TransactionGroupUser throws an InvalidOperationException.
+        /// Tests that updating a non-existent TransactionGroupUser throws an Exception.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task UpdateTransactionGroupUser_NonExistentTransactionGroupUser_ThrowsInvalidOperationException()
+        public async Task UpdateTransactionGroupUser_NonExistentTransactionGroupUser_ThrowsException()
         {
             var nonExistentTransactionGroupUser = new TransactionGroupUserDto
             {
@@ -143,7 +143,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 GroupUserId = GroupUserSeeds.GroupUserJohnInWork.Id
             };
 
-            await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().UpdateAsync(nonExistentTransactionGroupUser);
                 await _unitOfWork.SaveChangesAsync();
@@ -151,15 +151,15 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         }
 
         /// <summary>
-        /// Tests that deleting a non-existent TransactionGroupUser throws a KeyNotFoundException.
+        /// Tests that deleting a non-existent TransactionGroupUser throws a Exception.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task DeleteTransactionGroupUser_NonExistentTransactionGroupUser_ThrowsKeyNotFoundException()
+        public async Task DeleteTransactionGroupUser_NonExistentTransactionGroupUser_ThrowsException()
         {
             var nonExistentTransactionGroupUserId = Guid.NewGuid(); // Non-existent ID
 
-            await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().DeleteAsync(nonExistentTransactionGroupUserId);
                 await _unitOfWork.SaveChangesAsync();

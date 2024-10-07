@@ -1,5 +1,5 @@
 using AutoMapper;
-using SpendWise.BLL.DTOs.Category;
+using SpendWise.BLL.DTOs;
 using SpendWise.DAL.DTOs;
 
 namespace SpendWise.BLL.Mappers

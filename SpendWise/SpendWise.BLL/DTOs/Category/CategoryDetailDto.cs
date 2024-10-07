@@ -1,12 +1,12 @@
-namespace SpendWise.BLL.DTOs.Category
+namespace SpendWise.BLL.DTOs
 {
     /// <summary>
-    /// Represents a detailed data transfer object (DTO) for a category.
+    /// Represents detailed information about a category.
     /// </summary>
-    public record CategoryDetailDto
+    public record CategoryDetailDto : IQueryableDto
     {
         /// <summary>
-        /// Gets or sets the unique identifier for the category.
+        /// Gets or sets the unique identifier of the category.
         /// </summary>
         public Guid Id { get; set; }
 
@@ -16,7 +16,7 @@ namespace SpendWise.BLL.DTOs.Category
         public required string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the description of the category. Can be null.
+        /// Gets or sets the description of the category.
         /// </summary>
         public string? Description { get; set; }
 
@@ -26,8 +26,13 @@ namespace SpendWise.BLL.DTOs.Category
         public required string Color { get; set; }
 
         /// <summary>
-        /// Gets or sets the icon for the category. Can be null.
+        /// Gets or sets the icon representing the category.
         /// </summary>
         public required byte[] Icon { get; set; }
+
+        /// <summary>
+        /// Gets or sets the list of transactions associated with the category.
+        /// </summary>
+        public IEnumerable<TransactionListDto> Transactions { get; set; } = new List<TransactionListDto>();
     }
 }

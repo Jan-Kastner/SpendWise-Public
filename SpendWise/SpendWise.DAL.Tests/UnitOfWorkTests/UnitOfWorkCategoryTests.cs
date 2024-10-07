@@ -120,11 +120,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         #region Error Handling Tests
 
         /// <summary>
-        /// Tests that adding a category with an invalid color format throws a DbUpdateException.
+        /// Tests that adding a category with an invalid color format throws a Exception.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task AddCategory_WithInvalidColorFormat_ShouldThrowDbUpdateException()
+        public async Task AddCategory_WithInvalidColorFormat_ShouldThrowException()
         {
             // Arrange
             var invalidCategory = new CategoryDto
@@ -137,7 +137,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             };
 
             // Act & Assert
-            await Assert.ThrowsAsync<DbUpdateException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<CategoryEntity, CategoryDto>().InsertAsync(invalidCategory);
                 await _unitOfWork.SaveChangesAsync();
@@ -145,11 +145,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         }
 
         /// <summary>
-        /// Tests that updating a non-existent category throws an InvalidOperationException.
+        /// Tests that updating a non-existent category throws an Exception.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task UpdateCategory_WithNonExistentCategory_ShouldThrowInvalidOperationException()
+        public async Task UpdateCategory_WithNonExistentCategory_ShouldThrowException()
         {
             // Arrange
             var nonExistentCategory = new CategoryDto
@@ -162,7 +162,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             };
 
             // Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<CategoryEntity, CategoryDto>().UpdateAsync(nonExistentCategory);
                 await _unitOfWork.SaveChangesAsync();
@@ -170,17 +170,17 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         }
 
         /// <summary>
-        /// Tests that deleting a non-existent category throws a KeyNotFoundException.
+        /// Tests that deleting a non-existent category throws a Exception.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task DeleteCategory_WithNonExistentCategory_ShouldThrowKeyNotFoundException()
+        public async Task DeleteCategory_WithNonExistentCategory_ShouldThrowException()
         {
             // Arrange
             var nonExistentCategoryId = Guid.NewGuid();
 
             // Act & Assert
-            await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<CategoryEntity, CategoryDto>().DeleteAsync(nonExistentCategoryId);
                 await _unitOfWork.SaveChangesAsync();

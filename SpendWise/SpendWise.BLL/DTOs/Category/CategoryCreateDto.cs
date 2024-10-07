@@ -1,11 +1,9 @@
-using SpendWise.Common.Enums;
-
-namespace SpendWise.BLL.DTOs.Category
+namespace SpendWise.BLL.DTOs
 {
     /// <summary>
     /// Represents a data transfer object (DTO) for creating a category.
     /// </summary>
-    public record CategoryCreateDto
+    public record CategoryCreateDto : ICreatableDto
     {
         /// <summary>
         /// Gets or sets the name of the category.

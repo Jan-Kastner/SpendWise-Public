@@ -119,10 +119,10 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
 
         [Fact]
         /// <summary>
-        /// Verifies that attempting to update a non-existent group throws an InvalidOperationException.
+        /// Verifies that attempting to update a non-existent group throws an Exception.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UpdateGroup_NonExistentGroup_ThrowsInvalidOperationException()
+        public async Task UpdateGroup_NonExistentGroup_ThrowsException()
         {
             // Arrange
             var nonExistentGroup = new GroupDto
@@ -133,7 +133,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             };
 
             // Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<GroupEntity, GroupDto>().UpdateAsync(nonExistentGroup);
                 await _unitOfWork.SaveChangesAsync();
@@ -142,16 +142,16 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
 
         [Fact]
         /// <summary>
-        /// Verifies that attempting to delete a non-existent group throws a KeyNotFoundException.
+        /// Verifies that attempting to delete a non-existent group throws a Exception.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task DeleteGroup_NonExistentGroup_ThrowsKeyNotFoundException()
+        public async Task DeleteGroup_NonExistentGroup_ThrowsException()
         {
             // Arrange
             var nonExistentGroupId = Guid.NewGuid(); // Non-existent ID
 
             // Act & Assert
-            await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+            await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await _unitOfWork.Repository<GroupEntity, GroupDto>().DeleteAsync(nonExistentGroupId);
                 await _unitOfWork.SaveChangesAsync();
