@@ -6,8 +6,7 @@ namespace SpendWise.DAL.QueryObjects
     /// Represents a query object interface for categories.
     /// Provides methods for querying categories by various properties.
     /// </summary>
-    /// <typeparam name="T">The type of the query object.</typeparam>
-    public interface ICategoryQueryObject<T> : IIdQuery<T>, INameQuery<T>, IDescriptionQuery<T>, IColorQuery<T>, IIconQuery<T>
+    public interface ICategoryQueryObject : IQueryObject, IIdQuery<CategoryQueryObject>, INameQuery<CategoryQueryObject>, IDescriptionQuery<CategoryQueryObject>, IColorQuery<CategoryQueryObject>, IIconQuery<CategoryQueryObject>
     {
     }
 }

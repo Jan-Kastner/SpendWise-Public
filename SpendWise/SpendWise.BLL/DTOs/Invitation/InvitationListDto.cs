@@ -1,9 +1,11 @@
+using SpendWise.BLL.DTOs.Interfaces;
+
 namespace SpendWise.BLL.DTOs
 {
     /// <summary>
     /// Represents a summary of an invitation for listing purposes.
     /// </summary>
-    public record InvitationListDto
+    public record InvitationListDto : IQueryableDto
     {
         /// <summary>
         /// Gets or sets the unique identifier of the invitation.

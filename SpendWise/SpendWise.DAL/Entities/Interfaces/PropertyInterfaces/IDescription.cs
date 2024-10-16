@@ -8,6 +8,6 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the description of the entity.
         /// </summary>
-        string? Description { get; set; }
+        string? Description { get; init; }
     }
 }

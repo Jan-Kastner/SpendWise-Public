@@ -10,6 +10,6 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the preferred theme of the entity.
         /// </summary>
-        Theme PreferredTheme { get; set; }
+        Theme PreferredTheme { get; init; }
     }
 }

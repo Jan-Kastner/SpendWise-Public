@@ -1,9 +1,11 @@
+using SpendWise.BLL.DTOs.Interfaces;
+
 namespace SpendWise.BLL.DTOs
 {
     /// <summary>
     /// Represents detailed information about a category.
     /// </summary>
-    public record CategoryDetailDto : IQueryableDto
+    public record CategoryDetailDto : IQueryableDto, ITransactionsDto<TransactionSummaryDto>
     {
         /// <summary>
         /// Gets or sets the unique identifier of the category.
@@ -33,6 +35,6 @@ namespace SpendWise.BLL.DTOs
         /// <summary>
         /// Gets or sets the list of transactions associated with the category.
         /// </summary>
-        public IEnumerable<TransactionListDto> Transactions { get; set; } = new List<TransactionListDto>();
+        public IEnumerable<TransactionSummaryDto> Transactions { get; set; } = new List<TransactionSummaryDto>();
     }
 }

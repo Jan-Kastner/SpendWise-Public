@@ -8,6 +8,6 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets a value indicating whether the entity is read.
         /// </summary>
-        bool IsRead { get; set; }
+        bool IsRead { get; init; }
     }
 }

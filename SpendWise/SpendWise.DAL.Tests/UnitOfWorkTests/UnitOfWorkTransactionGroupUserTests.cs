@@ -31,6 +31,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         [Fact]
         public async Task AddTransactionGroupUser_ValidData_SuccessfullyPersists()
         {
+            // Arrange
             var transactionGroupUserToAdd = new TransactionGroupUserDto
             {
                 Id = Guid.NewGuid(),
@@ -39,10 +40,13 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 GroupUserId = GroupUserSeeds.GroupUserJohnInWork.Id
             };
 
-            await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().InsertAsync(transactionGroupUserToAdd);
+            // Act
+            await _unitOfWork.TransactionGroupUserRepository.InsertAsync(transactionGroupUserToAdd);
             await _unitOfWork.SaveChangesAsync();
 
-            var actualTransactionGroupUser = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().GetByIdAsync(transactionGroupUserToAdd.Id);
+            // Assert
+            var queryObject = new TransactionGroupUserQueryObject().WithId(transactionGroupUserToAdd.Id);
+            var actualTransactionGroupUser = await _unitOfWork.TransactionGroupUserRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualTransactionGroupUser);
             DeepAssert.Equal(transactionGroupUserToAdd, actualTransactionGroupUser);
         }
@@ -54,10 +58,14 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         [Fact]
         public async Task FetchTransactionGroupUserById_ExistingId_ReturnsExpectedTransactionGroupUser()
         {
+            // Arrange
             var expectedTransactionGroupUser = _mapper.Map<TransactionGroupUserDto>(TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana);
+            var queryObject = new TransactionGroupUserQueryObject().WithId(expectedTransactionGroupUser.Id);
 
-            var actualTransactionGroupUser = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().GetByIdAsync(expectedTransactionGroupUser.Id);
+            // Act
+            var actualTransactionGroupUser = await _unitOfWork.TransactionGroupUserRepository.SingleOrDefaultAsync(queryObject);
 
+            // Assert
             Assert.NotNull(actualTransactionGroupUser);
             DeepAssert.Equal(expectedTransactionGroupUser, actualTransactionGroupUser);
         }
@@ -69,6 +77,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         [Fact]
         public async Task UpdateTransactionGroupUser_ValidData_SuccessfullyPersistsChanges()
         {
+            // Arrange
             var existingTransactionGroupUser = _mapper.Map<TransactionGroupUserDto>(TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana);
             var updatedTransactionGroupUser = new TransactionGroupUserDto
             {
@@ -78,10 +87,13 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 GroupUserId = existingTransactionGroupUser.GroupUserId
             };
 
-            await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().UpdateAsync(updatedTransactionGroupUser);
+            // Act
+            await _unitOfWork.TransactionGroupUserRepository.UpdateAsync(updatedTransactionGroupUser);
             await _unitOfWork.SaveChangesAsync();
 
-            var actualTransactionGroupUser = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().GetByIdAsync(updatedTransactionGroupUser.Id);
+            // Assert
+            var queryObject = new TransactionGroupUserQueryObject().WithId(updatedTransactionGroupUser.Id);
+            var actualTransactionGroupUser = await _unitOfWork.TransactionGroupUserRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualTransactionGroupUser);
             DeepAssert.Equal(updatedTransactionGroupUser, actualTransactionGroupUser);
         }
@@ -93,12 +105,16 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         [Fact]
         public async Task DeleteTransactionGroupUser_ExistingId_SuccessfullyRemovesTransactionGroupUser()
         {
+            // Arrange
             var transactionGroupUserToDelete = _mapper.Map<TransactionGroupUserDto>(TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana);
 
-            await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().DeleteAsync(transactionGroupUserToDelete.Id);
+            // Act
+            await _unitOfWork.TransactionGroupUserRepository.DeleteAsync(transactionGroupUserToDelete.Id);
             await _unitOfWork.SaveChangesAsync();
 
-            var deletedTransactionGroupUser = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().GetByIdAsync(transactionGroupUserToDelete.Id);
+            // Assert
+            var queryObject = new TransactionGroupUserQueryObject().WithId(transactionGroupUserToDelete.Id);
+            var deletedTransactionGroupUser = await _unitOfWork.TransactionGroupUserRepository.SingleOrDefaultAsync(queryObject);
             Assert.Null(deletedTransactionGroupUser);
         }
 
@@ -113,6 +129,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         [Fact]
         public async Task AddTransactionGroupUser_WithInvalidGroupUserId_ThrowsException()
         {
+            // Arrange
             var invalidTransactionGroupUser = new TransactionGroupUserDto
             {
                 Id = Guid.NewGuid(),
@@ -121,9 +138,10 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 GroupUserId = Guid.NewGuid() // Invalid GroupUserId
             };
 
+            // Act & Assert
             await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().InsertAsync(invalidTransactionGroupUser);
+                await _unitOfWork.TransactionGroupUserRepository.InsertAsync(invalidTransactionGroupUser);
                 await _unitOfWork.SaveChangesAsync();
             });
         }
@@ -135,6 +153,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         [Fact]
         public async Task UpdateTransactionGroupUser_NonExistentTransactionGroupUser_ThrowsException()
         {
+            // Arrange
             var nonExistentTransactionGroupUser = new TransactionGroupUserDto
             {
                 Id = Guid.NewGuid(), // Non-existent ID
@@ -143,9 +162,10 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 GroupUserId = GroupUserSeeds.GroupUserJohnInWork.Id
             };
 
+            // Act & Assert
             await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().UpdateAsync(nonExistentTransactionGroupUser);
+                await _unitOfWork.TransactionGroupUserRepository.UpdateAsync(nonExistentTransactionGroupUser);
                 await _unitOfWork.SaveChangesAsync();
             });
         }
@@ -157,11 +177,13 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         [Fact]
         public async Task DeleteTransactionGroupUser_NonExistentTransactionGroupUser_ThrowsException()
         {
+            // Arrange
             var nonExistentTransactionGroupUserId = Guid.NewGuid(); // Non-existent ID
 
+            // Act & Assert
             await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().DeleteAsync(nonExistentTransactionGroupUserId);
+                await _unitOfWork.TransactionGroupUserRepository.DeleteAsync(nonExistentTransactionGroupUserId);
                 await _unitOfWork.SaveChangesAsync();
             });
         }
@@ -177,6 +199,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         [Fact]
         public async Task UpdateTransactionGroupUser_ChangeTransactionId_ShouldNotChange()
         {
+            // Arrange
             var existingTransactionGroupUser = _mapper.Map<TransactionGroupUserDto>(TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana);
 
             var updatedTransactionGroupUser = existingTransactionGroupUser with
@@ -184,10 +207,13 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 TransactionId = Guid.NewGuid(), // Attempt to change TransactionId
             };
 
-            await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().UpdateAsync(updatedTransactionGroupUser);
+            // Act
+            await _unitOfWork.TransactionGroupUserRepository.UpdateAsync(updatedTransactionGroupUser);
             await _unitOfWork.SaveChangesAsync();
 
-            var actualTransactionGroupUser = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().GetByIdAsync(existingTransactionGroupUser.Id);
+            // Assert
+            var queryObject = new TransactionGroupUserQueryObject().WithId(existingTransactionGroupUser.Id);
+            var actualTransactionGroupUser = await _unitOfWork.TransactionGroupUserRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualTransactionGroupUser);
             Assert.Equal(existingTransactionGroupUser.TransactionId, actualTransactionGroupUser.TransactionId); // TransactionId should remain unchanged
         }
@@ -199,6 +225,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         [Fact]
         public async Task UpdateTransactionGroupUser_ChangeGroupUserId_ShouldNotChange()
         {
+            // Arrange
             var existingTransactionGroupUser = _mapper.Map<TransactionGroupUserDto>(TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana);
 
             var updatedTransactionGroupUser = existingTransactionGroupUser with
@@ -206,10 +233,13 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 GroupUserId = Guid.NewGuid(), // Attempt to change GroupUserId
             };
 
-            await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().UpdateAsync(updatedTransactionGroupUser);
+            // Act
+            await _unitOfWork.TransactionGroupUserRepository.UpdateAsync(updatedTransactionGroupUser);
             await _unitOfWork.SaveChangesAsync();
 
-            var actualTransactionGroupUser = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().GetByIdAsync(existingTransactionGroupUser.Id);
+            // Assert
+            var queryObject = new TransactionGroupUserQueryObject().WithId(existingTransactionGroupUser.Id);
+            var actualTransactionGroupUser = await _unitOfWork.TransactionGroupUserRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualTransactionGroupUser);
             Assert.Equal(existingTransactionGroupUser.GroupUserId, actualTransactionGroupUser.GroupUserId); // GroupUserId should remain unchanged
         }
@@ -221,6 +251,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         [Fact]
         public async Task UpdateTransactionGroupUser_ChangeIsRead_ShouldUpdate()
         {
+            // Arrange
             var existingTransactionGroupUser = _mapper.Map<TransactionGroupUserDto>(TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana);
 
             var updatedTransactionGroupUser = existingTransactionGroupUser with
@@ -228,10 +259,13 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 IsRead = !existingTransactionGroupUser.IsRead, // Change IsRead property
             };
 
-            await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().UpdateAsync(updatedTransactionGroupUser);
+            // Act
+            await _unitOfWork.TransactionGroupUserRepository.UpdateAsync(updatedTransactionGroupUser);
             await _unitOfWork.SaveChangesAsync();
 
-            var actualTransactionGroupUser = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().GetByIdAsync(existingTransactionGroupUser.Id);
+            // Assert
+            var queryObject = new TransactionGroupUserQueryObject().WithId(existingTransactionGroupUser.Id);
+            var actualTransactionGroupUser = await _unitOfWork.TransactionGroupUserRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualTransactionGroupUser);
             Assert.Equal(updatedTransactionGroupUser.IsRead, actualTransactionGroupUser.IsRead); // IsRead should be updated
         }
@@ -251,15 +285,17 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             var transactionGroupUserToDelete = TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana;
 
             // Act
-            await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().DeleteAsync(transactionGroupUserToDelete.Id);
+            await _unitOfWork.TransactionGroupUserRepository.DeleteAsync(transactionGroupUserToDelete.Id);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var transaction = await _unitOfWork.Repository<TransactionEntity, TransactionDto>().GetByIdAsync(transactionGroupUserToDelete.TransactionId);
+            var transactionQueryObject = new TransactionQueryObject().WithId(transactionGroupUserToDelete.TransactionId);
+            var transaction = await _unitOfWork.TransactionRepository.SingleOrDefaultAsync(transactionQueryObject);
             Assert.NotNull(transaction);
             Assert.Equal(transactionGroupUserToDelete.TransactionId, transaction.Id);
 
-            var groupUser = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>().GetByIdAsync(transactionGroupUserToDelete.GroupUserId);
+            var groupUserQueryObject = new GroupUserQueryObject().WithId(transactionGroupUserToDelete.GroupUserId);
+            var groupUser = await _unitOfWork.GroupUserRepository.SingleOrDefaultAsync(groupUserQueryObject);
             Assert.NotNull(groupUser);
             Assert.Equal(transactionGroupUserToDelete.GroupUserId, groupUser.Id);
         }
@@ -296,15 +332,15 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             {
                 // Act
                 // Insert
-                await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().InsertAsync(newTransactionGroupUserDto);
+                await _unitOfWork.TransactionGroupUserRepository.InsertAsync(newTransactionGroupUserDto);
                 await _unitOfWork.SaveChangesAsync();
 
                 // Update
-                await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().UpdateAsync(updatedTransactionGroupUserDto);
+                await _unitOfWork.TransactionGroupUserRepository.UpdateAsync(updatedTransactionGroupUserDto);
                 await _unitOfWork.SaveChangesAsync();
 
                 // Delete
-                await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().DeleteAsync(newTransactionGroupUserDto.Id);
+                await _unitOfWork.TransactionGroupUserRepository.DeleteAsync(newTransactionGroupUserDto.Id);
                 await _unitOfWork.SaveChangesAsync();
             }
             catch
@@ -313,7 +349,8 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             }
 
             // Assert
-            var deletedTransactionGroupUser = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>().GetByIdAsync(newTransactionGroupUserDto.Id);
+            var queryObject = new TransactionGroupUserQueryObject().WithId(newTransactionGroupUserDto.Id);
+            var deletedTransactionGroupUser = await _unitOfWork.TransactionGroupUserRepository.SingleOrDefaultAsync(queryObject);
             Assert.Null(deletedTransactionGroupUser);
         }
 

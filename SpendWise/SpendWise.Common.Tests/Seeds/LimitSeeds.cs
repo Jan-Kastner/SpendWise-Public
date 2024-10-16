@@ -9,6 +9,10 @@ namespace SpendWise.Common.Tests.Seeds
     /// </summary>
     public static class LimitSeeds
     {
+        public static readonly Guid GroupUserCharlieInFamilyId = Guid.NewGuid();
+        public static readonly Guid GroupUserDianaInFamilyId = Guid.NewGuid();
+        public static readonly Guid GroupUserJohnInWorkId = Guid.NewGuid();
+
         /// <summary>
         /// Gets the seed data for a limit assigned to Charlie in the family group.
         /// </summary>
@@ -17,7 +21,7 @@ namespace SpendWise.Common.Tests.Seeds
             Id = Guid.NewGuid(),
             Amount = 1000m,
             NoticeType = NoticeType.InApp,
-            GroupUserId = GroupUserSeeds.GroupUserCharlieInFamily.Id
+            GroupUserId = GroupUserCharlieInFamilyId
         };
 
         /// <summary>
@@ -28,7 +32,7 @@ namespace SpendWise.Common.Tests.Seeds
             Id = Guid.NewGuid(),
             Amount = 1500m,
             NoticeType = NoticeType.SMS,
-            GroupUserId = GroupUserSeeds.GroupUserDianaInFamily.Id
+            GroupUserId = GroupUserDianaInFamilyId
         };
 
         /// <summary>
@@ -39,7 +43,7 @@ namespace SpendWise.Common.Tests.Seeds
             Id = Guid.NewGuid(),
             Amount = 2000m,
             NoticeType = NoticeType.InApp,
-            GroupUserId = GroupUserSeeds.GroupUserJohnInWork.Id
+            GroupUserId = GroupUserJohnInWorkId
         };
 
         /// <summary>

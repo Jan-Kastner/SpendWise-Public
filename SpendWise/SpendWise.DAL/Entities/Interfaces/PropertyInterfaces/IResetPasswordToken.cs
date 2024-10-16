@@ -8,6 +8,6 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the reset password token of the entity.
         /// </summary>
-        string? ResetPasswordToken { get; set; }
+        string? ResetPasswordToken { get; init; }
     }
 }

@@ -8,6 +8,6 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the date of registration of the entity.
         /// </summary>
-        DateTime DateOfRegistration { get; set; }
+        DateTime DateOfRegistration { get; init; }
     }
 }

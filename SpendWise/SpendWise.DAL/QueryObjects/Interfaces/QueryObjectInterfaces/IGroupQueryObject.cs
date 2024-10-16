@@ -6,8 +6,7 @@ namespace SpendWise.DAL.QueryObjects
     /// Represents a query object interface for groups.
     /// Provides methods for querying groups by various properties.
     /// </summary>
-    /// <typeparam name="T">The type of the query object.</typeparam>
-    public interface IGroupQueryObject<T> : IIdQuery<T>, INameQuery<T>, IDescriptionQuery<T>, IGroupUserQuery<T>, IInvitationQuery<T>
+    public interface IGroupQueryObject : IQueryObject, IIdQuery<GroupQueryObject>, INameQuery<GroupQueryObject>, IDescriptionQuery<GroupQueryObject>, IGroupUserQuery<GroupQueryObject>, IInvitationQuery<GroupQueryObject>
     {
     }
 }

@@ -6,8 +6,7 @@ namespace SpendWise.DAL.QueryObjects
     /// Represents a query object interface for limits.
     /// Provides methods for querying limits by various properties.
     /// </summary>
-    /// <typeparam name="T">The type of the query object.</typeparam>
-    public interface ILimitQueryObject<T> : IIdQuery<T>, IGroupUserQuery<T>, IAmountQuery<T>, INoticeTypeQuery<T>
+    public interface ILimitQueryObject : IQueryObject, IIdQuery<LimitQueryObject>, IGroupUserQuery<LimitQueryObject>, IAmountQuery<LimitQueryObject>, INoticeTypeQuery<LimitQueryObject>
     {
     }
 }

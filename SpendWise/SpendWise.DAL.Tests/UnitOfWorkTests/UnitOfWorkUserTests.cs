@@ -52,11 +52,12 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             };
 
             // Act
-            await _unitOfWork.Repository<UserEntity, UserDto>().InsertAsync(userToAdd);
+            await _unitOfWork.UserRepository.InsertAsync(userToAdd);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var actualUser = await _unitOfWork.Repository<UserEntity, UserDto>().GetByIdAsync(userToAdd.Id);
+            var queryObject = new UserQueryObject().WithId(userToAdd.Id);
+            var actualUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualUser);
             DeepAssert.Equal(userToAdd, actualUser);
         }
@@ -70,9 +71,10 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         {
             // Arrange
             var expectedUser = _mapper.Map<UserDto>(UserSeeds.UserJohnDoe);
+            var queryObject = new UserQueryObject().WithId(expectedUser.Id);
 
             // Act
-            var actualUser = await _unitOfWork.Repository<UserEntity, UserDto>().GetByIdAsync(expectedUser.Id);
+            var actualUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(queryObject);
 
             // Assert
             Assert.NotNull(actualUser);
@@ -95,11 +97,12 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             };
 
             // Act
-            await _unitOfWork.Repository<UserEntity, UserDto>().UpdateAsync(updatedUser);
+            await _unitOfWork.UserRepository.UpdateAsync(updatedUser);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var actualUpdatedUser = await _unitOfWork.Repository<UserEntity, UserDto>().GetByIdAsync(updatedUser.Id);
+            var queryObject = new UserQueryObject().WithId(updatedUser.Id);
+            var actualUpdatedUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualUpdatedUser);
             DeepAssert.Equal(updatedUser, actualUpdatedUser);
         }
@@ -115,11 +118,12 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             var userToDelete = _mapper.Map<UserDto>(UserSeeds.UserJohnDoe);
 
             // Act
-            await _unitOfWork.Repository<UserEntity, UserDto>().DeleteAsync(userToDelete.Id);
+            await _unitOfWork.UserRepository.DeleteAsync(userToDelete.Id);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var deletedUser = await _unitOfWork.Repository<UserEntity, UserDto>().GetByIdAsync(userToDelete.Id);
+            var queryObject = new UserQueryObject().WithId(userToDelete.Id);
+            var deletedUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(queryObject);
             Assert.Null(deletedUser);
         }
 
@@ -134,6 +138,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         [Fact]
         public async Task AddUser_WithFutureDateOfRegistration_ThrowsException()
         {
+            // Arrange
             var invalidUser = new UserDto
             {
                 Id = Guid.NewGuid(),
@@ -152,9 +157,10 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 PreferredTheme = Theme.SystemDefault
             };
 
+            // Act & Assert
             await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _unitOfWork.Repository<UserEntity, UserDto>().InsertAsync(invalidUser);
+                await _unitOfWork.UserRepository.InsertAsync(invalidUser);
                 await _unitOfWork.SaveChangesAsync();
             });
         }
@@ -166,6 +172,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         [Fact]
         public async Task UpdateUser_NonExistentUser_ThrowsException()
         {
+            // Arrange
             var nonExistentUser = new UserDto
             {
                 Id = Guid.NewGuid(), // Non-existent ID
@@ -184,9 +191,10 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 PreferredTheme = Theme.SystemDefault
             };
 
+            // Act & Assert
             await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _unitOfWork.Repository<UserEntity, UserDto>().UpdateAsync(nonExistentUser);
+                await _unitOfWork.UserRepository.UpdateAsync(nonExistentUser);
                 await _unitOfWork.SaveChangesAsync();
             });
         }
@@ -198,11 +206,13 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         [Fact]
         public async Task DeleteUser_NonExistentUser_ThrowsException()
         {
+            // Arrange
             var nonExistentUserId = Guid.NewGuid(); // Non-existent ID
 
+            // Act & Assert
             await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _unitOfWork.Repository<UserEntity, UserDto>().DeleteAsync(nonExistentUserId);
+                await _unitOfWork.UserRepository.DeleteAsync(nonExistentUserId);
                 await _unitOfWork.SaveChangesAsync();
             });
         }
@@ -214,6 +224,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         [Fact]
         public async Task AddUser_WithDuplicateEmail_ThrowsException()
         {
+            // Arrange
             var existingUser = _mapper.Map<UserDto>(UserSeeds.UserJohnDoe);
             var duplicateUser = existingUser with
             {
@@ -221,14 +232,16 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 Email = existingUser.Email, // Duplicate email
             };
 
+            // Act & Assert
             await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _unitOfWork.Repository<UserEntity, UserDto>().InsertAsync(duplicateUser);
+                await _unitOfWork.UserRepository.InsertAsync(duplicateUser);
                 await _unitOfWork.SaveChangesAsync();
             });
         }
 
         #endregion
+
         #region Update and Special Cases Tests
 
         /// <summary>
@@ -238,6 +251,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         [Fact]
         public async Task UpdateUser_ChangeName_ShouldChange()
         {
+            // Arrange
             var existingUser = _mapper.Map<UserDto>(UserSeeds.UserJohnDoe);
 
             var updatedUser = existingUser with
@@ -245,10 +259,13 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 Name = "NewName" // Change Name
             };
 
-            await _unitOfWork.Repository<UserEntity, UserDto>().UpdateAsync(updatedUser);
+            // Act
+            await _unitOfWork.UserRepository.UpdateAsync(updatedUser);
             await _unitOfWork.SaveChangesAsync();
 
-            var actualUser = await _unitOfWork.Repository<UserEntity, UserDto>().GetByIdAsync(existingUser.Id);
+            // Assert
+            var queryObject = new UserQueryObject().WithId(existingUser.Id);
+            var actualUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualUser);
             Assert.Equal(updatedUser.Name, actualUser.Name); // Name should be changed
         }
@@ -260,6 +277,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         [Fact]
         public async Task UpdateUser_ChangeSurname_ShouldChange()
         {
+            // Arrange
             var existingUser = _mapper.Map<UserDto>(UserSeeds.UserJohnDoe);
 
             var updatedUser = existingUser with
@@ -267,10 +285,13 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 Surname = "NewSurname" // Change Surname
             };
 
-            await _unitOfWork.Repository<UserEntity, UserDto>().UpdateAsync(updatedUser);
+            // Act
+            await _unitOfWork.UserRepository.UpdateAsync(updatedUser);
             await _unitOfWork.SaveChangesAsync();
 
-            var actualUser = await _unitOfWork.Repository<UserEntity, UserDto>().GetByIdAsync(existingUser.Id);
+            // Assert
+            var queryObject = new UserQueryObject().WithId(existingUser.Id);
+            var actualUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualUser);
             Assert.Equal(updatedUser.Surname, actualUser.Surname); // Surname should be changed
         }
@@ -282,6 +303,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         [Fact]
         public async Task UpdateUser_ChangeEmail_ShouldChange()
         {
+            // Arrange
             var existingUser = _mapper.Map<UserDto>(UserSeeds.UserJohnDoe);
 
             var updatedUser = existingUser with
@@ -289,10 +311,13 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 Email = "new.email@spendwise.com" // Change Email
             };
 
-            await _unitOfWork.Repository<UserEntity, UserDto>().UpdateAsync(updatedUser);
+            // Act
+            await _unitOfWork.UserRepository.UpdateAsync(updatedUser);
             await _unitOfWork.SaveChangesAsync();
 
-            var actualUser = await _unitOfWork.Repository<UserEntity, UserDto>().GetByIdAsync(existingUser.Id);
+            // Assert
+            var queryObject = new UserQueryObject().WithId(existingUser.Id);
+            var actualUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualUser);
             Assert.Equal(updatedUser.Email, actualUser.Email); // Email should be changed
         }
@@ -311,10 +336,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 PasswordHash = "new_password_hash" // Change PasswordHash
             };
 
-            await _unitOfWork.Repository<UserEntity, UserDto>().UpdateAsync(updatedUser);
+            await _unitOfWork.UserRepository.UpdateAsync(updatedUser);
             await _unitOfWork.SaveChangesAsync();
 
-            var actualUser = await _unitOfWork.Repository<UserEntity, UserDto>().GetByIdAsync(existingUser.Id);
+            var queryObject = new UserQueryObject().WithId(existingUser.Id);
+            var actualUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualUser);
             Assert.Equal(updatedUser.PasswordHash, actualUser.PasswordHash); // PasswordHash should be changed
         }
@@ -333,10 +359,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 DateOfRegistration = DateTime.UtcNow.AddDays(-1) // Change DateOfRegistration
             };
 
-            await _unitOfWork.Repository<UserEntity, UserDto>().UpdateAsync(updatedUser);
+            await _unitOfWork.UserRepository.UpdateAsync(updatedUser);
             await _unitOfWork.SaveChangesAsync();
 
-            var actualUser = await _unitOfWork.Repository<UserEntity, UserDto>().GetByIdAsync(existingUser.Id);
+            var queryObject = new UserQueryObject().WithId(existingUser.Id);
+            var actualUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualUser);
             Assert.Equal(updatedUser.DateOfRegistration, actualUser.DateOfRegistration); // DateOfRegistration should be changed
         }
@@ -355,10 +382,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 Photo = new byte[] { 1, 2, 3 } // Change Photo
             };
 
-            await _unitOfWork.Repository<UserEntity, UserDto>().UpdateAsync(updatedUser);
+            await _unitOfWork.UserRepository.UpdateAsync(updatedUser);
             await _unitOfWork.SaveChangesAsync();
 
-            var actualUser = await _unitOfWork.Repository<UserEntity, UserDto>().GetByIdAsync(existingUser.Id);
+            var queryObject = new UserQueryObject().WithId(existingUser.Id);
+            var actualUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualUser);
             Assert.Equal(updatedUser.Photo, actualUser.Photo); // Photo should be changed
         }
@@ -377,10 +405,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 IsEmailConfirmed = true // Change IsEmailConfirmed
             };
 
-            await _unitOfWork.Repository<UserEntity, UserDto>().UpdateAsync(updatedUser);
+            await _unitOfWork.UserRepository.UpdateAsync(updatedUser);
             await _unitOfWork.SaveChangesAsync();
 
-            var actualUser = await _unitOfWork.Repository<UserEntity, UserDto>().GetByIdAsync(existingUser.Id);
+            var queryObject = new UserQueryObject().WithId(existingUser.Id);
+            var actualUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualUser);
             Assert.Equal(updatedUser.IsEmailConfirmed, actualUser.IsEmailConfirmed); // IsEmailConfirmed should be changed
         }
@@ -399,10 +428,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 EmailConfirmationToken = "new_confirmation_token" // Change EmailConfirmationToken
             };
 
-            await _unitOfWork.Repository<UserEntity, UserDto>().UpdateAsync(updatedUser);
+            await _unitOfWork.UserRepository.UpdateAsync(updatedUser);
             await _unitOfWork.SaveChangesAsync();
 
-            var actualUser = await _unitOfWork.Repository<UserEntity, UserDto>().GetByIdAsync(existingUser.Id);
+            var queryObject = new UserQueryObject().WithId(existingUser.Id);
+            var actualUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualUser);
             Assert.Equal(updatedUser.EmailConfirmationToken, actualUser.EmailConfirmationToken); // EmailConfirmationToken should be changed
         }
@@ -421,10 +451,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 ResetPasswordToken = "new_reset_token" // Change ResetPasswordToken
             };
 
-            await _unitOfWork.Repository<UserEntity, UserDto>().UpdateAsync(updatedUser);
+            await _unitOfWork.UserRepository.UpdateAsync(updatedUser);
             await _unitOfWork.SaveChangesAsync();
 
-            var actualUser = await _unitOfWork.Repository<UserEntity, UserDto>().GetByIdAsync(existingUser.Id);
+            var queryObject = new UserQueryObject().WithId(existingUser.Id);
+            var actualUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualUser);
             Assert.Equal(updatedUser.ResetPasswordToken, actualUser.ResetPasswordToken); // ResetPasswordToken should be changed
         }
@@ -443,10 +474,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 ResetPasswordTokenExpiry = DateTime.UtcNow.AddHours(1) // Change ResetPasswordTokenExpiry
             };
 
-            await _unitOfWork.Repository<UserEntity, UserDto>().UpdateAsync(updatedUser);
+            await _unitOfWork.UserRepository.UpdateAsync(updatedUser);
             await _unitOfWork.SaveChangesAsync();
 
-            var actualUser = await _unitOfWork.Repository<UserEntity, UserDto>().GetByIdAsync(existingUser.Id);
+            var queryObject = new UserQueryObject().WithId(existingUser.Id);
+            var actualUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualUser);
             Assert.Equal(updatedUser.ResetPasswordTokenExpiry, actualUser.ResetPasswordTokenExpiry); // ResetPasswordTokenExpiry should be changed
         }
@@ -462,13 +494,14 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
 
             var updatedUser = existingUser with
             {
-                IsTwoFactorEnabled = true // Change IsTwoFactorEnabled
+                IsTwoFactorEnabled = true, // Change IsTwoFactorEnabled
             };
 
-            await _unitOfWork.Repository<UserEntity, UserDto>().UpdateAsync(updatedUser);
+            await _unitOfWork.UserRepository.UpdateAsync(updatedUser);
             await _unitOfWork.SaveChangesAsync();
 
-            var actualUser = await _unitOfWork.Repository<UserEntity, UserDto>().GetByIdAsync(existingUser.Id);
+            var queryObject = new UserQueryObject().WithId(existingUser.Id);
+            var actualUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualUser);
             Assert.Equal(updatedUser.IsTwoFactorEnabled, actualUser.IsTwoFactorEnabled); // IsTwoFactorEnabled should be changed
         }
@@ -487,10 +520,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 TwoFactorSecret = "new_2fa_secret" // Change TwoFactorSecret
             };
 
-            await _unitOfWork.Repository<UserEntity, UserDto>().UpdateAsync(updatedUser);
+            await _unitOfWork.UserRepository.UpdateAsync(updatedUser);
             await _unitOfWork.SaveChangesAsync();
 
-            var actualUser = await _unitOfWork.Repository<UserEntity, UserDto>().GetByIdAsync(existingUser.Id);
+            var queryObject = new UserQueryObject().WithId(existingUser.Id);
+            var actualUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualUser);
             Assert.Equal(updatedUser.TwoFactorSecret, actualUser.TwoFactorSecret); // TwoFactorSecret should be changed
         }
@@ -509,10 +543,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 PreferredTheme = Theme.Dark // Change PreferredTheme
             };
 
-            await _unitOfWork.Repository<UserEntity, UserDto>().UpdateAsync(updatedUser);
+            await _unitOfWork.UserRepository.UpdateAsync(updatedUser);
             await _unitOfWork.SaveChangesAsync();
 
-            var actualUser = await _unitOfWork.Repository<UserEntity, UserDto>().GetByIdAsync(existingUser.Id);
+            var queryObject = new UserQueryObject().WithId(existingUser.Id);
+            var actualUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualUser);
             Assert.Equal(updatedUser.PreferredTheme, actualUser.PreferredTheme); // PreferredTheme should be changed
         }
@@ -534,36 +569,37 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             var associatedInvitationIds = userToDelete.SentInvitations.Select(inv => inv.Id).ToList();
 
             // Verify the initial state before deletion
-            var initialGroupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
-                .GetAsync(new GroupUserQueryObject().WithUser(userToDelete.Id));
+            var initialGroupUsers = await _unitOfWork.GroupUserRepository
+                .ListAsync(new GroupUserQueryObject().WithUser(userToDelete.Id));
             Assert.NotEmpty(initialGroupUsers); // Ensure there are group users related to the user
 
-            var initialSentInvitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(new InvitationQueryObject().WithSender(userToDelete.Id));
+            var initialSentInvitations = await _unitOfWork.InvitationRepository
+                .ListAsync(new InvitationQueryObject().WithSender(userToDelete.Id));
             Assert.NotEmpty(initialSentInvitations); // Ensure there are sent invitations related to the user
 
-            var initialRecievedInvitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(new InvitationQueryObject().WithReceiver(userToDelete.Id));
+            var initialRecievedInvitations = await _unitOfWork.InvitationRepository
+                .ListAsync(new InvitationQueryObject().WithReceiver(userToDelete.Id));
             Assert.NotEmpty(initialRecievedInvitations); // Ensure there are recieved invitations related to the user
 
             // Act
-            await _unitOfWork.Repository<UserEntity, UserDto>().DeleteAsync(userToDelete.Id);
+            await _unitOfWork.UserRepository.DeleteAsync(userToDelete.Id);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var deletedUser = await _unitOfWork.Repository<UserEntity, UserDto>().GetByIdAsync(userToDelete.Id);
+            var queryObject = new UserQueryObject().WithId(userToDelete.Id);
+            var deletedUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(queryObject);
             Assert.Null(deletedUser);
 
-            var groupUsersAfterDelete = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
-                .GetAsync(new GroupUserQueryObject().WithUser(userToDelete.Id));
+            var groupUsersAfterDelete = await _unitOfWork.GroupUserRepository
+                .ListAsync(new GroupUserQueryObject().WithUser(userToDelete.Id));
             Assert.Empty(groupUsersAfterDelete); // Ensure all group users related to the user are removed
 
-            var sentInvitationsAfterDelete = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(new InvitationQueryObject().WithSender(userToDelete.Id));
+            var sentInvitationsAfterDelete = await _unitOfWork.InvitationRepository
+                .ListAsync(new InvitationQueryObject().WithSender(userToDelete.Id));
             Assert.Empty(sentInvitationsAfterDelete); // Ensure all sent invitations related to the user are removed
 
-            var recievedInvitationsAfterDelete = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(new InvitationQueryObject().WithReceiver(userToDelete.Id));
+            var recievedInvitationsAfterDelete = await _unitOfWork.InvitationRepository
+                .ListAsync(new InvitationQueryObject().WithReceiver(userToDelete.Id));
             Assert.Empty(recievedInvitationsAfterDelete); // Ensure all recieved invitations related to the user are removed
         }
 
@@ -619,15 +655,15 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             {
                 // Act
                 // Insert
-                await _unitOfWork.Repository<UserEntity, UserDto>().InsertAsync(newUserDto);
+                await _unitOfWork.UserRepository.InsertAsync(newUserDto);
                 await _unitOfWork.SaveChangesAsync();
 
                 // Update
-                await _unitOfWork.Repository<UserEntity, UserDto>().UpdateAsync(updatedUserDto);
+                await _unitOfWork.UserRepository.UpdateAsync(updatedUserDto);
                 await _unitOfWork.SaveChangesAsync();
 
                 // Delete
-                await _unitOfWork.Repository<UserEntity, UserDto>().DeleteAsync(newUserDto.Id);
+                await _unitOfWork.UserRepository.DeleteAsync(newUserDto.Id);
                 await _unitOfWork.SaveChangesAsync();
             }
             catch
@@ -636,7 +672,8 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             }
 
             // Assert
-            var deletedUser = await _unitOfWork.Repository<UserEntity, UserDto>().GetByIdAsync(newUserDto.Id);
+            var queryObject = new UserQueryObject().WithId(newUserDto.Id);
+            var deletedUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(queryObject);
             Assert.Null(deletedUser);
         }
 

@@ -41,11 +41,12 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             };
 
             // Act
-            await _unitOfWork.Repository<CategoryEntity, CategoryDto>().InsertAsync(newCategory);
+            await _unitOfWork.CategoryRepository.InsertAsync(newCategory);
             await _unitOfWork.SaveChangesAsync();
+            var queryObject = new CategoryQueryObject().WithId(newCategory.Id);
 
             // Assert
-            var persistedCategory = await _unitOfWork.Repository<CategoryEntity, CategoryDto>().GetByIdAsync(newCategory.Id);
+            var persistedCategory = await _unitOfWork.CategoryRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(persistedCategory);
             DeepAssert.Equal(newCategory, persistedCategory);
         }
@@ -59,9 +60,10 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         {
             // Arrange
             var expectedCategory = _mapper.Map<CategoryDto>(CategorySeeds.CategoryFood);
+            var queryObject = new CategoryQueryObject().WithId(expectedCategory.Id);
 
             // Act
-            var fetchedCategory = await _unitOfWork.Repository<CategoryEntity, CategoryDto>().GetByIdAsync(expectedCategory.Id);
+            var fetchedCategory = await _unitOfWork.CategoryRepository.SingleOrDefaultAsync(queryObject);
 
             // Assert
             Assert.NotNull(fetchedCategory);
@@ -85,13 +87,14 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 Description = "Updated Description",
                 Icon = Array.Empty<byte>()
             };
+            var queryObject = new CategoryQueryObject().WithId(updatedCategory.Id);
 
             // Act
-            await _unitOfWork.Repository<CategoryEntity, CategoryDto>().UpdateAsync(updatedCategory);
+            await _unitOfWork.CategoryRepository.UpdateAsync(updatedCategory);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var persistedCategory = await _unitOfWork.Repository<CategoryEntity, CategoryDto>().GetByIdAsync(updatedCategory.Id);
+            var persistedCategory = await _unitOfWork.CategoryRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(persistedCategory);
             DeepAssert.Equal(updatedCategory, persistedCategory);
         }
@@ -105,13 +108,14 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         {
             // Arrange
             var categoryToDelete = _mapper.Map<CategoryDto>(CategorySeeds.CategoryFood);
+            var queryObject = new CategoryQueryObject().WithId(categoryToDelete.Id);
 
             // Act
-            await _unitOfWork.Repository<CategoryEntity, CategoryDto>().DeleteAsync(categoryToDelete.Id);
+            await _unitOfWork.CategoryRepository.DeleteAsync(categoryToDelete.Id);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var deletedCategory = await _unitOfWork.Repository<CategoryEntity, CategoryDto>().GetByIdAsync(categoryToDelete.Id);
+            var deletedCategory = await _unitOfWork.CategoryRepository.SingleOrDefaultAsync(queryObject);
             Assert.Null(deletedCategory);
         }
 
@@ -139,7 +143,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _unitOfWork.Repository<CategoryEntity, CategoryDto>().InsertAsync(invalidCategory);
+                await _unitOfWork.CategoryRepository.InsertAsync(invalidCategory);
                 await _unitOfWork.SaveChangesAsync();
             });
         }
@@ -164,7 +168,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _unitOfWork.Repository<CategoryEntity, CategoryDto>().UpdateAsync(nonExistentCategory);
+                await _unitOfWork.CategoryRepository.UpdateAsync(nonExistentCategory);
                 await _unitOfWork.SaveChangesAsync();
             });
         }
@@ -182,7 +186,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _unitOfWork.Repository<CategoryEntity, CategoryDto>().DeleteAsync(nonExistentCategoryId);
+                await _unitOfWork.CategoryRepository.DeleteAsync(nonExistentCategoryId);
                 await _unitOfWork.SaveChangesAsync();
             });
         }
@@ -207,13 +211,14 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 Color = "#ff00ff",
                 Icon = new byte[] { 0x01, 0x02, 0x03 }
             };
+            var queryObject = new CategoryQueryObject().WithId(newCategory.Id);
 
             // Act
-            await _unitOfWork.Repository<CategoryEntity, CategoryDto>().InsertAsync(newCategory);
+            await _unitOfWork.CategoryRepository.InsertAsync(newCategory);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var persistedCategory = await _unitOfWork.Repository<CategoryEntity, CategoryDto>().GetByIdAsync(newCategory.Id);
+            var persistedCategory = await _unitOfWork.CategoryRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(persistedCategory);
             Assert.NotNull(persistedCategory.Icon);
             Assert.Equal(newCategory.Icon, persistedCategory.Icon);
@@ -232,13 +237,14 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             {
                 Icon = new byte[] { 0x02, 0x03 }
             };
+            var queryObject = new CategoryQueryObject().WithId(updatedCategory.Id);
 
             // Act
-            await _unitOfWork.Repository<CategoryEntity, CategoryDto>().UpdateAsync(updatedCategory);
+            await _unitOfWork.CategoryRepository.UpdateAsync(updatedCategory);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var persistedCategory = await _unitOfWork.Repository<CategoryEntity, CategoryDto>().GetByIdAsync(updatedCategory.Id);
+            var persistedCategory = await _unitOfWork.CategoryRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(persistedCategory);
             Assert.Equal(updatedCategory.Icon, persistedCategory.Icon);
         }
@@ -252,14 +258,22 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         {
             // Arrange
             var existingCategory = _mapper.Map<CategoryDto>(CategorySeeds.CategoryFood);
+            var queryObject = new CategoryQueryObject().WithId(existingCategory.Id);
+            var updatedCategory = new CategoryDto
+            {
+                Id = existingCategory.Id,
+                Name = existingCategory.Name,
+                Description = null,
+                Color = existingCategory.Color,
+                Icon = existingCategory.Icon
+            };
 
             // Act
-            existingCategory.Description = null;
-            await _unitOfWork.Repository<CategoryEntity, CategoryDto>().UpdateAsync(existingCategory);
+            await _unitOfWork.CategoryRepository.UpdateAsync(updatedCategory);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var persistedCategory = await _unitOfWork.Repository<CategoryEntity, CategoryDto>().GetByIdAsync(existingCategory.Id);
+            var persistedCategory = await _unitOfWork.CategoryRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(persistedCategory);
             Assert.Null(persistedCategory.Description);
         }
@@ -273,15 +287,23 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         {
             // Arrange
             var existingCategory = _mapper.Map<CategoryDto>(CategorySeeds.CategoryFood);
+            var queryObject = new CategoryQueryObject().WithId(existingCategory.Id);
+            var newName = "Updated Food Category";
+            var updatedCategory = new CategoryDto
+            {
+                Id = existingCategory.Id,
+                Name = newName,
+                Description = existingCategory.Description,
+                Color = existingCategory.Color,
+                Icon = existingCategory.Icon
+            };
 
             // Act
-            var newName = "Updated Food Category";
-            existingCategory.Name = newName;
-            await _unitOfWork.Repository<CategoryEntity, CategoryDto>().UpdateAsync(existingCategory);
+            await _unitOfWork.CategoryRepository.UpdateAsync(updatedCategory);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var persistedCategory = await _unitOfWork.Repository<CategoryEntity, CategoryDto>().GetByIdAsync(existingCategory.Id);
+            var persistedCategory = await _unitOfWork.CategoryRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(persistedCategory);
             Assert.Equal(newName, persistedCategory.Name);
         }
@@ -302,12 +324,12 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             var categoryId = categoryToDelete.Id;
 
             // Act
-            await _unitOfWork.Repository<CategoryEntity, CategoryDto>().DeleteAsync(categoryId);
+            await _unitOfWork.CategoryRepository.DeleteAsync(categoryId);
             await _unitOfWork.SaveChangesAsync();
 
             var queryObject = new TransactionQueryObject();
-            var transactionsAfterDelete = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.WithoutCategory());
+            var transactionsAfterDelete = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.WithoutCategory());
 
             // Assert
             foreach (var transaction in categoryToDelete.Transactions)
@@ -349,13 +371,13 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             try
             {
                 // Act
-                await _unitOfWork.Repository<CategoryEntity, CategoryDto>().InsertAsync(newCategory);
+                await _unitOfWork.CategoryRepository.InsertAsync(newCategory);
                 await _unitOfWork.SaveChangesAsync();
 
-                await _unitOfWork.Repository<CategoryEntity, CategoryDto>().UpdateAsync(updatedCategory);
+                await _unitOfWork.CategoryRepository.UpdateAsync(updatedCategory);
                 await _unitOfWork.SaveChangesAsync();
 
-                await _unitOfWork.Repository<CategoryEntity, CategoryDto>().DeleteAsync(newCategory.Id);
+                await _unitOfWork.CategoryRepository.DeleteAsync(newCategory.Id);
                 await _unitOfWork.SaveChangesAsync();
             }
             catch
@@ -364,7 +386,8 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             }
 
             // Assert
-            var deletedCategory = await _unitOfWork.Repository<CategoryEntity, CategoryDto>().GetByIdAsync(newCategory.Id);
+            var queryObject = new CategoryQueryObject().WithId(newCategory.Id);
+            var deletedCategory = await _unitOfWork.CategoryRepository.SingleOrDefaultAsync(queryObject);
             Assert.Null(deletedCategory);
         }
 

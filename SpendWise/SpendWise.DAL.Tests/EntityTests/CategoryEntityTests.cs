@@ -10,6 +10,7 @@ namespace SpendWise.DAL.Tests.EntityTests
     /// <summary>
     /// Contains tests for the <see cref="CategoryEntity"/> entity.
     /// </summary>
+    /// 
     public class CategoryEntityTests : DbContextTestsBase
     {
         /// <summary>
@@ -56,7 +57,8 @@ namespace SpendWise.DAL.Tests.EntityTests
                 Name = "Entertainment",
                 Description = "Movies, concerts, and other leisure activities",
                 Color = "#00ff00",
-                Icon = Array.Empty<byte>()
+                Icon = Array.Empty<byte>(),
+                Transactions = new List<TransactionEntity>()
             };
 
             // Act
@@ -87,7 +89,8 @@ namespace SpendWise.DAL.Tests.EntityTests
                 Name = existingCategory.Name + " Updated",
                 Description = existingCategory.Description + " Updated",
                 Color = "#00ff01",
-                Icon = existingCategory.Icon
+                Icon = existingCategory.Icon,
+                Transactions = existingCategory.Transactions
             };
 
             // Act
@@ -149,7 +152,8 @@ namespace SpendWise.DAL.Tests.EntityTests
                 Name = "Valid Name",
                 Description = "Valid Description",
                 Color = "#00ff0000", // Invalid Color
-                Icon = Array.Empty<byte>()
+                Icon = Array.Empty<byte>(),
+                Transactions = new List<TransactionEntity>()
             };
 
             // Act & Assert
@@ -224,7 +228,8 @@ namespace SpendWise.DAL.Tests.EntityTests
                 Name = new string('A', 100),
                 Description = new string('B', 200),
                 Color = "#123456",
-                Icon = Array.Empty<byte>()
+                Icon = Array.Empty<byte>(),
+                Transactions = new List<TransactionEntity>()
             };
 
             // Act
@@ -255,7 +260,8 @@ namespace SpendWise.DAL.Tests.EntityTests
                 Name = $"Category{i}",
                 Description = $"Description{i}",
                 Color = $"#ff000{i}",
-                Icon = Array.Empty<byte>()
+                Icon = Array.Empty<byte>(),
+                Transactions = new List<TransactionEntity>()
             }).ToList();
 
             // Act

@@ -42,42 +42,46 @@ namespace SpendWise.DAL.Repositories
         /// </summary>
         /// <param name="queryObject">Optional query object for additional filtering.</param>
         /// <returns>A task representing the asynchronous operation, containing a list of DTOs.</returns>
-        public async Task<List<TDto>> GetAsync(IQueryObject<TEntity>? queryObject = null)
+        public async Task<List<TDto>> ListAsync(IQueryObject<TEntity>? queryObject = null)
         {
-            try
-            {
-                IQueryable<TEntity> query = _dbSet;
-
-                if (queryObject != null)
-                {
-                    var expression = queryObject.ToExpression();
-                    query = query.Where(expression);
-                }
-
-                return await query.Select(entity => _mapper.Map<TDto>(entity)).ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred while retrieving entities.", ex);
-            }
+            var entities = await ExecuteQueryAsync(queryObject).ToListAsync();
+            return entities.Select(entity => _mapper.Map<TDto>(entity)).ToList();
         }
 
         /// <summary>
-        /// Retrieves an entity by its unique identifier and returns it as a DTO.
+        /// Retrieves a single entity from the database as a DTO asynchronously.
         /// </summary>
-        /// <param name="id">The unique identifier of the entity to retrieve.</param>
+        /// <param name="queryObject">Optional query object for additional filtering.</param>
         /// <returns>A task representing the asynchronous operation, containing the DTO of the found entity.</returns>
-        public async Task<TDto?> GetByIdAsync(Guid id)
+        public async Task<TDto?> SingleOrDefaultAsync(IQueryObject<TEntity>? queryObject)
         {
-            try
+            var entity = await ExecuteQueryAsync(queryObject).SingleOrDefaultAsync();
+            return entity == null ? null : _mapper.Map<TDto>(entity);
+        }
+
+        /// <summary>
+        /// Executes the query with optional filtering and includes.
+        /// </summary>
+        /// <param name="queryObject">Optional query object for additional filtering and includes.</param>
+        /// <returns>An IQueryable of TEntity.</returns>
+        private IQueryable<TEntity> ExecuteQueryAsync(IQueryObject<TEntity>? queryObject)
+        {
+            IQueryable<TEntity> query = _dbSet;
+
+            if (queryObject != null)
             {
-                var entity = await _dbSet.FindAsync(id).ConfigureAwait(false);
-                return entity == null ? null : _mapper.Map<TDto>(entity);
+                // Apply the filter expression from the query object
+                var expression = queryObject.ToExpression();
+                query = query.Where(expression);
+
+                // Include related entities specified in the query object
+                foreach (var include in queryObject.Includes)
+                {
+                    query = query.Include(include);
+                }
             }
-            catch (Exception ex)
-            {
-                throw new Exception($"An error occurred while retrieving the entity with ID {id}.", ex);
-            }
+
+            return query;
         }
 
         /// <summary>

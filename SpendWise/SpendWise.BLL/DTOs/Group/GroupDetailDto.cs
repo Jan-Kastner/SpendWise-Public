@@ -1,9 +1,11 @@
+using SpendWise.BLL.DTOs.Interfaces;
+
 namespace SpendWise.BLL.DTOs
 {
     /// <summary>
     /// Represents detailed information about a group.
     /// </summary>
-    public record GroupDetailDto
+    public record GroupDetailDto : IQueryableDto, IGroupUsersDto<GroupUserListDto>
     {
         /// <summary>
         /// Gets or sets the unique identifier of the group.
@@ -24,10 +26,5 @@ namespace SpendWise.BLL.DTOs
         /// Gets or sets the list of users associated with the group.
         /// </summary>
         public IEnumerable<GroupUserListDto> GroupUsers { get; set; } = new List<GroupUserListDto>();
-
-        /// <summary>
-        /// Gets or sets the list of invitations associated with the group.
-        /// </summary>
-        public IEnumerable<InvitationListDto> Invitations { get; set; } = new List<InvitationListDto>();
     }
 }

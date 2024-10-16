@@ -10,12 +10,12 @@ namespace SpendWise.DAL.DTOs
         /// <summary>
         /// Gets or sets the unique identifier for the group-user relationship.
         /// </summary>
-        public required Guid Id { get; set; }
+        public required Guid Id { get; init; }
 
         /// <summary>
         /// Gets or sets the user's role within the application (e.g., Admin, User).
         /// </summary>
-        public required UserRole Role { get; set; }
+        public required UserRole Role { get; init; }
 
         /// <summary>
         /// Gets or sets the unique identifier for the user.
@@ -30,6 +30,26 @@ namespace SpendWise.DAL.DTOs
         /// <summary>
         /// Gets or sets the unique identifier for the associated limit, if any.
         /// </summary>
-        public Guid? LimitId { get; set; }
+        public required Guid? LimitId { get; init; } = null;
+
+        /// <summary>
+        /// Gets or sets the user entity associated with this group-user relationship.
+        /// </summary>
+        public UserDto? User { get; init; } = null;
+
+        /// <summary>
+        /// Gets or sets the group entity associated with this group-user relationship.
+        /// </summary>
+        public GroupDto? Group { get; init; } = null;
+
+        /// <summary>
+        /// Gets or sets the limit entity associated with this group-user relationship. Can be null.
+        /// </summary>
+        public LimitDto? Limit { get; init; } = null;
+
+        /// <summary>
+        /// Gets the collection of transaction group-user relationships associated with this group-user relationship.
+        /// </summary>
+        public ICollection<TransactionGroupUserDto> TransactionGroupUsers { get; init; } = new List<TransactionGroupUserDto>();
     }
 }

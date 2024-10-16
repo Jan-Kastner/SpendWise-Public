@@ -1,11 +1,13 @@
-using SpendWise.DAL.QueryObjects.Interfaces.QueryPropertyInterfaces;
-using System.Linq.Expressions;
 using SpendWise.DAL.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace SpendWise.DAL.QueryObjects
 {
     /// <summary>
     /// Represents a query object for filtering entities of type <typeparamref name="TEntity"/>.
+    /// Provides methods for combining queries and managing include properties.
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity that implements the <see cref="IEntity"/> interface.</typeparam>
     public interface IQueryObject<TEntity> where TEntity : class, IEntity
@@ -57,5 +59,16 @@ namespace SpendWise.DAL.QueryObjects
         /// <param name="queryObject">The query object to negate.</param>
         /// <returns>An expression that represents the negated query.</returns>
         Expression<Func<TEntity, bool>> Not(IQueryObject<TEntity> queryObject);
+
+        /// <summary>
+        /// Gets the list of include properties for the query.
+        /// </summary>
+        List<string> Includes { get; }
+
+        /// <summary>
+        /// Gets the collection of include directives used by the RelationConfigGenerator
+        /// to generate EntityRelationsConfiguration, which acts as a state machine for managing includes.
+        /// </summary>
+        ICollection<Func<TEntity, object>> IncludeDirectives { get; }
     }
 }

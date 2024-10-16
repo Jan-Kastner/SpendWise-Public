@@ -2,6 +2,8 @@ using System;
 using SpendWise.Common.Enums;
 using SpendWise.DAL.Entities;
 using SpendWise.DAL.QueryObjects;
+using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.GroupUserEntity.Interfaces;
+using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.GroupUserEntity;
 
 namespace SpendWise.DAL.QueryObjects
 {
@@ -9,8 +11,16 @@ namespace SpendWise.DAL.QueryObjects
     /// Represents a query object for the <see cref="LimitEntity"/>.
     /// Enables query construction using methods for AND, OR, and NOT operations.
     /// </summary>
-    public class LimitQueryObject : BaseQueryObject<LimitEntity, LimitQueryObject>, ILimitQueryObject<LimitQueryObject>
+    public class LimitQueryObject : BaseQueryObject<LimitEntity, LimitQueryObject>, ILimitQueryObject
     {
+        /// <summary>
+        /// Gets the collection of include directives used by the RelationConfigGenerator
+        /// to generate EntityRelationsConfiguration, which acts as a state machine for managing includes.
+        /// </summary>
+        public override ICollection<Func<LimitEntity, object>> IncludeDirectives { get; } = new List<Func<LimitEntity, object>>
+        {
+        };
+
         #region IIdQuery
 
         /// <summary>

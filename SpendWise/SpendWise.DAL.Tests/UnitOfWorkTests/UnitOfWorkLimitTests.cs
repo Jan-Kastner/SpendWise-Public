@@ -5,6 +5,7 @@ using SpendWise.Common.Tests.Seeds;
 using SpendWise.Common.Tests.Helpers;
 using SpendWise.DAL.Entities;
 using SpendWise.Common.Enums;
+using SpendWise.DAL.QueryObjects;
 
 namespace SpendWise.DAL.Tests.UnitOfWorkTests
 {
@@ -40,11 +41,12 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             };
 
             // Act
-            await _unitOfWork.Repository<LimitEntity, LimitDto>().InsertAsync(limitToAdd);
+            await _unitOfWork.LimitRepository.InsertAsync(limitToAdd);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var actualLimit = await _unitOfWork.Repository<LimitEntity, LimitDto>().GetByIdAsync(limitToAdd.Id);
+            var queryObject = new LimitQueryObject().WithId(limitToAdd.Id);
+            var actualLimit = await _unitOfWork.LimitRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualLimit);
             DeepAssert.Equal(limitToAdd, actualLimit);
         }
@@ -58,9 +60,10 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         {
             // Arrange
             var expectedLimit = _mapper.Map<LimitDto>(LimitSeeds.LimitCharlieFamily);
+            var queryObject = new LimitQueryObject().WithId(expectedLimit.Id);
 
             // Act
-            var actualLimit = await _unitOfWork.Repository<LimitEntity, LimitDto>().GetByIdAsync(expectedLimit.Id);
+            var actualLimit = await _unitOfWork.LimitRepository.SingleOrDefaultAsync(queryObject);
 
             // Assert
             Assert.NotNull(actualLimit);
@@ -83,11 +86,12 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             };
 
             // Act
-            await _unitOfWork.Repository<LimitEntity, LimitDto>().UpdateAsync(updatedLimit);
+            await _unitOfWork.LimitRepository.UpdateAsync(updatedLimit);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var actualLimit = await _unitOfWork.Repository<LimitEntity, LimitDto>().GetByIdAsync(updatedLimit.Id);
+            var queryObject = new LimitQueryObject().WithId(updatedLimit.Id);
+            var actualLimit = await _unitOfWork.LimitRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualLimit);
             DeepAssert.Equal(updatedLimit, actualLimit);
         }
@@ -103,11 +107,12 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             var limitToDelete = _mapper.Map<LimitDto>(LimitSeeds.LimitCharlieFamily);
 
             // Act
-            await _unitOfWork.Repository<LimitEntity, LimitDto>().DeleteAsync(limitToDelete.Id);
+            await _unitOfWork.LimitRepository.DeleteAsync(limitToDelete.Id);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var deletedLimit = await _unitOfWork.Repository<LimitEntity, LimitDto>().GetByIdAsync(limitToDelete.Id);
+            var queryObject = new LimitQueryObject().WithId(limitToDelete.Id);
+            var deletedLimit = await _unitOfWork.LimitRepository.SingleOrDefaultAsync(queryObject);
             Assert.Null(deletedLimit);
         }
 
@@ -134,7 +139,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _unitOfWork.Repository<LimitEntity, LimitDto>().InsertAsync(invalidLimit);
+                await _unitOfWork.LimitRepository.InsertAsync(invalidLimit);
                 await _unitOfWork.SaveChangesAsync();
             });
         }
@@ -158,7 +163,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _unitOfWork.Repository<LimitEntity, LimitDto>().UpdateAsync(nonExistentLimit);
+                await _unitOfWork.LimitRepository.UpdateAsync(nonExistentLimit);
                 await _unitOfWork.SaveChangesAsync();
             });
         }
@@ -176,7 +181,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _unitOfWork.Repository<LimitEntity, LimitDto>().DeleteAsync(nonExistentLimitId);
+                await _unitOfWork.LimitRepository.DeleteAsync(nonExistentLimitId);
                 await _unitOfWork.SaveChangesAsync();
             });
         }
@@ -200,11 +205,12 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             };
 
             // Act
-            await _unitOfWork.Repository<LimitEntity, LimitDto>().UpdateAsync(updatedLimit);
+            await _unitOfWork.LimitRepository.UpdateAsync(updatedLimit);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var actualLimit = await _unitOfWork.Repository<LimitEntity, LimitDto>().GetByIdAsync(updatedLimit.Id);
+            var queryObject = new LimitQueryObject().WithId(updatedLimit.Id);
+            var actualLimit = await _unitOfWork.LimitRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualLimit);
             Assert.Equal(updatedLimit.Amount, actualLimit.Amount);
         }
@@ -225,11 +231,12 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             };
 
             // Act
-            await _unitOfWork.Repository<LimitEntity, LimitDto>().UpdateAsync(updatedLimit);
+            await _unitOfWork.LimitRepository.UpdateAsync(updatedLimit);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var actualLimit = await _unitOfWork.Repository<LimitEntity, LimitDto>().GetByIdAsync(existingLimit.Id);
+            var queryObject = new LimitQueryObject().WithId(updatedLimit.Id);
+            var actualLimit = await _unitOfWork.LimitRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualLimit);
             Assert.Equal(existingLimit.GroupUserId, actualLimit.GroupUserId); // GroupUserId should remain unchanged
         }
@@ -249,11 +256,12 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             var limitToDelete = LimitSeeds.LimitCharlieFamily;
 
             // Act
-            await _unitOfWork.Repository<LimitEntity, LimitDto>().DeleteAsync(limitToDelete.Id);
+            await _unitOfWork.LimitRepository.DeleteAsync(limitToDelete.Id);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var groupUser = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>().GetByIdAsync(limitToDelete.GroupUserId);
+            var queryObject = new GroupUserQueryObject().WithId(limitToDelete.GroupUserId);
+            var groupUser = await _unitOfWork.GroupUserRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(groupUser);
             Assert.Equal(limitToDelete.GroupUserId, groupUser.Id);
         }
@@ -290,15 +298,15 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             {
                 // Act
                 // Insert
-                await _unitOfWork.Repository<LimitEntity, LimitDto>().InsertAsync(newLimitDto);
+                await _unitOfWork.LimitRepository.InsertAsync(newLimitDto);
                 await _unitOfWork.SaveChangesAsync();
 
                 // Update
-                await _unitOfWork.Repository<LimitEntity, LimitDto>().UpdateAsync(updatedLimitDto);
+                await _unitOfWork.LimitRepository.UpdateAsync(updatedLimitDto);
                 await _unitOfWork.SaveChangesAsync();
 
                 // Delete
-                await _unitOfWork.Repository<LimitEntity, LimitDto>().DeleteAsync(newLimitDto.Id);
+                await _unitOfWork.LimitRepository.DeleteAsync(newLimitDto.Id);
                 await _unitOfWork.SaveChangesAsync();
             }
             catch
@@ -307,7 +315,8 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             }
 
             // Assert
-            var deletedLimit = await _unitOfWork.Repository<LimitEntity, LimitDto>().GetByIdAsync(newLimitDto.Id);
+            var queryObject = new LimitQueryObject().WithId(newLimitDto.Id);
+            var deletedLimit = await _unitOfWork.LimitRepository.SingleOrDefaultAsync(queryObject);
             Assert.Null(deletedLimit);
         }
 

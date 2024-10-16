@@ -6,8 +6,7 @@ namespace SpendWise.DAL.QueryObjects
     /// Represents a query object interface for invitations.
     /// Provides methods for querying invitations by various properties.
     /// </summary>
-    /// <typeparam name="T">The type of the query object.</typeparam>
-    public interface IInvitationQueryObject<T> : IIdQuery<T>, ISentDateQuery<T>, IResponseDateQuery<T>, IIsAcceptedQuery<T>, ISenderQuery<T>, IReceiverQuery<T>, IGroupQuery<T>
+    public interface IInvitationQueryObject : IQueryObject, IIdQuery<InvitationQueryObject>, ISentDateQuery<InvitationQueryObject>, IResponseDateQuery<InvitationQueryObject>, IIsAcceptedQuery<InvitationQueryObject>, ISenderQuery<InvitationQueryObject>, IReceiverQuery<InvitationQueryObject>, IGroupQuery<InvitationQueryObject>
     {
     }
 }

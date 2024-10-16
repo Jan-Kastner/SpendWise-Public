@@ -2,6 +2,8 @@ using System;
 using System.Linq.Expressions;
 using SpendWise.Common.Enums;
 using SpendWise.DAL.Entities;
+using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.TransactionEntity;
+using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.TransactionEntity.Interfaces;
 
 namespace SpendWise.DAL.QueryObjects
 {
@@ -9,8 +11,33 @@ namespace SpendWise.DAL.QueryObjects
     /// Represents a query object for the <see cref="TransactionEntity"/>.
     /// Enables query construction using methods for AND, OR, and NOT operations.
     /// </summary>
-    public class TransactionQueryObject : BaseQueryObject<TransactionEntity, TransactionQueryObject>, ITransactionQueryObject<TransactionQueryObject>
+    public class TransactionQueryObject : BaseQueryObject<TransactionEntity, TransactionQueryObject>, ITransactionQueryObject
     {
+        private TransactionEntityRelationsConfig _relations = new TransactionEntityRelationsConfig();
+
+        /// <summary>
+        /// Gets the initial state for transaction relations.
+        /// </summary>
+        public ITransactionEntityInitialState Relations => _relations;
+
+        /// <summary>
+        /// Gets the list of include properties for the query.
+        /// </summary>
+        public override List<string> Includes => _relations.Includes;
+
+        /// <summary>
+        /// Gets the collection of include directives used by the RelationConfigGenerator
+        /// to generate EntityRelationsConfiguration, which acts as a state machine for managing includes.
+        /// </summary>
+        public override ICollection<Func<TransactionEntity, object>> IncludeDirectives { get; } = new List<Func<TransactionEntity, object>>
+        {
+            entity => entity.Category!,
+            entity => entity.TransactionGroupUsers,
+            entity => entity.TransactionGroupUsers.Select(tgu => tgu.GroupUser),
+            entity => entity.TransactionGroupUsers.Select(tgu => tgu.GroupUser.User),
+
+        };
+
         #region IIdQuery
 
         /// <summary>
@@ -182,7 +209,7 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="categoryId">The category ID to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public TransactionQueryObject WithCategory(Guid? categoryId)
+        public TransactionQueryObject WithCategory(Guid categoryId)
         {
             And(entity => entity.CategoryId != null && entity.CategoryId == categoryId);
             return this;
@@ -193,7 +220,7 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="categoryId">The category ID to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public TransactionQueryObject OrWithCategory(Guid? categoryId)
+        public TransactionQueryObject OrWithCategory(Guid categoryId)
         {
             Or(entity => entity.CategoryId != null && entity.CategoryId == categoryId);
             return this;
@@ -204,7 +231,7 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="categoryId">The category ID to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public TransactionQueryObject NotWithCategory(Guid? categoryId)
+        public TransactionQueryObject NotWithCategory(Guid categoryId)
         {
             Not(entity => entity.CategoryId != null && entity.CategoryId == categoryId);
             return this;

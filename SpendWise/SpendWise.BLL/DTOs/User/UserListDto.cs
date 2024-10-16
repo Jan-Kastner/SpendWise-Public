@@ -1,9 +1,11 @@
+using SpendWise.BLL.DTOs.Interfaces;
+
 namespace SpendWise.BLL.DTOs
 {
     /// <summary>
     /// Represents a summary of a user for listing purposes.
     /// </summary>
-    public record UserListDto
+    public record UserListDto : IQueryableDto
     {
         /// <summary>
         /// Gets or sets the unique identifier of the user.

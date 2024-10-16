@@ -8,6 +8,6 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the two-factor authentication secret of the entity.
         /// </summary>
-        string? TwoFactorSecret { get; set; }
+        string? TwoFactorSecret { get; init; }
     }
 }

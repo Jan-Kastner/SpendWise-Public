@@ -12,20 +12,20 @@ namespace SpendWise.DAL.QueryObjects.Interfaces.QueryPropertyInterfaces
         /// </summary>
         /// <param name="limitId">The limit ID to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        TReturn WithLimit(Guid? limitId);
+        TReturn WithLimit(Guid limitId);
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified limit ID.
         /// </summary>
         /// <param name="limitId">The limit ID to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        TReturn OrWithLimit(Guid? limitId);
+        TReturn OrWithLimit(Guid limitId);
 
         /// <summary>
         /// Filters the query to exclude items with the specified limit ID.
         /// </summary>
         /// <param name="limitId">The limit ID to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        TReturn NotWithLimit(Guid? limitId);
+        TReturn NotWithLimit(Guid limitId);
     }
 }

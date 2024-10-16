@@ -8,6 +8,6 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the reset password token expiry date of the entity.
         /// </summary>
-        DateTime? ResetPasswordTokenExpiry { get; set; }
+        DateTime? ResetPasswordTokenExpiry { get; init; }
     }
 }

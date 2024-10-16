@@ -21,7 +21,8 @@ namespace SpendWise.Common.Tests.Seeds
             Description = "Dinner at restaurant",
             Type = TransactionType.Expense,
             CategoryId = null,
-            Category = null
+            Category = null,
+            TransactionGroupUsers = new List<TransactionGroupUserEntity>()
         };
 
         /// <summary>
@@ -35,7 +36,8 @@ namespace SpendWise.Common.Tests.Seeds
             Description = "Groceries",
             Type = TransactionType.Expense,
             CategoryId = CategorySeeds.CategoryFood.Id,
-            Category = CategorySeeds.CategoryFood
+            Category = CategorySeeds.CategoryFood,
+            TransactionGroupUsers = new List<TransactionGroupUserEntity>()
         };
 
         /// <summary>
@@ -49,7 +51,8 @@ namespace SpendWise.Common.Tests.Seeds
             Description = "Taxi ride home",
             Type = TransactionType.Expense,
             CategoryId = CategorySeeds.CategoryTransport.Id,
-            Category = CategorySeeds.CategoryTransport
+            Category = CategorySeeds.CategoryTransport,
+            TransactionGroupUsers = new List<TransactionGroupUserEntity>()
         };
 
         /// <summary>
@@ -63,7 +66,8 @@ namespace SpendWise.Common.Tests.Seeds
             Description = "Public Transport",
             Type = TransactionType.Expense,
             CategoryId = CategorySeeds.CategoryTransport.Id,
-            Category = CategorySeeds.CategoryTransport
+            Category = CategorySeeds.CategoryTransport,
+            TransactionGroupUsers = new List<TransactionGroupUserEntity>()
         };
 
         /// <summary>
@@ -75,22 +79,26 @@ namespace SpendWise.Common.Tests.Seeds
             modelBuilder.Entity<TransactionEntity>().HasData(
                 TransactionDianaDinner with
                 {
-                    Category = null
+                    Category = null,
+                    TransactionGroupUsers = Array.Empty<TransactionGroupUserEntity>()
                 },
 
                 TransactionJohnFood with
                 {
-                    Category = null
+                    Category = null,
+                    TransactionGroupUsers = Array.Empty<TransactionGroupUserEntity>()
                 },
 
                 TransactionJohnTaxi with
                 {
-                    Category = null
+                    Category = null,
+                    TransactionGroupUsers = Array.Empty<TransactionGroupUserEntity>()
                 },
 
                 TransactionJohnTransport with
                 {
-                    Category = null
+                    Category = null,
+                    TransactionGroupUsers = Array.Empty<TransactionGroupUserEntity>()
                 }
             );
         }

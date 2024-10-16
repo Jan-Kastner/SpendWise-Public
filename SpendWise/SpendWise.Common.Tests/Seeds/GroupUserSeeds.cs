@@ -20,7 +20,10 @@ namespace SpendWise.Common.Tests.Seeds
             UserId = UserSeeds.UserBobBrown.Id,
             GroupId = GroupSeeds.GroupFamily.Id,
             User = UserSeeds.UserBobBrown, // Set User directly
-            Group = GroupSeeds.GroupFamily // Set Group directly
+            Group = GroupSeeds.GroupFamily, // Set Group directly
+            LimitId = null,
+            Limit = null,
+            TransactionGroupUsers = new List<TransactionGroupUserEntity>()
         };
 
         /// <summary>
@@ -28,12 +31,15 @@ namespace SpendWise.Common.Tests.Seeds
         /// </summary>
         public static GroupUserEntity GroupUserCharlieInFamily = new()
         {
-            Id = Guid.NewGuid(),
+            Id = LimitSeeds.GroupUserCharlieInFamilyId,
             Role = UserRole.GroupCoordinator,
             UserId = UserSeeds.UserCharlieBlack.Id,
             GroupId = GroupSeeds.GroupFamily.Id,
             User = UserSeeds.UserCharlieBlack, // Set User directly
-            Group = GroupSeeds.GroupFamily // Set Group directly
+            Group = GroupSeeds.GroupFamily, // Set Group directly
+            LimitId = LimitSeeds.LimitCharlieFamily.Id,
+            Limit = LimitSeeds.LimitCharlieFamily,
+            TransactionGroupUsers = new List<TransactionGroupUserEntity>()
         };
 
         /// <summary>
@@ -41,12 +47,15 @@ namespace SpendWise.Common.Tests.Seeds
         /// </summary>
         public static GroupUserEntity GroupUserDianaInFamily = new()
         {
-            Id = Guid.NewGuid(),
+            Id = LimitSeeds.GroupUserDianaInFamilyId,
             Role = UserRole.GroupParticipant,
             UserId = UserSeeds.UserDianaGreen.Id,
             GroupId = GroupSeeds.GroupFamily.Id,
             User = UserSeeds.UserDianaGreen, // Set User directly
-            Group = GroupSeeds.GroupFamily // Set Group directly
+            Group = GroupSeeds.GroupFamily, // Set Group directly
+            LimitId = LimitSeeds.LimitDianaFamily.Id,
+            Limit = LimitSeeds.LimitDianaFamily,
+            TransactionGroupUsers = new List<TransactionGroupUserEntity>()
         };
 
         /// <summary>
@@ -59,7 +68,10 @@ namespace SpendWise.Common.Tests.Seeds
             UserId = UserSeeds.UserJohnDoe.Id,
             GroupId = GroupSeeds.GroupFamily.Id,
             User = UserSeeds.UserJohnDoe, // Set User directly
-            Group = GroupSeeds.GroupFamily // Set Group directly
+            Group = GroupSeeds.GroupFamily, // Set Group directly
+            LimitId = null,
+            Limit = null,
+            TransactionGroupUsers = new List<TransactionGroupUserEntity>()
         };
 
         /// <summary>
@@ -72,7 +84,10 @@ namespace SpendWise.Common.Tests.Seeds
             UserId = UserSeeds.UserJohnDoe.Id,
             GroupId = GroupSeeds.GroupFriends.Id,
             User = UserSeeds.UserJohnDoe, // Set User directly
-            Group = GroupSeeds.GroupFriends // Set Group directly
+            Group = GroupSeeds.GroupFriends, // Set Group directly
+            LimitId = null,
+            Limit = null,
+            TransactionGroupUsers = new List<TransactionGroupUserEntity>()
         };
 
         /// <summary>
@@ -80,12 +95,15 @@ namespace SpendWise.Common.Tests.Seeds
         /// </summary>
         public static GroupUserEntity GroupUserJohnInWork = new()
         {
-            Id = Guid.NewGuid(),
+            Id = LimitSeeds.GroupUserJohnInWorkId,
             Role = UserRole.GroupFounder,
             UserId = UserSeeds.UserJohnDoe.Id,
             GroupId = GroupSeeds.GroupWork.Id,
             User = UserSeeds.UserJohnDoe, // Set User directly
-            Group = GroupSeeds.GroupWork // Set Group directly
+            Group = GroupSeeds.GroupWork, // Set Group directly
+            LimitId = LimitSeeds.LimitJohnWork.Id,
+            Limit = LimitSeeds.LimitJohnWork,
+            TransactionGroupUsers = new List<TransactionGroupUserEntity>()
         };
 
         /// <summary>
@@ -101,14 +119,6 @@ namespace SpendWise.Common.Tests.Seeds
                 GroupUserJohnInFriends.TransactionGroupUsers.Add(TransactionGroupUserSeeds.TransactionGroupUserTaxiFriendsJohn);
                 GroupUserJohnInFriends.TransactionGroupUsers.Add(TransactionGroupUserSeeds.TransactionGroupUserTransportFriendsJohn);
                 GroupUserJohnInWork.TransactionGroupUsers.Add(TransactionGroupUserSeeds.TransactionGroupUserTransportWorkJohn);
-
-                GroupUserCharlieInFamily.LimitId = LimitSeeds.LimitCharlieFamily.Id;
-                GroupUserDianaInFamily.LimitId = LimitSeeds.LimitDianaFamily.Id;
-                GroupUserJohnInWork.LimitId = LimitSeeds.LimitJohnWork.Id;
-
-                GroupUserCharlieInFamily.Limit = LimitSeeds.LimitCharlieFamily;
-                GroupUserDianaInFamily.Limit = LimitSeeds.LimitDianaFamily;
-                GroupUserJohnInWork.Limit = LimitSeeds.LimitJohnWork;
 
                 _relationsInitialized = true;
             }

@@ -8,6 +8,6 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets a value indicating whether the email is confirmed.
         /// </summary>
-        bool IsEmailConfirmed { get; set; }
+        bool IsEmailConfirmed { get; init; }
     }
 }

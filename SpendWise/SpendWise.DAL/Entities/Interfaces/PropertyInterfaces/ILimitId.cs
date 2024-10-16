@@ -8,6 +8,6 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the limit ID of the entity.
         /// </summary>
-        Guid? LimitId { get; set; }
+        Guid? LimitId { get; init; }
     }
 }

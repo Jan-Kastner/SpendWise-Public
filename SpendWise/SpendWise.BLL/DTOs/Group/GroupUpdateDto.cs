@@ -1,9 +1,11 @@
+using SpendWise.BLL.DTOs.Interfaces;
+
 namespace SpendWise.BLL.DTOs
 {
     /// <summary>
     /// Represents a data transfer object (DTO) for updating a group.
     /// </summary>
-    public record GroupUpdateDto
+    public record GroupUpdateDto : IUpdatableDto
     {
         /// <summary>
         /// Gets or sets the unique identifier for the group.

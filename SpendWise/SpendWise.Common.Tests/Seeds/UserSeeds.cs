@@ -31,7 +31,12 @@ namespace SpendWise.Common.Tests.Seeds
             ResetPasswordTokenExpiry = new DateTime(2024, 6, 15, 12, 0, 0, DateTimeKind.Utc),
             IsTwoFactorEnabled = true,
             TwoFactorSecret = "ABC123XYZ",
-            PreferredTheme = Theme.SystemDefault
+            PreferredTheme = Theme.SystemDefault,
+            ReinitPasswordToken = null,
+            ReinitPasswordTokenExpiry = null,
+            SentInvitations = new List<InvitationEntity>(),
+            GroupUsers = new List<GroupUserEntity>(),
+            ReceivedInvitations = new List<InvitationEntity>()
         };
 
         /// <summary>
@@ -52,7 +57,12 @@ namespace SpendWise.Common.Tests.Seeds
             ResetPasswordTokenExpiry = null,
             IsTwoFactorEnabled = false,
             TwoFactorSecret = null,
-            PreferredTheme = Theme.Light
+            PreferredTheme = Theme.Light,
+            ReinitPasswordToken = null,
+            ReinitPasswordTokenExpiry = null,
+            SentInvitations = new List<InvitationEntity>(),
+            GroupUsers = new List<GroupUserEntity>(),
+            ReceivedInvitations = new List<InvitationEntity>()
         };
 
         /// <summary>
@@ -73,7 +83,12 @@ namespace SpendWise.Common.Tests.Seeds
             ResetPasswordTokenExpiry = null,
             IsTwoFactorEnabled = false,
             TwoFactorSecret = null,
-            PreferredTheme = Theme.SystemDefault
+            PreferredTheme = Theme.SystemDefault,
+            ReinitPasswordToken = null,
+            ReinitPasswordTokenExpiry = null,
+            SentInvitations = new List<InvitationEntity>(),
+            GroupUsers = new List<GroupUserEntity>(),
+            ReceivedInvitations = new List<InvitationEntity>()
         };
 
         /// <summary>
@@ -94,7 +109,12 @@ namespace SpendWise.Common.Tests.Seeds
             ResetPasswordTokenExpiry = null,
             IsTwoFactorEnabled = false,
             TwoFactorSecret = null,
-            PreferredTheme = Theme.SystemDefault
+            PreferredTheme = Theme.SystemDefault,
+            ReinitPasswordToken = null,
+            ReinitPasswordTokenExpiry = null,
+            SentInvitations = new List<InvitationEntity>(),
+            GroupUsers = new List<GroupUserEntity>(),
+            ReceivedInvitations = new List<InvitationEntity>()
         };
 
         /// <summary>
@@ -115,7 +135,12 @@ namespace SpendWise.Common.Tests.Seeds
             ResetPasswordTokenExpiry = null,
             IsTwoFactorEnabled = false,
             TwoFactorSecret = null,
-            PreferredTheme = Theme.SystemDefault
+            PreferredTheme = Theme.SystemDefault,
+            ReinitPasswordToken = null,
+            ReinitPasswordTokenExpiry = null,
+            SentInvitations = new List<InvitationEntity>(),
+            GroupUsers = new List<GroupUserEntity>(),
+            ReceivedInvitations = new List<InvitationEntity>()
         };
 
         /// <summary>

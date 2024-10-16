@@ -1,9 +1,11 @@
+using SpendWise.BLL.DTOs.Interfaces;
+
 namespace SpendWise.BLL.DTOs
 {
     /// <summary>
     /// Represents a summary of a transaction group user for listing purposes.
     /// </summary>
-    public record TransactionGroupUserListDto
+    public record TransactionGroupUserListDto : IQueryableDto
     {
         /// <summary>
         /// Gets or sets the unique identifier of the transaction group user.

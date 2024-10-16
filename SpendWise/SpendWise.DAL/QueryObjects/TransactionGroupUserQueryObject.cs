@@ -1,6 +1,8 @@
 using System;
 using SpendWise.DAL.Entities;
 using SpendWise.DAL.QueryObjects.Interfaces.QueryPropertyInterfaces;
+using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.TransactionGroupUserEntity.Interfaces;
+using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.TransactionGroupUserEntity;
 
 namespace SpendWise.DAL.QueryObjects
 {
@@ -8,8 +10,31 @@ namespace SpendWise.DAL.QueryObjects
     /// Represents a query object for the <see cref="TransactionGroupUserEntity"/>.
     /// Enables query construction using methods for AND, OR, and NOT operations.
     /// </summary>
-    public class TransactionGroupUserQueryObject : BaseQueryObject<TransactionGroupUserEntity, TransactionGroupUserQueryObject>, ITransactionGroupUserQueryObject<TransactionGroupUserQueryObject>, IIsReadQuery<TransactionGroupUserQueryObject>
+    public class TransactionGroupUserQueryObject : BaseQueryObject<TransactionGroupUserEntity, TransactionGroupUserQueryObject>, ITransactionGroupUserQueryObject
     {
+        private TransactionGroupUserEntityRelationsConfig _relations = new TransactionGroupUserEntityRelationsConfig();
+
+        /// <summary>
+        /// Gets the initial state for transaction group user relations.
+        /// </summary>
+        public ITransactionGroupUserEntityInitialState Relations => _relations;
+
+        /// <summary>
+        /// Gets the list of include properties for the query.
+        /// </summary>
+        public override List<string> Includes => _relations.Includes;
+
+        /// <summary>
+        /// Gets the collection of include directives used by the RelationConfigGenerator
+        /// to generate EntityRelationsConfiguration, which acts as a state machine for managing includes.
+        /// </summary>
+        public override ICollection<Func<TransactionGroupUserEntity, object>> IncludeDirectives { get; } = new List<Func<TransactionGroupUserEntity, object>>
+        {
+            entity => entity.GroupUser,
+            entity => entity.Transaction,
+            entity => entity.GroupUser.User,
+        };
+
         #region IIdQuery
 
         /// <summary>

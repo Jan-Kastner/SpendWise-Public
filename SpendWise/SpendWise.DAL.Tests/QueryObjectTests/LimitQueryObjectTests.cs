@@ -31,8 +31,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new LimitQueryObject();
 
             // Act
-            var limits = await _unitOfWork.Repository<LimitEntity, LimitDto>()
-                .GetAsync(queryObject.WithId(limitId));
+            var limits = await _unitOfWork.LimitRepository
+                .ListAsync(queryObject.WithId(limitId));
 
             // Assert
             Assert.NotNull(limits);
@@ -54,8 +54,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new LimitQueryObject();
 
             // Act
-            var limits = await _unitOfWork.Repository<LimitEntity, LimitDto>()
-                .GetAsync(queryObject.OrWithId(limitId1).OrWithId(limitId2));
+            var limits = await _unitOfWork.LimitRepository
+                .ListAsync(queryObject.OrWithId(limitId1).OrWithId(limitId2));
 
             // Assert
             Assert.NotNull(limits);
@@ -74,8 +74,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new LimitQueryObject();
 
             // Act
-            var limits = await _unitOfWork.Repository<LimitEntity, LimitDto>()
-                .GetAsync(queryObject.NotWithId(excludedId));
+            var limits = await _unitOfWork.LimitRepository
+                .ListAsync(queryObject.NotWithId(excludedId));
 
             // Assert
             Assert.NotNull(limits);
@@ -99,8 +99,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new LimitQueryObject();
 
             // Act
-            var limits = await _unitOfWork.Repository<LimitEntity, LimitDto>()
-                .GetAsync(queryObject.WithGroupUser(groupUserId));
+            var limits = await _unitOfWork.LimitRepository
+                .ListAsync(queryObject.WithGroupUser(groupUserId));
 
             // Assert
             Assert.NotNull(limits);
@@ -121,8 +121,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new LimitQueryObject();
 
             // Act
-            var limits = await _unitOfWork.Repository<LimitEntity, LimitDto>()
-                .GetAsync(queryObject.OrWithGroupUser(groupUserId1).OrWithGroupUser(groupUserId2));
+            var limits = await _unitOfWork.LimitRepository
+                .ListAsync(queryObject.OrWithGroupUser(groupUserId1).OrWithGroupUser(groupUserId2));
 
             // Assert
             Assert.NotNull(limits);
@@ -141,8 +141,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new LimitQueryObject();
 
             // Act
-            var limits = await _unitOfWork.Repository<LimitEntity, LimitDto>()
-                .GetAsync(queryObject.NotWithGroupUser(excludedGroupUserId));
+            var limits = await _unitOfWork.LimitRepository
+                .ListAsync(queryObject.NotWithGroupUser(excludedGroupUserId));
 
             // Assert
             Assert.NotNull(limits);
@@ -166,8 +166,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new LimitQueryObject();
 
             // Act
-            var limits = await _unitOfWork.Repository<LimitEntity, LimitDto>()
-                .GetAsync(queryObject.WithAmount(limitAmount));
+            var limits = await _unitOfWork.LimitRepository
+                .ListAsync(queryObject.WithAmount(limitAmount));
 
             // Assert
             Assert.NotNull(limits);
@@ -188,8 +188,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new LimitQueryObject();
 
             // Act
-            var limits = await _unitOfWork.Repository<LimitEntity, LimitDto>()
-                .GetAsync(queryObject.OrWithAmount(amount1).OrWithAmount(amount2));
+            var limits = await _unitOfWork.LimitRepository
+                .ListAsync(queryObject.OrWithAmount(amount1).OrWithAmount(amount2));
 
             // Assert
             Assert.NotNull(limits);
@@ -208,8 +208,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new LimitQueryObject();
 
             // Act
-            var limits = await _unitOfWork.Repository<LimitEntity, LimitDto>()
-                .GetAsync(queryObject.NotWithAmount(excludedAmount));
+            var limits = await _unitOfWork.LimitRepository
+                .ListAsync(queryObject.NotWithAmount(excludedAmount));
 
             // Assert
             Assert.NotNull(limits);
@@ -233,8 +233,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new LimitQueryObject();
 
             // Act
-            var limits = await _unitOfWork.Repository<LimitEntity, LimitDto>()
-                .GetAsync(queryObject.WithNoticeType(noticeType));
+            var limits = await _unitOfWork.LimitRepository
+                .ListAsync(queryObject.WithNoticeType(noticeType));
 
             // Assert
             Assert.NotNull(limits);
@@ -255,8 +255,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new LimitQueryObject();
 
             // Act
-            var limits = await _unitOfWork.Repository<LimitEntity, LimitDto>()
-                .GetAsync(queryObject.OrWithNoticeType(noticeType1).OrWithNoticeType(noticeType2));
+            var limits = await _unitOfWork.LimitRepository
+                .ListAsync(queryObject.OrWithNoticeType(noticeType1).OrWithNoticeType(noticeType2));
 
             // Assert
             Assert.NotNull(limits);
@@ -275,8 +275,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new LimitQueryObject();
 
             // Act
-            var limits = await _unitOfWork.Repository<LimitEntity, LimitDto>()
-                .GetAsync(queryObject.NotWithNoticeType(excludedNoticeType));
+            var limits = await _unitOfWork.LimitRepository
+                .ListAsync(queryObject.NotWithNoticeType(excludedNoticeType));
 
             // Assert
             Assert.NotNull(limits);
@@ -302,8 +302,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new LimitQueryObject();
 
             // Act
-            var limits = await _unitOfWork.Repository<LimitEntity, LimitDto>()
-                .GetAsync(
+            var limits = await _unitOfWork.LimitRepository
+                .ListAsync(
                     queryObject.WithGroupUser(groupUserId) // AND condition
                                .OrWithAmount(limitAmount)    // OR condition
                                .NotWithNoticeType(excludedNoticeType) // NOT condition
@@ -335,8 +335,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new LimitQueryObject();
 
             // Act
-            var limits = await _unitOfWork.Repository<LimitEntity, LimitDto>()
-                .GetAsync(
+            var limits = await _unitOfWork.LimitRepository
+                .ListAsync(
                     queryObject.WithId(limitId1) // AND condition
                                .OrWithId(limitId2) // OR condition
                                .NotWithGroupUser(excludedGroupUserId) // NOT condition
@@ -369,8 +369,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new LimitQueryObject();
 
             // Act
-            var limits = await _unitOfWork.Repository<LimitEntity, LimitDto>()
-                .GetAsync(
+            var limits = await _unitOfWork.LimitRepository
+                .ListAsync(
                     queryObject.WithAmount(limitAmount) // AND condition
                                .OrWithGroupUser(groupUserId) // OR condition
                                .NotWithId(excludedLimitId) // NOT condition

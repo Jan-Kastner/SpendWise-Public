@@ -14,21 +14,21 @@ namespace SpendWise.DAL.QueryObjects.Interfaces.QueryPropertyInterfaces
         /// </summary>
         /// <param name="categoryId">The category ID to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        T WithCategory(Guid? categoryId);
+        T WithCategory(Guid categoryId);
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified category.
         /// </summary>
         /// <param name="categoryId">The category ID to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        T OrWithCategory(Guid? categoryId);
+        T OrWithCategory(Guid categoryId);
 
         /// <summary>
         /// Filters the query to exclude items with the specified category.
         /// </summary>
         /// <param name="categoryId">The category ID to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        T NotWithCategory(Guid? categoryId);
+        T NotWithCategory(Guid categoryId);
 
         /// <summary>
         /// Filters the query to include items without any category.

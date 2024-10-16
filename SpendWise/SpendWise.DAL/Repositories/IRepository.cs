@@ -17,15 +17,17 @@ namespace SpendWise.DAL.Repositories
         /// <summary>
         /// Retrieves all entities from the database as DTOs.
         /// </summary>
-        /// <returns>A queryable collection of DTOs representing all entities.</returns>
-        Task<List<TDto>> GetAsync(IQueryObject<TEntity>? queryObject = null);
+        /// <param name="queryObject">Optional query object for additional filtering.</param>
+        /// <returns>A task representing the asynchronous operation, containing a list of DTOs.</returns>
+        Task<List<TDto>> ListAsync(IQueryObject<TEntity>? queryObject = null);
 
         /// <summary>
         /// Retrieves an entity by its unique identifier and returns it as a DTO.
         /// </summary>
         /// <param name="id">The unique identifier of the entity to retrieve.</param>
+        /// <param name="queryObject">Optional query object for additional filtering and includes.</param>
         /// <returns>A task representing the asynchronous operation, containing the DTO of the found entity.</returns>
-        Task<TDto?> GetByIdAsync(Guid id);
+        Task<TDto?> SingleOrDefaultAsync(IQueryObject<TEntity>? queryObject);
 
         /// <summary>
         /// Checks whether a given entity exists in the database.

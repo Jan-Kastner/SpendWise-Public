@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using SpendWise.DAL.Entities;
 using SpendWise.DAL.DTOs;
 using SpendWise.DAL.Repositories;
@@ -13,12 +12,44 @@ namespace SpendWise.DAL.UnitOfWork
     public interface IUnitOfWork : IAsyncDisposable
     {
         /// <summary>
-        /// Get the repository for a specific entity type.
+        /// Gets the repository for Category entities.
         /// </summary>
-        /// <typeparam name="TEntity">The entity type.</typeparam>
-        /// <typeparam name="TDto">The DTO type.</typeparam>
-        /// <returns>An instance of the repository.</returns>
-        IRepository<TEntity, TDto> Repository<TEntity, TDto>() where TEntity : class, IEntity where TDto : class, IDto;
+        IRepository<CategoryEntity, CategoryDto> CategoryRepository { get; }
+
+        /// <summary>
+        /// Gets the repository for Group entities.
+        /// </summary>
+        IRepository<GroupEntity, GroupDto> GroupRepository { get; }
+
+        /// <summary>
+        /// Gets the repository for GroupUser entities.
+        /// </summary>
+        IRepository<GroupUserEntity, GroupUserDto> GroupUserRepository { get; }
+
+        /// <summary>
+        /// Gets the repository for Invitation entities.
+        /// </summary>
+        IRepository<InvitationEntity, InvitationDto> InvitationRepository { get; }
+
+        /// <summary>
+        /// Gets the repository for Limit entities.
+        /// </summary>
+        IRepository<LimitEntity, LimitDto> LimitRepository { get; }
+
+        /// <summary>
+        /// Gets the repository for TransactionGroupUser entities.
+        /// </summary>
+        IRepository<TransactionGroupUserEntity, TransactionGroupUserDto> TransactionGroupUserRepository { get; }
+
+        /// <summary>
+        /// Gets the repository for Transaction entities.
+        /// </summary>
+        IRepository<TransactionEntity, TransactionDto> TransactionRepository { get; }
+
+        /// <summary>
+        /// Gets the repository for User entities.
+        /// </summary>
+        IRepository<UserEntity, UserDto> UserRepository { get; }
 
         /// <summary>
         /// Asynchronously saves changes to the database.

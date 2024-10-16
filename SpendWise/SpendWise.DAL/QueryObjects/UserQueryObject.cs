@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using SpendWise.Common.Enums;
 using SpendWise.DAL.Entities;
+using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.UserEntity;
+using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.UserEntity.Interfaces;
 
 namespace SpendWise.DAL.QueryObjects
 {
@@ -9,8 +11,32 @@ namespace SpendWise.DAL.QueryObjects
     /// Represents a query object for the <see cref="UserEntity"/>.
     /// Enables query construction using methods for AND, OR, and NOT operations.
     /// </summary>
-    public class UserQueryObject : BaseQueryObject<UserEntity, UserQueryObject>, IUserQueryObject<UserQueryObject>
+    public class UserQueryObject : BaseQueryObject<UserEntity, UserQueryObject>, IUserQueryObject
     {
+        private UserEntityRelationsConfig _relations = new UserEntityRelationsConfig();
+
+        /// <summary>
+        /// Gets the initial state for user relations.
+        /// </summary>
+        public IUserEntityInitialState Relations => _relations;
+
+        /// <summary>
+        /// Gets the list of include properties for the query.
+        /// </summary>
+        public override List<string> Includes => _relations.Includes;
+
+        /// <summary>
+        /// Gets the collection of include directives used by the RelationConfigGenerator
+        /// to generate EntityRelationsConfiguration, which acts as a state machine for managing includes.
+        /// </summary>
+        public override ICollection<Func<UserEntity, object>> IncludeDirectives { get; } = new List<Func<UserEntity, object>>
+        {
+            entity => entity.GroupUsers,
+            entity => entity.SentInvitations,
+            entity => entity.ReceivedInvitations,
+            entity => entity.GroupUsers.Select(gu => gu.Group),
+        };
+
         #region IIdQuery
 
         /// <summary>

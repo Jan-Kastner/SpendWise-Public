@@ -40,15 +40,16 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 Date = DateTime.UtcNow,
                 Description = "Test Transaction",
                 Type = TransactionType.Expense,
-                CategoryId = null // Optional, depending on your business logic
+                CategoryId = null
             };
 
             // Act
-            await _unitOfWork.Repository<TransactionEntity, TransactionDto>().InsertAsync(transactionToAdd);
+            await _unitOfWork.TransactionRepository.InsertAsync(transactionToAdd);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var actualTransaction = await _unitOfWork.Repository<TransactionEntity, TransactionDto>().GetByIdAsync(transactionToAdd.Id);
+            var queryObject = new TransactionQueryObject().WithId(transactionToAdd.Id);
+            var actualTransaction = await _unitOfWork.TransactionRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualTransaction);
             DeepAssert.Equal(transactionToAdd, actualTransaction);
         }
@@ -62,9 +63,10 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         {
             // Arrange
             var expectedTransaction = _mapper.Map<TransactionDto>(TransactionSeeds.TransactionDianaDinner);
+            var queryObject = new TransactionQueryObject().WithId(expectedTransaction.Id);
 
             // Act
-            var actualTransaction = await _unitOfWork.Repository<TransactionEntity, TransactionDto>().GetByIdAsync(expectedTransaction.Id);
+            var actualTransaction = await _unitOfWork.TransactionRepository.SingleOrDefaultAsync(queryObject);
 
             // Assert
             Assert.NotNull(actualTransaction);
@@ -88,11 +90,12 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             };
 
             // Act
-            await _unitOfWork.Repository<TransactionEntity, TransactionDto>().UpdateAsync(updatedTransaction);
+            await _unitOfWork.TransactionRepository.UpdateAsync(updatedTransaction);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var actualUpdatedTransaction = await _unitOfWork.Repository<TransactionEntity, TransactionDto>().GetByIdAsync(updatedTransaction.Id);
+            var queryObject = new TransactionQueryObject().WithId(updatedTransaction.Id);
+            var actualUpdatedTransaction = await _unitOfWork.TransactionRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualUpdatedTransaction);
             DeepAssert.Equal(updatedTransaction, actualUpdatedTransaction);
         }
@@ -108,11 +111,12 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             var transactionToDelete = _mapper.Map<TransactionDto>(TransactionSeeds.TransactionDianaDinner);
 
             // Act
-            await _unitOfWork.Repository<TransactionEntity, TransactionDto>().DeleteAsync(transactionToDelete.Id);
+            await _unitOfWork.TransactionRepository.DeleteAsync(transactionToDelete.Id);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var deletedTransaction = await _unitOfWork.Repository<TransactionEntity, TransactionDto>().GetByIdAsync(transactionToDelete.Id);
+            var queryObject = new TransactionQueryObject().WithId(transactionToDelete.Id);
+            var deletedTransaction = await _unitOfWork.TransactionRepository.SingleOrDefaultAsync(queryObject);
             Assert.Null(deletedTransaction);
         }
 
@@ -139,7 +143,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
 
             await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _unitOfWork.Repository<TransactionEntity, TransactionDto>().InsertAsync(invalidTransaction);
+                await _unitOfWork.TransactionRepository.InsertAsync(invalidTransaction);
                 await _unitOfWork.SaveChangesAsync();
             });
         }
@@ -158,12 +162,12 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 Date = DateTime.UtcNow,
                 Description = "Non-existent Transaction",
                 Type = TransactionType.Expense,
-                CategoryId = null
+                CategoryId = Guid.Empty
             };
 
             await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _unitOfWork.Repository<TransactionEntity, TransactionDto>().UpdateAsync(nonExistentTransaction);
+                await _unitOfWork.TransactionRepository.UpdateAsync(nonExistentTransaction);
                 await _unitOfWork.SaveChangesAsync();
             });
         }
@@ -179,7 +183,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
 
             await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _unitOfWork.Repository<TransactionEntity, TransactionDto>().DeleteAsync(nonExistentTransactionId);
+                await _unitOfWork.TransactionRepository.DeleteAsync(nonExistentTransactionId);
                 await _unitOfWork.SaveChangesAsync();
             });
         }
@@ -202,10 +206,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 CategoryId = CategorySeeds.CategoryTransport.Id // Change CategoryId
             };
 
-            await _unitOfWork.Repository<TransactionEntity, TransactionDto>().UpdateAsync(updatedTransaction);
+            await _unitOfWork.TransactionRepository.UpdateAsync(updatedTransaction);
             await _unitOfWork.SaveChangesAsync();
 
-            var actualTransaction = await _unitOfWork.Repository<TransactionEntity, TransactionDto>().GetByIdAsync(existingTransaction.Id);
+            var queryObject = new TransactionQueryObject().WithId(existingTransaction.Id);
+            var actualTransaction = await _unitOfWork.TransactionRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualTransaction);
             Assert.Equal(updatedTransaction.CategoryId, actualTransaction.CategoryId); // CategoryId should be changed
         }
@@ -224,10 +229,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 Amount = 200m, // Change Amount
             };
 
-            await _unitOfWork.Repository<TransactionEntity, TransactionDto>().UpdateAsync(updatedTransaction);
+            await _unitOfWork.TransactionRepository.UpdateAsync(updatedTransaction);
             await _unitOfWork.SaveChangesAsync();
 
-            var actualTransaction = await _unitOfWork.Repository<TransactionEntity, TransactionDto>().GetByIdAsync(existingTransaction.Id);
+            var queryObject = new TransactionQueryObject().WithId(existingTransaction.Id);
+            var actualTransaction = await _unitOfWork.TransactionRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualTransaction);
             Assert.Equal(updatedTransaction.Amount, actualTransaction.Amount); // Amount should be changed
         }
@@ -246,10 +252,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 Date = DateTime.UtcNow, // Change Date
             };
 
-            await _unitOfWork.Repository<TransactionEntity, TransactionDto>().UpdateAsync(updatedTransaction);
+            await _unitOfWork.TransactionRepository.UpdateAsync(updatedTransaction);
             await _unitOfWork.SaveChangesAsync();
 
-            var actualTransaction = await _unitOfWork.Repository<TransactionEntity, TransactionDto>().GetByIdAsync(existingTransaction.Id);
+            var queryObject = new TransactionQueryObject().WithId(existingTransaction.Id);
+            var actualTransaction = await _unitOfWork.TransactionRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualTransaction);
             Assert.Equal(updatedTransaction.Date, actualTransaction.Date); // Date should be changed
         }
@@ -268,10 +275,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 Description = "Updated Description", // Change Description
             };
 
-            await _unitOfWork.Repository<TransactionEntity, TransactionDto>().UpdateAsync(updatedTransaction);
+            await _unitOfWork.TransactionRepository.UpdateAsync(updatedTransaction);
             await _unitOfWork.SaveChangesAsync();
 
-            var actualTransaction = await _unitOfWork.Repository<TransactionEntity, TransactionDto>().GetByIdAsync(existingTransaction.Id);
+            var queryObject = new TransactionQueryObject().WithId(existingTransaction.Id);
+            var actualTransaction = await _unitOfWork.TransactionRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualTransaction);
             Assert.Equal(updatedTransaction.Description, actualTransaction.Description); // Description should be changed
         }
@@ -290,10 +298,11 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 Type = TransactionType.Income, // Change Type
             };
 
-            await _unitOfWork.Repository<TransactionEntity, TransactionDto>().UpdateAsync(updatedTransaction);
+            await _unitOfWork.TransactionRepository.UpdateAsync(updatedTransaction);
             await _unitOfWork.SaveChangesAsync();
 
-            var actualTransaction = await _unitOfWork.Repository<TransactionEntity, TransactionDto>().GetByIdAsync(existingTransaction.Id);
+            var queryObject = new TransactionQueryObject().WithId(existingTransaction.Id);
+            var actualTransaction = await _unitOfWork.TransactionRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualTransaction);
             Assert.Equal(updatedTransaction.Type, actualTransaction.Type); // Type should be changed
         }
@@ -314,20 +323,19 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             var associatedCategoryId = CategorySeeds.CategoryFood.Id;
 
             // Verify the initial state before deletion
-            var initialTransactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(new TransactionGroupUserQueryObject().WithTransaction(transactionToDelete.Id));
+            var initialTransactionGroupUsers = await _unitOfWork.TransactionGroupUserRepository.ListAsync(new TransactionGroupUserQueryObject().WithTransaction(transactionToDelete.Id));
             Assert.NotEmpty(initialTransactionGroupUsers); // Ensure there are transaction group users related to the transaction
 
             // Act
-            await _unitOfWork.Repository<TransactionEntity, TransactionDto>().DeleteAsync(transactionToDelete.Id);
+            await _unitOfWork.TransactionRepository.DeleteAsync(transactionToDelete.Id);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var category = await _unitOfWork.Repository<CategoryEntity, CategoryDto>().GetByIdAsync(associatedCategoryId);
+            var queryObject = new CategoryQueryObject().WithId(associatedCategoryId);
+            var category = await _unitOfWork.CategoryRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(category); // Ensure the category is still intact
 
-            var transactionGroupUsersAfterDelete = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(new TransactionGroupUserQueryObject().WithTransaction(transactionToDelete.Id));
+            var transactionGroupUsersAfterDelete = await _unitOfWork.TransactionGroupUserRepository.ListAsync(new TransactionGroupUserQueryObject().WithTransaction(transactionToDelete.Id));
             Assert.Empty(transactionGroupUsersAfterDelete); // Ensure all transaction group users related to the transaction are removed
         }
 
@@ -367,15 +375,15 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             {
                 // Act
                 // Insert
-                await _unitOfWork.Repository<TransactionEntity, TransactionDto>().InsertAsync(newTransactionDto);
+                await _unitOfWork.TransactionRepository.InsertAsync(newTransactionDto);
                 await _unitOfWork.SaveChangesAsync();
 
                 // Update
-                await _unitOfWork.Repository<TransactionEntity, TransactionDto>().UpdateAsync(updatedTransactionDto);
+                await _unitOfWork.TransactionRepository.UpdateAsync(updatedTransactionDto);
                 await _unitOfWork.SaveChangesAsync();
 
                 // Delete
-                await _unitOfWork.Repository<TransactionEntity, TransactionDto>().DeleteAsync(newTransactionDto.Id);
+                await _unitOfWork.TransactionRepository.DeleteAsync(newTransactionDto.Id);
                 await _unitOfWork.SaveChangesAsync();
             }
             catch
@@ -384,7 +392,8 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             }
 
             // Assert
-            var deletedTransaction = await _unitOfWork.Repository<TransactionEntity, TransactionDto>().GetByIdAsync(newTransactionDto.Id);
+            var queryObject = new TransactionQueryObject().WithId(newTransactionDto.Id);
+            var deletedTransaction = await _unitOfWork.TransactionRepository.SingleOrDefaultAsync(queryObject);
             Assert.Null(deletedTransaction);
         }
 

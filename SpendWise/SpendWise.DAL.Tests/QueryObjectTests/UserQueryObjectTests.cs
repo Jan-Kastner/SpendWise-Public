@@ -29,8 +29,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.WithId(userId));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.WithId(userId));
 
             // Assert
             Assert.NotNull(users);
@@ -51,8 +51,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.OrWithId(userId1).OrWithId(userId2));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.OrWithId(userId1).OrWithId(userId2));
 
             // Assert
             Assert.NotNull(users);
@@ -71,8 +71,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.NotWithId(excludedId));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.NotWithId(excludedId));
 
             // Assert
             Assert.NotNull(users);
@@ -95,8 +95,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.WithName(userName));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.WithName(userName));
 
             // Assert
             Assert.NotNull(users);
@@ -116,8 +116,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.OrWithName(userName1).OrWithName(userName2));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.OrWithName(userName1).OrWithName(userName2));
 
             // Assert
             Assert.NotNull(users);
@@ -136,8 +136,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.NotWithName(excludedName));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.NotWithName(excludedName));
 
             // Assert
             Assert.NotNull(users);
@@ -156,8 +156,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.WithNamePartialMatch(partialName));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.WithNamePartialMatch(partialName));
 
             // Assert
             Assert.NotNull(users);
@@ -177,8 +177,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.OrWithNamePartialMatch(partialName1).OrWithNamePartialMatch(partialName2));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.OrWithNamePartialMatch(partialName1).OrWithNamePartialMatch(partialName2));
 
             // Assert
             Assert.NotNull(users);
@@ -197,8 +197,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.NotWithNamePartialMatch(excludedText));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.NotWithNamePartialMatch(excludedText));
 
             // Assert
             Assert.NotNull(users);
@@ -221,8 +221,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.WithSurname(userSurname));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.WithSurname(userSurname));
 
             // Assert
             Assert.NotNull(users);
@@ -242,8 +242,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.OrWithSurname(userSurname1).OrWithSurname(userSurname2));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.OrWithSurname(userSurname1).OrWithSurname(userSurname2));
 
             // Assert
             Assert.NotNull(users);
@@ -262,8 +262,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.NotWithSurname(excludedSurname));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.NotWithSurname(excludedSurname));
 
             // Assert
             Assert.NotNull(users);
@@ -282,8 +282,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.WithSurnamePartialMatch(partialSurname));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.WithSurnamePartialMatch(partialSurname));
 
             // Assert
             Assert.NotNull(users);
@@ -303,8 +303,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.OrWithSurnamePartialMatch(partialSurname1).OrWithSurnamePartialMatch(partialSurname2));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.OrWithSurnamePartialMatch(partialSurname1).OrWithSurnamePartialMatch(partialSurname2));
 
             // Assert
             Assert.NotNull(users);
@@ -323,8 +323,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.NotWithSurnamePartialMatch(excludedText));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.NotWithSurnamePartialMatch(excludedText));
 
             // Assert
             Assert.NotNull(users);
@@ -347,8 +347,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.WithEmail(userEmail));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.WithEmail(userEmail));
 
             // Assert
             Assert.NotNull(users);
@@ -368,8 +368,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.OrWithEmail(userEmail1).OrWithEmail(userEmail2));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.OrWithEmail(userEmail1).OrWithEmail(userEmail2));
 
             // Assert
             Assert.NotNull(users);
@@ -388,8 +388,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.NotWithEmail(excludedEmail));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.NotWithEmail(excludedEmail));
 
             // Assert
             Assert.NotNull(users);
@@ -412,8 +412,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.WithPassword(userPassword));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.WithPassword(userPassword));
 
             // Assert
             Assert.NotNull(users);
@@ -433,8 +433,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.OrWithPassword(userPassword1).OrWithPassword(userPassword2));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.OrWithPassword(userPassword1).OrWithPassword(userPassword2));
 
             // Assert
             Assert.NotNull(users);
@@ -453,8 +453,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.NotWithPassword(excludedPassword));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.NotWithPassword(excludedPassword));
 
             // Assert
             Assert.NotNull(users);
@@ -477,8 +477,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.WithDateOfRegistration(dateOfRegistration));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.WithDateOfRegistration(dateOfRegistration));
 
             // Assert
             Assert.NotNull(users);
@@ -499,8 +499,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.OrWithDateOfRegistration(dateOfRegistration1).OrWithDateOfRegistration(dateOfRegistration2));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.OrWithDateOfRegistration(dateOfRegistration1).OrWithDateOfRegistration(dateOfRegistration2));
 
             // Assert
             Assert.NotNull(users);
@@ -519,8 +519,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.NotWithDateOfRegistration(excludedDateOfRegistration));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.NotWithDateOfRegistration(excludedDateOfRegistration));
 
             // Assert
             Assert.NotNull(users);
@@ -542,8 +542,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.WithPhoto());
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.WithPhoto());
 
             // Assert
             Assert.NotNull(users);
@@ -561,8 +561,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.OrWithPhoto());
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.OrWithPhoto());
 
             // Assert
             Assert.NotNull(users);
@@ -580,8 +580,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.NotWithPhoto());
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.NotWithPhoto());
 
             // Assert
             Assert.NotNull(users);
@@ -599,8 +599,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.WithoutPhoto());
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.WithoutPhoto());
 
             // Assert
             Assert.NotNull(users);
@@ -618,8 +618,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.OrWithoutPhoto());
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.OrWithoutPhoto());
 
             // Assert
             Assert.NotNull(users);
@@ -637,8 +637,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.NotWithoutPhoto());
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.NotWithoutPhoto());
 
             // Assert
             Assert.NotNull(users);
@@ -660,8 +660,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.WithEmailConfirmed());
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.WithEmailConfirmed());
 
             // Assert
             Assert.NotNull(users);
@@ -679,8 +679,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.OrWithEmailConfirmed());
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.OrWithEmailConfirmed());
 
             // Assert
             Assert.NotNull(users);
@@ -698,8 +698,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.NotWithEmailConfirmed());
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.NotWithEmailConfirmed());
 
             // Assert
             Assert.NotNull(users);
@@ -717,8 +717,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.WithoutEmailConfirmed());
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.WithoutEmailConfirmed());
 
             // Assert
             Assert.NotNull(users);
@@ -736,8 +736,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.OrWithoutEmailConfirmed());
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.OrWithoutEmailConfirmed());
 
             // Assert
             Assert.NotNull(users);
@@ -755,8 +755,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.NotWithoutEmailConfirmed());
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.NotWithoutEmailConfirmed());
 
             // Assert
             Assert.NotNull(users);
@@ -778,8 +778,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.WithTwoFactorEnabled());
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.WithTwoFactorEnabled());
 
             // Assert
             Assert.NotNull(users);
@@ -797,8 +797,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.OrWithTwoFactorEnabled());
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.OrWithTwoFactorEnabled());
 
             // Assert
             Assert.NotNull(users);
@@ -816,8 +816,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.NotWithTwoFactorEnabled());
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.NotWithTwoFactorEnabled());
 
             // Assert
             Assert.NotNull(users);
@@ -835,8 +835,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.WithoutTwoFactorEnabled());
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.WithoutTwoFactorEnabled());
 
             // Assert
             Assert.NotNull(users);
@@ -854,8 +854,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.OrWithoutTwoFactorEnabled());
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.OrWithoutTwoFactorEnabled());
 
             // Assert
             Assert.NotNull(users);
@@ -873,8 +873,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.NotWithoutTwoFactorEnabled());
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.NotWithoutTwoFactorEnabled());
 
             // Assert
             Assert.NotNull(users);
@@ -897,8 +897,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.WithResetPasswordToken(resetPasswordToken!));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.WithResetPasswordToken(resetPasswordToken!));
 
             // Assert
             Assert.NotNull(users);
@@ -918,8 +918,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.OrWithResetPasswordToken(resetPasswordToken1!).OrWithResetPasswordToken(resetPasswordToken2!));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.OrWithResetPasswordToken(resetPasswordToken1!).OrWithResetPasswordToken(resetPasswordToken2!));
 
             // Assert
             Assert.NotNull(users);
@@ -938,8 +938,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.NotWithResetPasswordToken(excludedToken!));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.NotWithResetPasswordToken(excludedToken!));
 
             // Assert
             Assert.NotNull(users);
@@ -957,8 +957,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.WithoutResetPasswordToken());
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.WithoutResetPasswordToken());
 
             // Assert
             Assert.NotNull(users);
@@ -976,8 +976,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.OrWithoutResetPasswordToken());
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.OrWithoutResetPasswordToken());
 
             // Assert
             Assert.NotNull(users);
@@ -995,8 +995,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.NotWithoutResetPasswordToken());
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.NotWithoutResetPasswordToken());
 
             // Assert
             Assert.NotNull(users);
@@ -1019,8 +1019,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.WithPreferredTheme(preferredTheme));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.WithPreferredTheme(preferredTheme));
 
             // Assert
             Assert.NotNull(users);
@@ -1040,8 +1040,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.OrWithPreferredTheme(preferredTheme1).OrWithPreferredTheme(preferredTheme2));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.OrWithPreferredTheme(preferredTheme1).OrWithPreferredTheme(preferredTheme2));
 
             // Assert
             Assert.NotNull(users);
@@ -1060,8 +1060,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.NotWithPreferredTheme(excludedTheme));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.NotWithPreferredTheme(excludedTheme));
 
             // Assert
             Assert.NotNull(users);
@@ -1084,8 +1084,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.WithSentInvitation(invitation.Id));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.WithSentInvitation(invitation.Id));
 
             // Assert
             // Assert
@@ -1106,8 +1106,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.OrWithSentInvitation(invitation1.Id).OrWithSentInvitation(invitation2.Id));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.OrWithSentInvitation(invitation1.Id).OrWithSentInvitation(invitation2.Id));
 
             // Assert
             Assert.NotNull(users);
@@ -1129,8 +1129,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.NotWithSentInvitation(excludedInvitation.Id));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.NotWithSentInvitation(excludedInvitation.Id));
 
             // Assert
             Assert.NotNull(users);
@@ -1153,8 +1153,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.WithReceivedInvitation(invitation.Id));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.WithReceivedInvitation(invitation.Id));
 
             // Assert
             Assert.NotNull(users);
@@ -1174,8 +1174,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.OrWithReceivedInvitation(invitation1.Id).OrWithReceivedInvitation(invitation2.Id));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.OrWithReceivedInvitation(invitation1.Id).OrWithReceivedInvitation(invitation2.Id));
 
             // Assert
             Assert.NotNull(users);
@@ -1197,8 +1197,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.NotWithReceivedInvitation(excludedInvitation.Id));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.NotWithReceivedInvitation(excludedInvitation.Id));
 
             // Assert
             Assert.NotNull(users);
@@ -1221,8 +1221,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.WithGroupUser(groupUser.Id));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.WithGroupUser(groupUser.Id));
 
             // Assert
             Assert.NotNull(users);
@@ -1243,8 +1243,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.OrWithGroupUser(groupUser1.Id).OrWithGroupUser(groupUser2.Id));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.OrWithGroupUser(groupUser1.Id).OrWithGroupUser(groupUser2.Id));
 
             // Assert
             Assert.NotNull(users);
@@ -1264,8 +1264,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.NotWithGroupUser(groupUser.Id));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.NotWithGroupUser(groupUser.Id));
 
             // Assert
             Assert.NotNull(users);
@@ -1288,8 +1288,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.WithFullName(fullName));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.WithFullName(fullName));
 
             // Assert
             Assert.NotNull(users);
@@ -1309,8 +1309,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.OrWithFullName(fullName1).OrWithFullName(fullName2));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.OrWithFullName(fullName1).OrWithFullName(fullName2));
 
             // Assert
             Assert.NotNull(users);
@@ -1329,8 +1329,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.NotWithFullName(excludedFullName));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.NotWithFullName(excludedFullName));
 
             // Assert
             Assert.NotNull(users);
@@ -1349,8 +1349,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.WithEmailDomain(emailDomain));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.WithEmailDomain(emailDomain));
 
             // Assert
             Assert.NotNull(users);
@@ -1370,8 +1370,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.OrWithEmailDomain(emailDomain1).OrWithEmailDomain(emailDomain2));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.OrWithEmailDomain(emailDomain1).OrWithEmailDomain(emailDomain2));
 
             // Assert
             Assert.NotNull(users);
@@ -1390,8 +1390,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(queryObject.NotWithEmailDomain(excludedDomain));
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(queryObject.NotWithEmailDomain(excludedDomain));
 
             // Assert
             Assert.NotNull(users);
@@ -1415,8 +1415,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(
                     queryObject.WithEmail(email)
                                .OrWithGroupUser(groupUser.Id)
                 );
@@ -1445,8 +1445,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(
                     queryObject.WithId(userId)
                                .OrWithSurname(surname)
                                .NotWithPhoto()
@@ -1478,8 +1478,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(
                     queryObject.WithName(name)
                                .OrWithEmail(email)
                                .NotWithEmailDomain(excludedEmailDomain)
@@ -1509,8 +1509,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(
                     queryObject.WithId(userId)
                                .WithEmailConfirmed()
                                .NotWithTwoFactorEnabled()
@@ -1541,8 +1541,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(
                     queryObject.WithName(name)
                                .OrWithSurname(surname)
                 );
@@ -1571,8 +1571,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(
                     queryObject.WithResetPasswordToken(resetPasswordToken!)
                                .OrWithEmailConfirmed()
                                .NotWithEmailDomain(excludedEmailDomain)
@@ -1602,8 +1602,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new UserQueryObject();
 
             // Act
-            var users = await _unitOfWork.Repository<UserEntity, UserDto>()
-                .GetAsync(
+            var users = await _unitOfWork.UserRepository
+                .ListAsync(
                     queryObject.WithFullName(fullName)
                                .OrWithPhoto()
                                .NotWithEmailConfirmed()

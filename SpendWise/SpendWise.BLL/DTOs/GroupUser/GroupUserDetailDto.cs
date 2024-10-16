@@ -1,11 +1,12 @@
 using SpendWise.Common.Enums;
+using SpendWise.BLL.DTOs.Interfaces;
 
 namespace SpendWise.BLL.DTOs
 {
     /// <summary>
     /// Represents detailed information about a group user.
     /// </summary>
-    public record GroupUserDetailDto
+    public record GroupUserDetailDto : IQueryableDto, IUserDto<UserListDto>, IGroupDto<GroupListDto>, ITransactionGroupUsersDto<TransactionGroupUserListDto>
     {
         /// <summary>
         /// Gets or sets the unique identifier of the group user.
@@ -20,12 +21,12 @@ namespace SpendWise.BLL.DTOs
         /// <summary>
         /// Gets or sets the user associated with the group.
         /// </summary>
-        public required UserListDto User { get; init; }
+        public required UserListDto User { get; set; }
 
         /// <summary>
         /// Gets or sets the group associated with the user.
         /// </summary>
-        public required GroupListDto Group { get; init; }
+        public required GroupListDto Group { get; set; }
 
         /// <summary>
         /// Gets or sets the unique identifier of the limit associated with the user, if any.

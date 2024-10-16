@@ -1,9 +1,11 @@
+using SpendWise.BLL.DTOs.Interfaces;
+
 namespace SpendWise.BLL.DTOs
 {
     /// <summary>
     /// Represents detailed information about an invitation.
     /// </summary>
-    public record InvitationDetailDto
+    public record InvitationDetailDto : IQueryableDto, IGroupDto<GroupListDto>, ISenderDto<UserListDto>, IReceiverDto<UserListDto>
     {
         /// <summary>
         /// Gets or sets the unique identifier of the invitation.
@@ -13,17 +15,17 @@ namespace SpendWise.BLL.DTOs
         /// <summary>
         /// Gets or sets the sender of the invitation.
         /// </summary>
-        public required UserListDto Sender { get; init; }
+        public required UserListDto Sender { get; set; }
 
         /// <summary>
         /// Gets or sets the receiver of the invitation.
         /// </summary>
-        public required UserListDto Receiver { get; init; }
+        public required UserListDto Receiver { get; set; }
 
         /// <summary>
         /// Gets or sets the group associated with the invitation.
         /// </summary>
-        public required GroupListDto Group { get; init; }
+        public required GroupListDto Group { get; set; }
 
         /// <summary>
         /// Gets or sets the date the invitation was sent.

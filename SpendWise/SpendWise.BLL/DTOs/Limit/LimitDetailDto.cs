@@ -1,11 +1,12 @@
 using SpendWise.Common.Enums;
+using SpendWise.BLL.DTOs.Interfaces;
 
 namespace SpendWise.BLL.DTOs
 {
     /// <summary>
     /// Represents detailed information about a limit.
     /// </summary>
-    public record LimitDetailDto
+    public record LimitDetailDto : IQueryableDto
     {
         /// <summary>
         /// Gets or sets the unique identifier of the limit.

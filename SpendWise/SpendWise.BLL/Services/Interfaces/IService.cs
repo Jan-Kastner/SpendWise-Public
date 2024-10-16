@@ -1,35 +1,24 @@
 using SpendWise.BLL.DTOs;
+using SpendWise.BLL.DTOs.Interfaces;
+using SpendWise.BLL.Queries.Interfaces;
 
-namespace SpendWise.BLL.Services
+namespace SpendWise.BLL.Services.Interfaces
 {
     /// <summary>
-    /// Defines a service for creating, updating, and deleting entities.
+    /// Defines the contract for a generic service managing entities.
     /// </summary>
-    /// <typeparam name="TCreateDto">The type of the Data Transfer Object (DTO) used for creation. Must implement <see cref="ICreatableDto"/>.</typeparam>
-    /// <typeparam name="TUpdateDto">The type of the Data Transfer Object (DTO) used for updating. Must implement <see cref="IUpdatableDto"/>.</typeparam>
-    public interface IService<TCreateDto, TUpdateDto>
+    /// <typeparam name="TCreateDto">The type of the DTO used for creating entities.</typeparam>
+    /// <typeparam name="TUpdateDto">The type of the DTO used for updating entities.</typeparam>
+    /// <typeparam name="TCriteriaQuery">The type of the criteria query object.</typeparam>
+    public interface IService<TCreateDto, TUpdateDto, TCriteriaQuery>
         where TCreateDto : ICreatableDto
         where TUpdateDto : IUpdatableDto
+        where TCriteriaQuery : ICriteriaQuery
     {
-        /// <summary>
-        /// Creates a new entity.
-        /// </summary>
-        /// <param name="dto">The DTO used for creating the entity.</param>
-        /// <returns>A task that represents the asynchronous operation.</returns>
         Task CreateAsync(TCreateDto dto);
-
-        /// <summary>
-        /// Updates an existing entity.
-        /// </summary>
-        /// <param name="dto">The DTO used for updating the entity.</param>
-        /// <returns>A task that represents the asynchronous operation.</returns>
-        Task UpdateAsync(TUpdateDto dto);
-
-        /// <summary>
-        /// Deletes an entity by its identifier.
-        /// </summary>
-        /// <param name="id">The unique identifier of the entity to be deleted.</param>
-        /// <returns>A task that represents the asynchronous operation.</returns>
         Task DeleteAsync(Guid id);
+        Task UpdateAsync(TUpdateDto dto);
+        Task<TDto> GetByIdAsync<TDto>(IIdQuery query) where TDto : class, IQueryableDto;
+        Task<IEnumerable<TDto>> GetAsync<TDto>(TCriteriaQuery query) where TDto : class, IQueryableDto;
     }
 }

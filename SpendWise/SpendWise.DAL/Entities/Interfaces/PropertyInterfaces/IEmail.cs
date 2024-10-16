@@ -8,6 +8,6 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the email address of the entity.
         /// </summary>
-        string Email { get; set; }
+        string Email { get; init; }
     }
 }

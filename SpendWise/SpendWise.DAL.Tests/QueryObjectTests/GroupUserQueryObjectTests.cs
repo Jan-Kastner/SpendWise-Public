@@ -29,8 +29,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupUserQueryObject();
 
             // Act
-            var groupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
-                .GetAsync(queryObject.WithId(groupUserId));
+            var groupUsers = await _unitOfWork.GroupUserRepository
+                .ListAsync(queryObject.WithId(groupUserId));
 
             // Assert
             Assert.NotNull(groupUsers);
@@ -52,8 +52,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupUserQueryObject();
 
             // Act
-            var groupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
-                .GetAsync(queryObject.OrWithId(groupUserId1).OrWithId(groupUserId2));
+            var groupUsers = await _unitOfWork.GroupUserRepository
+                .ListAsync(queryObject.OrWithId(groupUserId1).OrWithId(groupUserId2));
 
             // Assert
             Assert.NotNull(groupUsers);
@@ -73,8 +73,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupUserQueryObject();
 
             // Act
-            var groupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
-                .GetAsync(queryObject.NotWithId(excludedGroupUserId));
+            var groupUsers = await _unitOfWork.GroupUserRepository
+                .ListAsync(queryObject.NotWithId(excludedGroupUserId));
 
             // Assert
             Assert.NotNull(groupUsers);
@@ -97,8 +97,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupUserQueryObject();
 
             // Act
-            var groupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
-                .GetAsync(queryObject.WithUserRole(userRole));
+            var groupUsers = await _unitOfWork.GroupUserRepository
+                .ListAsync(queryObject.WithUserRole(userRole));
 
             // Assert
             Assert.NotNull(groupUsers);
@@ -118,8 +118,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupUserQueryObject();
 
             // Act
-            var groupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
-                .GetAsync(queryObject.OrWithUserRole(userRole1).OrWithUserRole(userRole2));
+            var groupUsers = await _unitOfWork.GroupUserRepository
+                .ListAsync(queryObject.OrWithUserRole(userRole1).OrWithUserRole(userRole2));
 
             // Assert
             Assert.NotNull(groupUsers);
@@ -138,8 +138,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupUserQueryObject();
 
             // Act
-            var groupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
-                .GetAsync(queryObject.NotWithUserRole(excludedRole));
+            var groupUsers = await _unitOfWork.GroupUserRepository
+                .ListAsync(queryObject.NotWithUserRole(excludedRole));
 
             // Assert
             Assert.NotNull(groupUsers);
@@ -164,8 +164,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupUserQueryObject();
 
             // Act
-            var groupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
-                .GetAsync(queryObject.WithUser(userId));
+            var groupUsers = await _unitOfWork.GroupUserRepository
+                .ListAsync(queryObject.WithUser(userId));
 
             // Assert
             Assert.NotNull(groupUsers);
@@ -186,8 +186,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupUserQueryObject();
 
             // Act
-            var groupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
-                .GetAsync(queryObject.OrWithUser(userId1).OrWithUser(userId2));
+            var groupUsers = await _unitOfWork.GroupUserRepository
+                .ListAsync(queryObject.OrWithUser(userId1).OrWithUser(userId2));
 
             // Assert
             Assert.NotNull(groupUsers);
@@ -207,8 +207,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupUserQueryObject();
 
             // Act
-            var groupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
-                .GetAsync(queryObject.NotWithUser(excludedUserId));
+            var groupUsers = await _unitOfWork.GroupUserRepository
+                .ListAsync(queryObject.NotWithUser(excludedUserId));
 
             // Assert
             Assert.NotNull(groupUsers);
@@ -232,8 +232,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupUserQueryObject();
 
             // Act
-            var groupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
-                .GetAsync(queryObject.WithGroup(groupId));
+            var groupUsers = await _unitOfWork.GroupUserRepository
+                .ListAsync(queryObject.WithGroup(groupId));
 
             // Assert
             Assert.NotNull(groupUsers);
@@ -254,8 +254,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupUserQueryObject();
 
             // Act
-            var groupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
-                .GetAsync(queryObject.OrWithGroup(groupId1).OrWithGroup(groupId2));
+            var groupUsers = await _unitOfWork.GroupUserRepository
+                .ListAsync(queryObject.OrWithGroup(groupId1).OrWithGroup(groupId2));
 
             // Assert
             Assert.NotNull(groupUsers);
@@ -275,8 +275,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupUserQueryObject();
 
             // Act
-            var groupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
-                .GetAsync(queryObject.NotWithGroup(excludedGroupId));
+            var groupUsers = await _unitOfWork.GroupUserRepository
+                .ListAsync(queryObject.NotWithGroup(excludedGroupId));
 
             // Assert
             Assert.NotNull(groupUsers);
@@ -300,8 +300,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupUserQueryObject();
 
             // Act
-            var groupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
-                .GetAsync(queryObject.WithLimit(limitId));
+            var groupUsers = await _unitOfWork.GroupUserRepository
+                .ListAsync(queryObject.WithLimit(limitId));
 
             // Assert
             Assert.NotNull(groupUsers);
@@ -322,8 +322,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupUserQueryObject();
 
             // Act
-            var groupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
-                .GetAsync(queryObject.OrWithLimit(limitId1).OrWithLimit(limitId2));
+            var groupUsers = await _unitOfWork.GroupUserRepository
+                .ListAsync(queryObject.OrWithLimit(limitId1).OrWithLimit(limitId2));
 
             // Assert
             Assert.NotNull(groupUsers);
@@ -343,8 +343,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupUserQueryObject();
 
             // Act
-            var groupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
-                .GetAsync(queryObject.NotWithLimit(excludedLimitId));
+            var groupUsers = await _unitOfWork.GroupUserRepository
+                .ListAsync(queryObject.NotWithLimit(excludedLimitId));
 
             // Assert
             Assert.NotNull(groupUsers);
@@ -363,8 +363,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupUserQueryObject();
 
             // Act
-            var groupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
-                .GetAsync(queryObject.WithoutLimit());
+            var groupUsers = await _unitOfWork.GroupUserRepository
+                .ListAsync(queryObject.WithoutLimit());
 
             // Assert
             Assert.NotNull(groupUsers);
@@ -383,8 +383,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupUserQueryObject();
 
             // Act
-            var groupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
-                .GetAsync(queryObject.OrWithoutLimit());
+            var groupUsers = await _unitOfWork.GroupUserRepository
+                .ListAsync(queryObject.OrWithoutLimit());
 
             // Assert
             Assert.NotNull(groupUsers);
@@ -403,12 +403,12 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupUserQueryObject();
 
             // Act
-            var groupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
-                .GetAsync(queryObject.NotWithoutLimit());
+            var groupUsers = await _unitOfWork.GroupUserRepository
+                .ListAsync(queryObject.WithoutLimit());
 
             // Assert
             Assert.NotNull(groupUsers);
-            Assert.All(groupUsers, gu => Assert.NotNull(gu.LimitId));
+            Assert.All(groupUsers, gu => Assert.Null(gu.LimitId));
         }
 
         #endregion
@@ -428,8 +428,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupUserQueryObject();
 
             // Act
-            var groupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
-                .GetAsync(queryObject.WithTransactionGroupUser(transactionGroupUser.Id));
+            var groupUsers = await _unitOfWork.GroupUserRepository
+                .ListAsync(queryObject.WithTransactionGroupUser(transactionGroupUser.Id));
 
             // Assert
             Assert.NotNull(groupUsers);
@@ -450,8 +450,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupUserQueryObject();
 
             // Act
-            var groupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
-                .GetAsync(queryObject.OrWithTransactionGroupUser(transactionGroupUser1.Id).OrWithTransactionGroupUser(transactionGroupUser2.Id));
+            var groupUsers = await _unitOfWork.GroupUserRepository
+                .ListAsync(queryObject.OrWithTransactionGroupUser(transactionGroupUser1.Id).OrWithTransactionGroupUser(transactionGroupUser2.Id));
 
             // Assert
             Assert.NotNull(groupUsers);
@@ -474,8 +474,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupUserQueryObject();
 
             // Act
-            var groupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
-                .GetAsync(queryObject.NotWithTransactionGroupUser(excludedTransactionGroupUser.Id));
+            var groupUsers = await _unitOfWork.GroupUserRepository
+                .ListAsync(queryObject.NotWithTransactionGroupUser(excludedTransactionGroupUser.Id));
 
             // Assert
             Assert.NotNull(groupUsers);
@@ -502,8 +502,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupUserQueryObject();
 
             // Act
-            var groupUsers = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>()
-                .GetAsync(queryObject.WithUser(userId)
+            var groupUsers = await _unitOfWork.GroupUserRepository
+                .ListAsync(queryObject.WithUser(userId)
                     .WithGroup(groupId)
                     .WithLimit(limitId)
                     .WithTransactionGroupUser(transactionGroupUser.Id));

@@ -8,6 +8,6 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the password hash of the entity.
         /// </summary>
-        string PasswordHash { get; set; }
+        string PasswordHash { get; init; }
     }
 }

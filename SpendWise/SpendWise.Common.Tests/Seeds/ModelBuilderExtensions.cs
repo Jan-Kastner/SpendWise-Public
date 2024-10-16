@@ -16,8 +16,8 @@ namespace SpendWise.Common.Tests.Seeds
             CategorySeeds.Seed(modelBuilder);
             UserSeeds.Seed(modelBuilder);
             GroupSeeds.Seed(modelBuilder);
-            GroupUserSeeds.Seed(modelBuilder);
             LimitSeeds.Seed(modelBuilder);
+            GroupUserSeeds.Seed(modelBuilder);
             InvitationSeeds.Seed(modelBuilder);
             TransactionSeeds.Seed(modelBuilder);
             TransactionGroupUserSeeds.Seed(modelBuilder);

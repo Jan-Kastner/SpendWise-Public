@@ -5,7 +5,6 @@ using SpendWise.DAL.Repositories;
 using SpendWise.DAL.dbContext;
 using AutoMapper;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SpendWise.DAL.UnitOfWork
@@ -18,7 +17,15 @@ namespace SpendWise.DAL.UnitOfWork
         private readonly IDbContext _dbContext;
         private readonly ILogger<UnitOfWork> _logger;
         private readonly IMapper _mapper;
-        private readonly Dictionary<(Type, Type), object> _repositories = new();
+
+        public IRepository<CategoryEntity, CategoryDto> CategoryRepository { get; }
+        public IRepository<GroupEntity, GroupDto> GroupRepository { get; }
+        public IRepository<GroupUserEntity, GroupUserDto> GroupUserRepository { get; }
+        public IRepository<InvitationEntity, InvitationDto> InvitationRepository { get; }
+        public IRepository<LimitEntity, LimitDto> LimitRepository { get; }
+        public IRepository<TransactionGroupUserEntity, TransactionGroupUserDto> TransactionGroupUserRepository { get; }
+        public IRepository<TransactionEntity, TransactionDto> TransactionRepository { get; }
+        public IRepository<UserEntity, UserDto> UserRepository { get; }
 
         private bool _disposed;
 
@@ -28,31 +35,35 @@ namespace SpendWise.DAL.UnitOfWork
         /// <param name="dbContext">The database context.</param>
         /// <param name="logger">Logger for recording events.</param>
         /// <param name="mapper">AutoMapper instance for mapping entities and DTOs.</param>
-        public UnitOfWork(IDbContext dbContext, ILogger<UnitOfWork> logger, IMapper mapper)
+        /// <param name="categoryRepository">Category repository instance.</param>
+        /// <param name="groupRepository">Group repository instance.</param>
+        /// <param name="groupUserRepository">GroupUser repository instance.</param>
+        /// <param name="invitationRepository">Invitation repository instance.</param>
+        /// <param name="limitRepository">Limit repository instance.</param>
+        /// <param name="transactionGroupUserRepository">TransactionGroupUser repository instance.</param>
+        /// <param name="transactionRepository">Transaction repository instance.</param>
+        /// <param name="userRepository">User repository instance.</param>
+        public UnitOfWork(IDbContext dbContext, ILogger<UnitOfWork> logger, IMapper mapper,
+                          IRepository<CategoryEntity, CategoryDto> categoryRepository,
+                          IRepository<GroupEntity, GroupDto> groupRepository,
+                          IRepository<GroupUserEntity, GroupUserDto> groupUserRepository,
+                          IRepository<InvitationEntity, InvitationDto> invitationRepository,
+                          IRepository<LimitEntity, LimitDto> limitRepository,
+                          IRepository<TransactionGroupUserEntity, TransactionGroupUserDto> transactionGroupUserRepository,
+                          IRepository<TransactionEntity, TransactionDto> transactionRepository,
+                          IRepository<UserEntity, UserDto> userRepository)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        }
-
-        /// <summary>
-        /// Get the repository for a specific entity type.
-        /// </summary>
-        /// <typeparam name="TEntity">The entity type.</typeparam>
-        /// <typeparam name="TDto">The DTO type.</typeparam>
-        /// <returns>An instance of the repository.</returns>
-        public IRepository<TEntity, TDto> Repository<TEntity, TDto>()
-            where TEntity : class, IEntity
-            where TDto : class, IDto
-        {
-            var typeKey = (typeof(TEntity), typeof(TDto));
-            if (!_repositories.ContainsKey(typeKey))
-            {
-                var repositoryInstance = new Repository<TEntity, TDto>(_dbContext, _mapper);
-                _repositories[typeKey] = repositoryInstance;
-            }
-
-            return (IRepository<TEntity, TDto>)_repositories[typeKey];
+            CategoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
+            GroupRepository = groupRepository ?? throw new ArgumentNullException(nameof(groupRepository));
+            GroupUserRepository = groupUserRepository ?? throw new ArgumentNullException(nameof(groupUserRepository));
+            InvitationRepository = invitationRepository ?? throw new ArgumentNullException(nameof(invitationRepository));
+            LimitRepository = limitRepository ?? throw new ArgumentNullException(nameof(limitRepository));
+            TransactionGroupUserRepository = transactionGroupUserRepository ?? throw new ArgumentNullException(nameof(transactionGroupUserRepository));
+            TransactionRepository = transactionRepository ?? throw new ArgumentNullException(nameof(transactionRepository));
+            UserRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
         /// <summary>

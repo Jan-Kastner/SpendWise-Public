@@ -8,6 +8,6 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the photo of the entity.
         /// </summary>
-        byte[] Photo { get; set; }
+        byte[] Photo { get; init; }
     }
 }

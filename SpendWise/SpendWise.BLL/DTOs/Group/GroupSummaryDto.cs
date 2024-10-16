@@ -1,9 +1,11 @@
+using SpendWise.BLL.DTOs.Interfaces;
+
 namespace SpendWise.BLL.DTOs
 {
     /// <summary>
     /// Represents a summary data transfer object (DTO) for a group.
     /// </summary>
-    public record GroupSummaryDto
+    public record GroupSummaryDto : IQueryableDto
     {
         /// <summary>
         /// Gets or sets the unique identifier for the group.

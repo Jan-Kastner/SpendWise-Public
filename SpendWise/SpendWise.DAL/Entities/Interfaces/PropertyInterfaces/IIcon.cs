@@ -8,6 +8,6 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the icon of the entity.
         /// </summary>
-        byte[] Icon { get; set; }
+        byte[] Icon { get; init; }
     }
 }

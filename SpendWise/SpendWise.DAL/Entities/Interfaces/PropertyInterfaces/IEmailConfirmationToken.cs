@@ -8,6 +8,6 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the email confirmation token of the entity.
         /// </summary>
-        string? EmailConfirmationToken { get; set; }
+        string? EmailConfirmationToken { get; init; }
     }
 }

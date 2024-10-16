@@ -28,8 +28,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             // Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.WithId(GroupId));
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.WithId(GroupId));
 
             // Assert
             Assert.NotNull(groups);
@@ -51,8 +51,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             // Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.OrWithId(groupId1).OrWithId(groupId2));
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.OrWithId(groupId1).OrWithId(groupId2));
 
             // Assert
             Assert.NotNull(groups);
@@ -72,8 +72,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             // Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.NotWithId(excludedGroupId));
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.NotWithId(excludedGroupId));
 
             // Assert
             Assert.NotNull(groups);
@@ -97,8 +97,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             // Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.WithName(GroupName));
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.WithName(GroupName));
 
             // Assert
             Assert.NotNull(groups);
@@ -119,8 +119,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             // Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.OrWithName(groupName1).OrWithName(groupName2));
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.OrWithName(groupName1).OrWithName(groupName2));
 
             // Assert
             Assert.NotNull(groups);
@@ -140,8 +140,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             // Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.NotWithName(excludedGroupName));
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.NotWithName(excludedGroupName));
 
             // Assert
             Assert.NotNull(groups);
@@ -161,8 +161,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             // Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.WithNamePartialMatch(partialName));
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.WithNamePartialMatch(partialName));
 
             // Assert
             Assert.NotNull(groups);
@@ -183,8 +183,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             // Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.OrWithNamePartialMatch(partialName1).OrWithNamePartialMatch(partialName2));
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.OrWithNamePartialMatch(partialName1).OrWithNamePartialMatch(partialName2));
 
             // Assert
             Assert.NotNull(groups);
@@ -204,8 +204,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             // Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.NotWithNamePartialMatch(excludedText));
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.NotWithNamePartialMatch(excludedText));
 
             // Assert
             Assert.NotNull(groups);
@@ -229,8 +229,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             // Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.WithDescription(groupDescription));
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.WithDescription(groupDescription));
 
             // Assert
             Assert.NotNull(groups);
@@ -256,8 +256,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             // Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.OrWithDescription(groupDescription1).OrWithDescription(groupDescription2));
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.OrWithDescription(groupDescription1).OrWithDescription(groupDescription2));
 
             // Assert
             Assert.NotNull(groups);
@@ -283,8 +283,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             // Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.WithDescriptionPartialMatch(partialDescription));
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.WithDescriptionPartialMatch(partialDescription));
 
             // Assert
             Assert.NotNull(groups);
@@ -309,8 +309,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             // Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.OrWithDescriptionPartialMatch(partialDescription1).OrWithDescriptionPartialMatch(partialDescription2));
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.OrWithDescriptionPartialMatch(partialDescription1).OrWithDescriptionPartialMatch(partialDescription2));
 
             // Assert
             Assert.NotNull(groups);
@@ -334,8 +334,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             // Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.NotWithDescription(groupDescription));
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.NotWithDescription(groupDescription));
 
             // Assert
             Assert.NotNull(groups);
@@ -359,8 +359,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             // Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.NotWithDescriptionPartialMatch(excludedText));
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.NotWithDescriptionPartialMatch(excludedText));
 
             // Assert
             Assert.NotNull(groups);
@@ -383,8 +383,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             // Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.WithoutDescription());
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.WithoutDescription());
 
             // Assert
             Assert.NotNull(groups);
@@ -406,8 +406,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             // Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.OrWithoutDescription());
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.OrWithoutDescription());
 
             // Assert
             Assert.NotNull(groups);
@@ -429,8 +429,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             // Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.NotWithoutDescription());
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.NotWithoutDescription());
 
             // Assert
             Assert.NotNull(groups);
@@ -457,8 +457,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             //Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.WithGroupUser(groupUser.Id));
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.WithGroupUser(groupUser.Id));
 
             // Assert
             Assert.NotNull(groups);
@@ -480,8 +480,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             //Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.OrWithGroupUser(groupUser1.Id).OrWithGroupUser(groupUser2.Id));
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.OrWithGroupUser(groupUser1.Id).OrWithGroupUser(groupUser2.Id));
 
             // Assert
             Assert.NotNull(groups);
@@ -502,8 +502,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             // Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.NotWithGroupUser(groupUser.Id));
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.NotWithGroupUser(groupUser.Id));
 
             // Assert
             Assert.NotNull(groups);
@@ -527,8 +527,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             // Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.WithInvitation(invitation.Id));
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.WithInvitation(invitation.Id));
 
             // Assert
             Assert.NotNull(groups);
@@ -549,8 +549,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             // Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.OrWithInvitation(invitation1.Id).OrWithInvitation(invitation2.Id));
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.OrWithInvitation(invitation1.Id).OrWithInvitation(invitation2.Id));
 
             // Assert
             Assert.NotNull(groups);
@@ -573,8 +573,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             // Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.NotWithInvitation(invitation.Id));
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.NotWithInvitation(invitation.Id));
 
             // Assert
             Assert.NotNull(groups);
@@ -599,8 +599,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             // Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.WithId(groupId).WithName(groupName));
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.WithId(groupId).WithName(groupName));
 
             // Assert
             Assert.NotNull(groups);
@@ -623,8 +623,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             // Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.WithName(groupName).NotWithId(excludedGroupId));
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.WithName(groupName).NotWithId(excludedGroupId));
 
             // Assert
             Assert.NotNull(groups);
@@ -649,8 +649,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             // Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.OrWithDescription(groupDescription).OrWithName(groupName));
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.OrWithDescription(groupDescription).OrWithName(groupName));
 
             // Assert
             Assert.NotNull(groups);
@@ -673,8 +673,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new GroupQueryObject();
 
             // Act
-            var groups = await _unitOfWork.Repository<GroupEntity, GroupDto>()
-                .GetAsync(queryObject.WithName(groupName)
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.WithName(groupName)
                                      .WithDescription(groupDescription)
                                      .NotWithId(excludedGroupId));
 
@@ -691,5 +691,185 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
         }
 
         #endregion
+
+        #region RelationsQuery Tests
+
+        /// <summary>
+        /// Verifies that querying a group with users by its ID 
+        /// returns the correct entry from the database, including the associated users.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Fact]
+        public async Task WithIdIncludingGroupUsers_ShouldReturnCorrectGroupWithUsers()
+        {
+            // Arrange
+            var expectedGroupId = GroupSeeds.GroupFamily.Id;
+            var queryObject = new GroupQueryObject();
+            var expectedUserIds = new[] { UserSeeds.UserBobBrown.Id, UserSeeds.UserCharlieBlack.Id, UserSeeds.UserDianaGreen.Id, UserSeeds.UserJohnDoe.Id };
+
+            // Include users in the query
+            queryObject.Relations
+                .IncludeGroupUsers()
+                .ThenGuIncludeUser();
+
+            // Act
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.WithId(expectedGroupId));
+
+            // Assert
+            Assert.NotNull(groups);
+            Assert.Single(groups);
+            Assert.Equal(expectedGroupId, groups.First().Id);
+
+            Assert.NotNull(groups.First().GroupUsers);
+            Assert.NotEmpty(groups.First().GroupUsers);
+            Assert.All(groups.First().GroupUsers, gu => Assert.Equal(expectedGroupId, gu.GroupId));
+
+            Assert.All(groups.First().GroupUsers, gu => Assert.NotNull(gu.User));
+            Assert.All(groups.First().GroupUsers, gu => Assert.Contains(gu.UserId, expectedUserIds));
+        }
+
+        /// <summary>
+        /// Verifies that querying a group with invitations by its ID 
+        /// returns the correct entry from the database, including the associated invitations.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Fact]
+        public async Task WithIdIncludingInvitations_ShouldReturnCorrectGroupWithInvitations()
+        {
+            // Arrange
+            var expectedGroupId = GroupSeeds.GroupFamily.Id;
+            var queryObject = new GroupQueryObject();
+
+            // Include invitations in the query
+            queryObject.Relations
+                .IncludeInvitations();
+
+            // Act
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.WithId(expectedGroupId));
+
+            // Assert
+            Assert.NotNull(groups);
+            Assert.Single(groups);
+            Assert.Equal(expectedGroupId, groups.First().Id);
+
+            Assert.NotNull(groups.First().Invitations);
+            Assert.NotEmpty(groups.First().Invitations);
+            Assert.All(groups.First().Invitations, inv => Assert.Equal(expectedGroupId, inv.GroupId));
+        }
+
+        /// <summary>
+        /// Verifies that querying a group with users and their limits by its ID 
+        /// returns the correct entry from the database, including the associated users and their limits.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Fact]
+        public async Task WithIdIncludingGroupUsersAndLimits_ShouldReturnCorrectGroupWithUsersAndLimits()
+        {
+            // Arrange
+            var expectedGroupId = GroupSeeds.GroupFamily.Id;
+            var queryObject = new GroupQueryObject();
+
+            // Include users and their limits in the query
+            queryObject.Relations
+                .IncludeGroupUsers()
+                .ThenGuIncludeLimit();
+
+            // Act
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.WithId(expectedGroupId));
+
+            // Assert
+            Assert.NotNull(groups);
+            Assert.Single(groups);
+            Assert.Equal(expectedGroupId, groups.First().Id);
+
+            Assert.NotNull(groups.First().GroupUsers);
+            Assert.NotEmpty(groups.First().GroupUsers);
+            Assert.All(groups.First().GroupUsers, gu => Assert.Equal(expectedGroupId, gu.GroupId));
+        }
+
+        /// <summary>
+        /// Verifies that querying a group with users and their transaction group users by its ID 
+        /// returns the correct entry from the database, including the associated users and their transaction group users.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Fact]
+        public async Task WithIdIncludingGroupUsersAndTransactionGroupUsers_ShouldReturnCorrectGroupWithUsersAndTransactionGroupUsers()
+        {
+            // Arrange
+            var expectedGroupId = GroupSeeds.GroupFamily.Id;
+            var queryObject = new GroupQueryObject();
+            var expectedTransactionGroupUserIds = new[] { TransactionGroupUserSeeds.TransactionGroupUserDinnerFamilyDiana.Id, TransactionGroupUserSeeds.TransactionGroupUserFoodFamilyJohn.Id };
+
+            // Include users and their transaction group users in the query
+            queryObject.Relations
+                .IncludeGroupUsers()
+                .ThenGuIncludeTransactionGroupUsers();
+
+            // Act
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.WithId(expectedGroupId));
+
+            // Assert
+            Assert.NotNull(groups);
+            Assert.Single(groups);
+            Assert.Equal(expectedGroupId, groups.First().Id);
+
+            Assert.NotNull(groups.First().GroupUsers);
+            Assert.NotEmpty(groups.First().GroupUsers);
+            Assert.All(groups.First().GroupUsers, gu => Assert.Equal(expectedGroupId, gu.GroupId));
+
+            Assert.All(groups.First().GroupUsers, gu => Assert.NotNull(gu.TransactionGroupUsers));
+            Assert.All(groups.First().GroupUsers, gu => Assert.All(gu.TransactionGroupUsers, tgu => Assert.Contains(tgu.Id, expectedTransactionGroupUserIds)));
+        }
+
+        /// <summary>
+        /// Verifies that querying a group with users, their transaction group users, and transactions by its ID 
+        /// returns the correct entry from the database, including the associated users, their transaction group users, and transactions.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Fact]
+        public async Task WithIdIncludingGroupUsersTransactionGroupUsersAndTransactions_ShouldReturnCorrectGroupWithUsersTransactionGroupUsersAndTransactions()
+        {
+            // Arrange
+            var expectedGroupId = GroupSeeds.GroupFamily.Id;
+            var queryObject = new GroupQueryObject();
+            var expectedTransactions = new[] { TransactionSeeds.TransactionDianaDinner.Id, TransactionSeeds.TransactionJohnFood.Id };
+
+            // Include users, their transaction group users, and transactions in the query
+            queryObject.Relations
+                .IncludeGroupUsers()
+                .ThenGuIncludeTransactionGroupUsers()
+                .ThenGuTguIncludeTransaction();
+
+            // Act
+            var groups = await _unitOfWork.GroupRepository
+                .ListAsync(queryObject.WithId(expectedGroupId));
+
+            // Assert
+            Assert.NotNull(groups);
+            Assert.Single(groups);
+            Assert.Equal(expectedGroupId, groups.First().Id);
+
+            Assert.NotNull(groups.First().GroupUsers);
+            Assert.NotEmpty(groups.First().GroupUsers);
+            Assert.All(groups.First().GroupUsers, gu => Assert.Equal(expectedGroupId, gu.GroupId));
+
+            Assert.All(groups.First().GroupUsers, gu => Assert.NotNull(gu.TransactionGroupUsers));
+
+            Assert.All(groups.First().GroupUsers, gu => Assert.All(gu.TransactionGroupUsers, tgu => Assert.NotNull(tgu.Transaction)));
+            Assert.All(groups.First().GroupUsers, gu =>
+                Assert.All(gu.TransactionGroupUsers, tgu =>
+                {
+                    Assert.NotNull(tgu.Transaction);
+                    Assert.Contains(tgu.Transaction!.Id, expectedTransactions);
+                })
+            );
+        }
+
+        #endregion
+
     }
 }

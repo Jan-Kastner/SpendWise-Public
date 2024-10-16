@@ -30,8 +30,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionGroupUserQueryObject();
 
             // Act
-            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.WithId(transactionGroupUserId));
+            var transactionGroupUsers = await _unitOfWork.TransactionGroupUserRepository
+                .ListAsync(queryObject.WithId(transactionGroupUserId));
 
             // Assert
             Assert.NotNull(transactionGroupUsers);
@@ -53,8 +53,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionGroupUserQueryObject();
 
             // Act
-            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.OrWithId(transactionGroupUserId1).OrWithId(transactionGroupUserId2));
+            var transactionGroupUsers = await _unitOfWork.TransactionGroupUserRepository
+                .ListAsync(queryObject.OrWithId(transactionGroupUserId1).OrWithId(transactionGroupUserId2));
 
             // Assert
             Assert.NotNull(transactionGroupUsers);
@@ -73,8 +73,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionGroupUserQueryObject();
 
             // Act
-            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.NotWithId(excludedTransactionGroupUserId));
+            var transactionGroupUsers = await _unitOfWork.TransactionGroupUserRepository
+                .ListAsync(queryObject.NotWithId(excludedTransactionGroupUserId));
 
             // Assert
             Assert.NotNull(transactionGroupUsers);
@@ -96,8 +96,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionGroupUserQueryObject();
 
             // Act
-            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.IsRead());
+            var transactionGroupUsers = await _unitOfWork.TransactionGroupUserRepository
+                .ListAsync(queryObject.IsRead());
 
             // Assert
             Assert.NotNull(transactionGroupUsers);
@@ -115,8 +115,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionGroupUserQueryObject();
 
             // Act
-            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.OrIsRead());
+            var transactionGroupUsers = await _unitOfWork.TransactionGroupUserRepository
+                .ListAsync(queryObject.OrIsRead());
 
             // Assert
             Assert.NotNull(transactionGroupUsers);
@@ -134,8 +134,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionGroupUserQueryObject();
 
             // Act
-            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.NotIsRead());
+            var transactionGroupUsers = await _unitOfWork.TransactionGroupUserRepository
+                .ListAsync(queryObject.NotIsRead());
 
             // Assert
             Assert.NotNull(transactionGroupUsers);
@@ -153,8 +153,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionGroupUserQueryObject();
 
             // Act
-            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.IsNotRead());
+            var transactionGroupUsers = await _unitOfWork.TransactionGroupUserRepository
+                .ListAsync(queryObject.IsNotRead());
 
             // Assert
             Assert.NotNull(transactionGroupUsers);
@@ -172,8 +172,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionGroupUserQueryObject();
 
             // Act
-            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.OrIsNotRead());
+            var transactionGroupUsers = await _unitOfWork.TransactionGroupUserRepository
+                .ListAsync(queryObject.OrIsNotRead());
 
             // Assert
             Assert.NotNull(transactionGroupUsers);
@@ -191,8 +191,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionGroupUserQueryObject();
 
             // Act
-            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.NotIsNotRead());
+            var transactionGroupUsers = await _unitOfWork.TransactionGroupUserRepository
+                .ListAsync(queryObject.NotIsNotRead());
 
             // Assert
             Assert.NotNull(transactionGroupUsers);
@@ -216,8 +216,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionGroupUserQueryObject();
 
             // Act
-            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.WithTransaction(transactionId));
+            var transactionGroupUsers = await _unitOfWork.TransactionGroupUserRepository
+                .ListAsync(queryObject.WithTransaction(transactionId));
 
             // Assert
             Assert.NotNull(transactionGroupUsers);
@@ -238,8 +238,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionGroupUserQueryObject();
 
             // Act
-            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.OrWithTransaction(transactionId1).OrWithTransaction(transactionId2));
+            var transactionGroupUsers = await _unitOfWork.TransactionGroupUserRepository
+                .ListAsync(queryObject.OrWithTransaction(transactionId1).OrWithTransaction(transactionId2));
 
             // Assert
             Assert.NotNull(transactionGroupUsers);
@@ -258,8 +258,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionGroupUserQueryObject();
 
             // Act
-            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.NotWithTransaction(excludedTransactionId));
+            var transactionGroupUsers = await _unitOfWork.TransactionGroupUserRepository
+                .ListAsync(queryObject.NotWithTransaction(excludedTransactionId));
 
             // Assert
             Assert.NotNull(transactionGroupUsers);
@@ -283,8 +283,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionGroupUserQueryObject();
 
             // Act
-            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.WithGroupUser(groupUserId));
+            var transactionGroupUsers = await _unitOfWork.TransactionGroupUserRepository
+                .ListAsync(queryObject.WithGroupUser(groupUserId));
 
             // Assert
             Assert.NotNull(transactionGroupUsers);
@@ -305,8 +305,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionGroupUserQueryObject();
 
             // Act
-            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.OrWithGroupUser(groupUserId1).OrWithGroupUser(groupUserId2));
+            var transactionGroupUsers = await _unitOfWork.TransactionGroupUserRepository
+                .ListAsync(queryObject.OrWithGroupUser(groupUserId1).OrWithGroupUser(groupUserId2));
 
             // Assert
             Assert.NotNull(transactionGroupUsers);
@@ -325,8 +325,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionGroupUserQueryObject();
 
             // Act
-            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.NotWithGroupUser(excludedGroupUserId));
+            var transactionGroupUsers = await _unitOfWork.TransactionGroupUserRepository
+                .ListAsync(queryObject.NotWithGroupUser(excludedGroupUserId));
 
             // Assert
             Assert.NotNull(transactionGroupUsers);
@@ -351,8 +351,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionGroupUserQueryObject();
 
             // Act
-            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.WithTransaction(transactionId)
+            var transactionGroupUsers = await _unitOfWork.TransactionGroupUserRepository
+                .ListAsync(queryObject.WithTransaction(transactionId)
                                      .OrWithGroupUser(groupUserId));
 
             // Assert
@@ -380,8 +380,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionGroupUserQueryObject();
 
             // Act
-            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.OrWithGroupUser(groupUserId)
+            var transactionGroupUsers = await _unitOfWork.TransactionGroupUserRepository
+                .ListAsync(queryObject.OrWithGroupUser(groupUserId)
                                      .NotWithTransaction(excludedTransactionId));
 
             // Assert
@@ -411,8 +411,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionGroupUserQueryObject();
 
             // Act
-            var transactionGroupUsers = await _unitOfWork.Repository<TransactionGroupUserEntity, TransactionGroupUserDto>()
-                .GetAsync(queryObject.OrWithGroupUser(groupUserId1)
+            var transactionGroupUsers = await _unitOfWork.TransactionGroupUserRepository
+                .ListAsync(queryObject.OrWithGroupUser(groupUserId1)
                                      .OrWithGroupUser(groupUserId2)
                                      .NotWithTransaction(excludedTransactionId1)
                                      .NotWithTransaction(excludedTransactionId2));

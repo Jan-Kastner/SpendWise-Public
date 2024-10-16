@@ -18,6 +18,7 @@ namespace SpendWise.BLL.Mappers
             // DAL DTO to BLL DTO mappings
             CreateMap<TransactionDto, TransactionDetailDto>();
             CreateMap<TransactionDto, TransactionListDto>();
+            CreateMap<TransactionDto, TransactionSummaryDto>();
         }
     }
 }

@@ -5,6 +5,7 @@ using SpendWise.Common.Tests.Seeds;
 using SpendWise.Common.Tests.Helpers;
 using SpendWise.DAL.Entities;
 using SpendWise.Common.Enums;
+using SpendWise.DAL.QueryObjects;
 
 namespace SpendWise.DAL.Tests.UnitOfWorkTests
 {
@@ -34,15 +35,17 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 Id = Guid.NewGuid(),
                 Role = UserRole.GroupParticipant,
                 UserId = UserSeeds.UserAliceSmith.Id,
-                GroupId = GroupSeeds.GroupFamily.Id
+                GroupId = GroupSeeds.GroupFamily.Id,
+                LimitId = Guid.Empty
             };
+            var queryObject = new GroupUserQueryObject().WithId(groupUserToAdd.Id);
 
             // Act
-            await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>().InsertAsync(groupUserToAdd);
+            await _unitOfWork.GroupUserRepository.InsertAsync(groupUserToAdd);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var actualGroupUser = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>().GetByIdAsync(groupUserToAdd.Id);
+            var actualGroupUser = await _unitOfWork.GroupUserRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualGroupUser);
             DeepAssert.Equal(groupUserToAdd, actualGroupUser);
         }
@@ -58,11 +61,12 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             var groupUserToDelete = _mapper.Map<GroupUserDto>(GroupUserSeeds.GroupUserBobInFamily);
 
             // Act
-            await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>().DeleteAsync(groupUserToDelete.Id);
+            await _unitOfWork.GroupUserRepository.DeleteAsync(groupUserToDelete.Id);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var deletedGroupUser = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>().GetByIdAsync(groupUserToDelete.Id);
+            var queryObject = new GroupUserQueryObject().WithId(groupUserToDelete.Id);
+            var deletedGroupUser = await _unitOfWork.GroupUserRepository.SingleOrDefaultAsync(queryObject);
             Assert.Null(deletedGroupUser);
         }
 
@@ -75,9 +79,10 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         {
             // Arrange
             var expectedGroupUser = _mapper.Map<GroupUserDto>(GroupUserSeeds.GroupUserBobInFamily);
+            var queryObject = new GroupUserQueryObject().WithId(expectedGroupUser.Id);
 
             // Act
-            var actualGroupUser = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>().GetByIdAsync(expectedGroupUser.Id);
+            var actualGroupUser = await _unitOfWork.GroupUserRepository.SingleOrDefaultAsync(queryObject);
 
             // Assert
             Assert.NotNull(actualGroupUser);
@@ -107,13 +112,14 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 Id = Guid.NewGuid(),
                 Role = UserRole.GroupParticipant,
                 UserId = existingGroupUser.UserId, // Duplicate UserId
-                GroupId = existingGroupUser.GroupId // Duplicate GroupId
+                GroupId = existingGroupUser.GroupId, // Duplicate GroupId
+                LimitId = Guid.Empty
             };
 
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>().InsertAsync(duplicateGroupUser);
+                await _unitOfWork.GroupUserRepository.InsertAsync(duplicateGroupUser);
                 await _unitOfWork.SaveChangesAsync();
             });
         }
@@ -127,9 +133,10 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
         {
             // Arrange
             var invalidId = Guid.NewGuid();
+            var queryObject = new GroupUserQueryObject().WithId(invalidId);
 
             // Act
-            var actualGroupUser = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>().GetByIdAsync(invalidId);
+            var actualGroupUser = await _unitOfWork.GroupUserRepository.SingleOrDefaultAsync(queryObject);
 
             // Assert
             Assert.Null(actualGroupUser);
@@ -148,7 +155,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>().DeleteAsync(nonExistentId);
+                await _unitOfWork.GroupUserRepository.DeleteAsync(nonExistentId);
                 await _unitOfWork.SaveChangesAsync();
             });
         }
@@ -166,13 +173,14 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 Id = Guid.NewGuid(),
                 Role = UserRole.GroupParticipant,
                 UserId = Guid.Empty, // Invalid UserId
-                GroupId = Guid.Empty // Invalid GroupId
+                GroupId = Guid.Empty, // Invalid GroupId
+                LimitId = Guid.Empty
             };
 
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>().InsertAsync(invalidGroupUser);
+                await _unitOfWork.GroupUserRepository.InsertAsync(invalidGroupUser);
                 await _unitOfWork.SaveChangesAsync();
             });
         }
@@ -203,11 +211,12 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             };
 
             // Act
-            await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>().UpdateAsync(updatedGroupUser);
+            await _unitOfWork.GroupUserRepository.UpdateAsync(updatedGroupUser);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var actualGroupUser = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>().GetByIdAsync(existingGroupUser.Id);
+            var queryObject = new GroupUserQueryObject().WithId(existingGroupUser.Id);
+            var actualGroupUser = await _unitOfWork.GroupUserRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualGroupUser);
             Assert.Equal(existingGroupUser.UserId, actualGroupUser.UserId); // UserId should remain unchanged
             Assert.Equal(existingGroupUser.GroupId, actualGroupUser.GroupId); // GroupId should remain unchanged
@@ -232,17 +241,19 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             // Arrange
             var groupUserId = GroupUserSeeds.GroupUserCharlieInFamily.Id;
             var associatedLimitId = LimitSeeds.LimitCharlieFamily.Id;
+            var queryObject = new GroupUserQueryObject().WithId(groupUserId);
+            var limitQueryObject = new LimitQueryObject().WithId(associatedLimitId);
 
             // Verify that the LimitEntity exists before deletion
-            var initialLimit = await _unitOfWork.Repository<LimitEntity, LimitDto>().GetByIdAsync(associatedLimitId);
+            var initialLimit = await _unitOfWork.LimitRepository.SingleOrDefaultAsync(limitQueryObject);
             Assert.NotNull(initialLimit);
 
             // Act
-            await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>().DeleteAsync(groupUserId);
+            await _unitOfWork.GroupUserRepository.DeleteAsync(groupUserId);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var deletedLimit = await _unitOfWork.Repository<LimitEntity, LimitDto>().GetByIdAsync(associatedLimitId);
+            var deletedLimit = await _unitOfWork.LimitRepository.SingleOrDefaultAsync(limitQueryObject);
             Assert.Null(deletedLimit);
         }
 
@@ -259,14 +270,16 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             var expectedGroupId = GroupUserSeeds.GroupUserBobInFamily.GroupId;
 
             // Act
-            await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>().DeleteAsync(groupUserId);
+            await _unitOfWork.GroupUserRepository.DeleteAsync(groupUserId);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var relatedUser = await _unitOfWork.Repository<UserEntity, UserDto>().GetByIdAsync(expectedUserId);
+            var userQueryObject = new UserQueryObject().WithId(expectedUserId);
+            var groupQueryObject = new GroupQueryObject().WithId(expectedGroupId);
+            var relatedUser = await _unitOfWork.UserRepository.SingleOrDefaultAsync(userQueryObject);
             Assert.NotNull(relatedUser);
 
-            var relatedGroup = await _unitOfWork.Repository<GroupEntity, GroupDto>().GetByIdAsync(expectedGroupId);
+            var relatedGroup = await _unitOfWork.GroupRepository.SingleOrDefaultAsync(groupQueryObject);
             Assert.NotNull(relatedGroup);
         }
 
@@ -292,7 +305,8 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 Id = Guid.NewGuid(),
                 Role = UserRole.GroupParticipant,
                 UserId = UserSeeds.UserAliceSmith.Id,
-                GroupId = GroupSeeds.GroupWork.Id
+                GroupId = GroupSeeds.GroupWork.Id,
+                LimitId = Guid.Empty
             };
 
             var updatedGroupUserDto = new GroupUserDto
@@ -300,22 +314,23 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
                 Id = newGroupUserDto.Id,
                 Role = UserRole.GroupParticipant,
                 UserId = newGroupUserDto.UserId,
-                GroupId = GroupSeeds.GroupFamily.Id
+                GroupId = GroupSeeds.GroupFamily.Id,
+                LimitId = Guid.Empty
             };
 
             try
             {
                 // Act
                 // Insert
-                await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>().InsertAsync(newGroupUserDto);
+                await _unitOfWork.GroupUserRepository.InsertAsync(newGroupUserDto);
                 await _unitOfWork.SaveChangesAsync();
 
                 // Update
-                await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>().UpdateAsync(updatedGroupUserDto);
+                await _unitOfWork.GroupUserRepository.UpdateAsync(updatedGroupUserDto);
                 await _unitOfWork.SaveChangesAsync();
 
                 // Delete
-                await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>().DeleteAsync(newGroupUserDto.Id);
+                await _unitOfWork.GroupUserRepository.DeleteAsync(newGroupUserDto.Id);
                 await _unitOfWork.SaveChangesAsync();
             }
             catch
@@ -324,7 +339,8 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             }
 
             // Assert
-            var deletedGroupUser = await _unitOfWork.Repository<GroupUserEntity, GroupUserDto>().GetByIdAsync(newGroupUserDto.Id);
+            var queryObject = new GroupUserQueryObject().WithId(newGroupUserDto.Id);
+            var deletedGroupUser = await _unitOfWork.GroupUserRepository.SingleOrDefaultAsync(queryObject);
             Assert.Null(deletedGroupUser);
         }
 

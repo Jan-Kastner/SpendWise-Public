@@ -8,6 +8,6 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the category ID of the entity.
         /// </summary>
-        Guid? CategoryId { get; set; }
+        Guid? CategoryId { get; init; }
     }
 }

@@ -7,11 +7,17 @@ namespace SpendWise.DAL.QueryObjects
 {
     /// <summary>
     /// Represents an abstract base class for query objects that filter entities of type <typeparamref name="TEntity"/>.
+    /// This class provides methods for building queries using logical operators.
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity that implements the <see cref="IEntity"/> interface.</typeparam>
     public abstract class QueryObject<TEntity> : IQueryObject<TEntity> where TEntity : class, IEntity
     {
-        private Expression<Func<TEntity, bool>>? _query;
+        private Expression<Func<TEntity, bool>>? _query; // Holds the current query expression
+
+        /// <summary>
+        /// Gets the list of includes to be applied to the query.
+        /// </summary>
+        public virtual List<string> Includes => new List<string>();
 
         /// <summary>
         /// Converts the query object into an expression that can be used to filter entities.
@@ -111,5 +117,11 @@ namespace SpendWise.DAL.QueryObjects
             _query = null;
             return this;
         }
+
+        /// <summary>
+        /// Gets the collection of include directives used by the RelationConfigGenerator
+        /// to generate EntityRelationsConfiguration, which acts as a state machine for managing includes.
+        /// </summary>
+        public virtual ICollection<Func<TEntity, object>> IncludeDirectives => new List<Func<TEntity, object>>();
     }
 }

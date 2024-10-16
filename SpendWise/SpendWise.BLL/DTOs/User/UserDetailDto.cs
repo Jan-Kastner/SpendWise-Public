@@ -1,11 +1,12 @@
 using SpendWise.Common.Enums;
+using SpendWise.BLL.DTOs.Interfaces;
 
 namespace SpendWise.BLL.DTOs
 {
     /// <summary>
     /// Represents detailed information about a user.
     /// </summary>
-    public record UserDetailDto
+    public record UserDetailDto : ISentInvitationsDto<InvitationListDto>, IReceivedInvitationsDto<InvitationListDto>, IGroupUsersDto<GroupUserListDto>
     {
         /// <summary>
         /// Gets or sets the unique identifier of the user.

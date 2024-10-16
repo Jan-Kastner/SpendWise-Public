@@ -10,6 +10,6 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the notice type of the entity.
         /// </summary>
-        NoticeType NoticeType { get; set; }
+        NoticeType NoticeType { get; init; }
     }
 }

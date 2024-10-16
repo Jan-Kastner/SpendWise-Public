@@ -8,6 +8,6 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the color of the entity.
         /// </summary>
-        string Color { get; set; }
+        string Color { get; init; }
     }
 }

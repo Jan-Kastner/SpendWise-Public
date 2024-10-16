@@ -9,7 +9,7 @@ namespace SpendWise.DAL.QueryObjects
     /// Provides methods for querying users by various properties.
     /// </summary>
     /// <typeparam name="T">The type of the query object.</typeparam>
-    public interface IUserQueryObject<T> : IIdQuery<T>, INameQuery<T>, IGroupUserQuery<T>, ISurnameQuery<T>, IEmailQuery<T>, IPasswordQuery<T>, IPhotoQuery<T>, IEmailConfirmedQuery<T>, ITwoFactorEnabledQuery<T>, IResetPasswordTokenQuery<T>, IPreferredThemeQuery<T>, IFullNameQuery<T>, IEmailDomainQuery<T>, IDateOfRegistrationQuery<T>, ISentInvitationQuery<T>, IReceivedInvitationQuery<T>
+    public interface IUserQueryObject : IQueryObject, IIdQuery<UserQueryObject>, INameQuery<UserQueryObject>, IGroupUserQuery<UserQueryObject>, ISurnameQuery<UserQueryObject>, IEmailQuery<UserQueryObject>, IPasswordQuery<UserQueryObject>, IPhotoQuery<UserQueryObject>, IEmailConfirmedQuery<UserQueryObject>, ITwoFactorEnabledQuery<UserQueryObject>, IResetPasswordTokenQuery<UserQueryObject>, IPreferredThemeQuery<UserQueryObject>, IFullNameQuery<UserQueryObject>, IEmailDomainQuery<UserQueryObject>, IDateOfRegistrationQuery<UserQueryObject>, ISentInvitationQuery<UserQueryObject>, IReceivedInvitationQuery<UserQueryObject>
     {
     }
 }

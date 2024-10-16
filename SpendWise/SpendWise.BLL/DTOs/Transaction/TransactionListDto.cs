@@ -1,11 +1,12 @@
 using SpendWise.Common.Enums;
+using SpendWise.BLL.DTOs.Interfaces;
 
 namespace SpendWise.BLL.DTOs
 {
     /// <summary>
     /// Represents a summary of a transaction for listing purposes.
     /// </summary>
-    public record TransactionListDto
+    public record TransactionListDto : IQueryableDto, ICategoryDto<CategoryListDto>
     {
         /// <summary>
         /// Gets or sets the unique identifier of the transaction.
@@ -40,6 +41,6 @@ namespace SpendWise.BLL.DTOs
         /// <summary>
         /// Gets or sets the category associated with the transaction, if any.
         /// </summary>
-        public CategoryListDto? Category { get; init; }
+        public CategoryListDto? Category { get; set; }
     }
 }

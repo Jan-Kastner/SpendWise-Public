@@ -56,8 +56,11 @@ namespace SpendWise.DAL.Tests
                 Role = UserRole.GroupParticipant,
                 UserId = UserSeeds.UserAliceSmith.Id,
                 GroupId = GroupSeeds.GroupFriends.Id,
+                LimitId = null,
                 User = null!,
-                Group = null!
+                Group = null!,
+                Limit = null!,
+                TransactionGroupUsers = null!
             };
 
             // Act
@@ -88,8 +91,11 @@ namespace SpendWise.DAL.Tests
                 Role = UserRole.GroupParticipant,
                 UserId = UserSeeds.UserAliceSmith.Id,
                 GroupId = GroupSeeds.GroupWork.Id,
+                LimitId = null,
                 User = null!,
-                Group = null!
+                Group = null!,
+                Limit = null!,
+                TransactionGroupUsers = null!
             };
 
             // Act
@@ -153,8 +159,11 @@ namespace SpendWise.DAL.Tests
                 Role = UserRole.GroupParticipant,
                 UserId = Guid.NewGuid(),  // Assuming this ID does not exist in the User table
                 GroupId = groupUserToUpdate.GroupId,
+                LimitId = null,
                 User = null!,
-                Group = null!
+                Group = null!,
+                Limit = null!,
+                TransactionGroupUsers = null!
             };
 
             // Act & Assert
@@ -179,9 +188,12 @@ namespace SpendWise.DAL.Tests
                 Id = groupUserToUpdate.Id,
                 Role = UserRole.GroupParticipant,
                 UserId = groupUserToUpdate.UserId,
-                GroupId = Guid.NewGuid(),  // Assuming this ID does not exist in the Group table
+                GroupId = Guid.NewGuid(),
+                LimitId = null,
                 User = null!,
-                Group = null!
+                Group = null!,
+                Limit = null!,
+                TransactionGroupUsers = null!
             };
 
             // Act & Assert
@@ -290,8 +302,11 @@ namespace SpendWise.DAL.Tests
                     2 => GroupSeeds.GroupFamily.Id,
                     _ => throw new InvalidOperationException("Unexpected index.")
                 },
+                LimitId = null,
                 User = null!,
-                Group = null!
+                Group = null!,
+                Limit = null!,
+                TransactionGroupUsers = null!
             }).ToList();
 
             // Act

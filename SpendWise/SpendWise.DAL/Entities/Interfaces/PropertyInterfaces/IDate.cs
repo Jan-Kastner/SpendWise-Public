@@ -8,6 +8,6 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the date of the entity.
         /// </summary>
-        DateTime Date { get; set; }
+        DateTime Date { get; init; }
     }
 }

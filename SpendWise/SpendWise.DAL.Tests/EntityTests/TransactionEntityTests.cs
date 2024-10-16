@@ -44,6 +44,8 @@ namespace SpendWise.DAL.Tests
                 Description = "Utilities",
                 Type = TransactionType.Expense,
                 CategoryId = CategorySeeds.CategoryTransport.Id,
+                Category = null,
+                TransactionGroupUsers = Array.Empty<TransactionGroupUserEntity>()
             };
 
             // Act
@@ -107,6 +109,9 @@ namespace SpendWise.DAL.Tests
                 Amount = 500m,
                 Description = "Updated Transaction",
                 Type = TransactionType.Income,
+                CategoryId = null,
+                Category = null,
+                TransactionGroupUsers = new List<TransactionGroupUserEntity>()
             };
 
             // Act
@@ -143,7 +148,9 @@ namespace SpendWise.DAL.Tests
                 Date = DateTime.UtcNow,
                 Type = TransactionType.Expense,
                 CategoryId = Guid.NewGuid(),
-                Description = null
+                Description = null,
+                Category = null,
+                TransactionGroupUsers = new List<TransactionGroupUserEntity>()
             };
 
             // Act & Assert
@@ -171,7 +178,9 @@ namespace SpendWise.DAL.Tests
                 Date = DateTime.UtcNow,
                 Type = TransactionType.Expense,
                 CategoryId = Guid.NewGuid(),
-                Description = null
+                Description = null,
+                Category = null,
+                TransactionGroupUsers = new List<TransactionGroupUserEntity>()
             };
 
             // Act & Assert
@@ -196,8 +205,10 @@ namespace SpendWise.DAL.Tests
                 Amount = 100.00m,
                 Date = DateTime.UtcNow,
                 Type = TransactionType.Expense,
-                CategoryId = Guid.Empty,
-                Description = null
+                CategoryId = Guid.NewGuid(), // Invalid category ID
+                Description = null,
+                Category = null,
+                TransactionGroupUsers = new List<TransactionGroupUserEntity>()
             };
 
             // Act & Assert
@@ -226,7 +237,9 @@ namespace SpendWise.DAL.Tests
                 Date = DateTime.UtcNow,
                 Description = longDescription,
                 Type = TransactionType.Expense,
-                CategoryId = CategorySeeds.CategoryFood.Id
+                CategoryId = CategorySeeds.CategoryFood.Id,
+                Category = null,
+                TransactionGroupUsers = new List<TransactionGroupUserEntity>()
             };
 
             // Act & Assert
@@ -254,7 +267,9 @@ namespace SpendWise.DAL.Tests
                 Date = DateTime.UtcNow,
                 Type = TransactionType.Expense,
                 CategoryId = CategorySeeds.CategoryFood.Id,
-                Description = null
+                Description = null,
+                Category = null,
+                TransactionGroupUsers = new List<TransactionGroupUserEntity>()
             };
 
             // Act & Assert
@@ -357,6 +372,8 @@ namespace SpendWise.DAL.Tests
                 Description = $"Utilities{i}",
                 Type = TransactionType.Income,
                 CategoryId = CategorySeeds.CategoryTransport.Id,
+                Category = null,
+                TransactionGroupUsers = new List<TransactionGroupUserEntity>()
             }).ToList();
 
             // Act

@@ -8,6 +8,6 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets a value indicating whether two-factor authentication is enabled.
         /// </summary>
-        bool IsTwoFactorEnabled { get; set; }
+        bool IsTwoFactorEnabled { get; init; }
     }
 }

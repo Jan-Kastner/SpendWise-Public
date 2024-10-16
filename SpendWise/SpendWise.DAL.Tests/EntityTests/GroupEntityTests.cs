@@ -55,7 +55,9 @@ namespace SpendWise.DAL.Tests
             {
                 Id = Guid.NewGuid(),
                 Name = "New Group",
-                Description = "Description of the new group"
+                Description = "Description of the new group",
+                GroupUsers = new List<GroupUserEntity>(),
+                Invitations = new List<InvitationEntity>()
             };
 
             // Act
@@ -84,7 +86,9 @@ namespace SpendWise.DAL.Tests
             {
                 Id = existingGroup.Id,
                 Name = existingGroup.Name + " Updated",
-                Description = existingGroup.Description + " Updated"
+                Description = existingGroup.Description + " Updated",
+                GroupUsers = new List<GroupUserEntity>(),
+                Invitations = new List<InvitationEntity>()
             };
 
             // Act
@@ -145,7 +149,9 @@ namespace SpendWise.DAL.Tests
             {
                 Id = existingGroup.Id,
                 Name = new string('A', 101), // Invalid Name length
-                Description = existingGroup.Description
+                Description = existingGroup.Description,
+                GroupUsers = new List<GroupUserEntity>(),
+                Invitations = new List<InvitationEntity>()
             };
 
             // Act
@@ -244,7 +250,9 @@ namespace SpendWise.DAL.Tests
             {
                 Id = Guid.NewGuid(),
                 Name = new string('A', 100), // Assuming 100 is the maximum length for Name
-                Description = new string('B', 200) // Assuming 200 is the maximum length for Description
+                Description = new string('B', 200), // Assuming 200 is the maximum length for Description
+                GroupUsers = new List<GroupUserEntity>(),
+                Invitations = new List<InvitationEntity>()
             };
 
             // Act
@@ -272,7 +280,9 @@ namespace SpendWise.DAL.Tests
             {
                 Id = Guid.NewGuid(),
                 Name = $"Group{i}",
-                Description = $"Description{i}"
+                Description = $"Description{i}",
+                GroupUsers = new List<GroupUserEntity>(),
+                Invitations = new List<InvitationEntity>()
             }).ToList();
 
             // Act

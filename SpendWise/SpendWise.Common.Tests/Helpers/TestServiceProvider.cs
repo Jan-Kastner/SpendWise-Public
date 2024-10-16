@@ -6,13 +6,14 @@ using SpendWise.DAL.Repositories;
 using SpendWise.DAL.UnitOfWork;
 using SpendWise.Common.Tests.Factories;
 using SpendWise.DAL.dbContext;
-using SpendWise.BLL.Services;
 using SpendWise.BLL.Mappers;
-using SpendWise.BLL.Handlers;
-using SpendWise.BLL.Handlers.Categories;
-using SpendWise.BLL.DTOs;
-using SpendWise.DAL.Entities;
 using SpendWise.DAL.DTOs;
+using SpendWise.DAL.Entities;
+using AutoMapper;
+using SpendWise.BLL.Handlers;
+using SpendWise.BLL.Handlers.Interfaces;
+using SpendWise.BLL.Services.Interfaces;
+using SpendWise.BLL.Services;
 
 namespace SpendWise.Common.Tests.Helpers
 {
@@ -41,13 +42,29 @@ namespace SpendWise.Common.Tests.Helpers
             });
 
             // Register AutoMapper with the mapping profiles.
-            services.AddAutoMapper(typeof(MappingProfile), typeof(CategoryMappingProfile), typeof(TransactionMappingProfile));
+            services.AddAutoMapper(typeof(MappingProfile), typeof(CategoryMappingProfile), typeof(TransactionMappingProfile), typeof(GroupMappingProfile), typeof(GroupUserMappingProfile), typeof(UserMappingProfile));
 
             // Register the generic repository.
             services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
 
             // Register the UnitOfWork and all its dependencies automatically.
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>(provider =>
+            {
+                var dbContext = provider.GetRequiredService<IDbContext>();
+                var logger = provider.GetRequiredService<ILogger<UnitOfWork>>();
+                var mapper = provider.GetRequiredService<IMapper>();
+
+                var categoryRepository = provider.GetRequiredService<IRepository<CategoryEntity, CategoryDto>>();
+                var groupRepository = provider.GetRequiredService<IRepository<GroupEntity, GroupDto>>();
+                var groupUserRepository = provider.GetRequiredService<IRepository<GroupUserEntity, GroupUserDto>>();
+                var invitationRepository = provider.GetRequiredService<IRepository<InvitationEntity, InvitationDto>>();
+                var limitRepository = provider.GetRequiredService<IRepository<LimitEntity, LimitDto>>();
+                var transactionGroupUserRepository = provider.GetRequiredService<IRepository<TransactionGroupUserEntity, TransactionGroupUserDto>>();
+                var transactionRepository = provider.GetRequiredService<IRepository<TransactionEntity, TransactionDto>>();
+                var userRepository = provider.GetRequiredService<IRepository<UserEntity, UserDto>>();
+
+                return new UnitOfWork(dbContext, logger, mapper, categoryRepository, groupRepository, groupUserRepository, invitationRepository, limitRepository, transactionGroupUserRepository, transactionRepository, userRepository);
+            });
 
             // Register a logger for UnitOfWork.
             services.AddLogging(loggingBuilder =>
@@ -55,20 +72,15 @@ namespace SpendWise.Common.Tests.Helpers
                 loggingBuilder.AddConsole(); // Configure console logging
             });
 
-            // Register services for Categories
-            services.AddScoped<IService<CategoryCreateDto, CategoryUpdateDto>, CategoryService>();
+            // Register the specific handlers for Category
+            services.AddScoped<ICreateCategoryCommandHandler, CreateCategoryCommandHandler>();
+            services.AddScoped<IDeleteCategoryCommandHandler, DeleteCategoryCommandHandler>();
+            services.AddScoped(typeof(IGetCategoryByIdQueryHandler<>), typeof(GetCategoryByIdQueryHandler<>));
+            services.AddScoped(typeof(IGetCategoriesByCriteriaQueryHandler<>), typeof(GetCategoriesByCriteriaQueryHandler<>));
+            services.AddScoped<IUpdateCategoryCommandHandler, UpdateCategoryCommandHandler>();
+
+            // Register the CategoryService
             services.AddScoped<ICategoryService, CategoryService>();
-
-            services.AddScoped<IGetAllCategoriesHandler<CategoryDetailDto>, GetAllCategoriesHandler<CategoryDetailDto>>();
-            services.AddScoped<IGetAllCategoriesHandler<CategoryListDto>, GetAllCategoriesHandler<CategoryListDto>>();
-            services.AddScoped<IGetAllCategoriesHandler<CategorySummaryDto>, GetAllCategoriesHandler<CategorySummaryDto>>();
-
-            services.AddScoped<IGetCategoryByIdHandler<CategoryDetailDto>, GetCategoryByIdHandler<CategoryDetailDto>>();
-            services.AddScoped<IGetCategoryByIdHandler<CategoryListDto>, GetCategoryByIdHandler<CategoryListDto>>();
-            services.AddScoped<IGetCategoryByIdHandler<CategorySummaryDto>, GetCategoryByIdHandler<CategorySummaryDto>>();
-
-            services.AddScoped<ICreateCommandHandler<CategoryCreateDto>, CreateCommandHandler<CategoryCreateDto, CategoryUpdateDto>>();
-            services.AddScoped<IUpdateCommandHandler<CategoryUpdateDto>, UpdateCommandHandler<CategoryCreateDto, CategoryUpdateDto>>();
 
             return services.BuildServiceProvider();
         }

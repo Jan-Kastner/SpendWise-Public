@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SpendWise.Common.Tests.Seeds;
 using SpendWise.Common.Tests.Helpers;
 using SpendWise.DAL.Entities;
+using SpendWise.DAL.QueryObjects;
 
 namespace SpendWise.DAL.Tests.UnitOfWorkTests
 {
@@ -40,11 +41,12 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             };
 
             // Act
-            await _unitOfWork.Repository<InvitationEntity, InvitationDto>().InsertAsync(invitationToAdd);
+            await _unitOfWork.InvitationRepository.InsertAsync(invitationToAdd);
             await _unitOfWork.SaveChangesAsync(); // Persist changes
 
             // Assert
-            var actualInvitation = await _unitOfWork.Repository<InvitationEntity, InvitationDto>().GetByIdAsync(invitationToAdd.Id);
+            var queryObject = new InvitationQueryObject().WithId(invitationToAdd.Id);
+            var actualInvitation = await _unitOfWork.InvitationRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualInvitation); // Ensure the invitation was added
             DeepAssert.Equal(invitationToAdd, actualInvitation); // Verify that the added invitation matches the input data
         }
@@ -60,7 +62,8 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             var expectedInvitation = _mapper.Map<InvitationDto>(InvitationSeeds.InvitationDianaToCharlieIntoFamily);
 
             // Act
-            var actualInvitation = await _unitOfWork.Repository<InvitationEntity, InvitationDto>().GetByIdAsync(expectedInvitation.Id);
+            var queryObject = new InvitationQueryObject().WithId(expectedInvitation.Id);
+            var actualInvitation = await _unitOfWork.InvitationRepository.SingleOrDefaultAsync(queryObject);
 
             // Assert
             Assert.NotNull(actualInvitation); // Ensure the invitation was found
@@ -83,11 +86,12 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             };
 
             // Act
-            await _unitOfWork.Repository<InvitationEntity, InvitationDto>().UpdateAsync(updatedInvitation);
+            await _unitOfWork.InvitationRepository.UpdateAsync(updatedInvitation);
             await _unitOfWork.SaveChangesAsync(); // Persist changes
 
             // Assert
-            var actualInvitation = await _unitOfWork.Repository<InvitationEntity, InvitationDto>().GetByIdAsync(updatedInvitation.Id);
+            var queryObject = new InvitationQueryObject().WithId(updatedInvitation.Id);
+            var actualInvitation = await _unitOfWork.InvitationRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualInvitation); // Ensure the invitation was updated
             DeepAssert.Equal(updatedInvitation, actualInvitation); // Verify that the updated invitation matches the new data
         }
@@ -103,11 +107,12 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             var invitationToDelete = _mapper.Map<InvitationDto>(InvitationSeeds.InvitationDianaToCharlieIntoFamily);
 
             // Act
-            await _unitOfWork.Repository<InvitationEntity, InvitationDto>().DeleteAsync(invitationToDelete.Id);
+            await _unitOfWork.InvitationRepository.DeleteAsync(invitationToDelete.Id);
             await _unitOfWork.SaveChangesAsync(); // Persist changes
 
             // Assert
-            var deletedInvitation = await _unitOfWork.Repository<InvitationEntity, InvitationDto>().GetByIdAsync(invitationToDelete.Id);
+            var queryObject = new InvitationQueryObject().WithId(invitationToDelete.Id);
+            var deletedInvitation = await _unitOfWork.InvitationRepository.SingleOrDefaultAsync(queryObject);
             Assert.Null(deletedInvitation); // Ensure the invitation was removed
         }
 
@@ -143,7 +148,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _unitOfWork.Repository<InvitationEntity, InvitationDto>().InsertAsync(invalidInvitation);
+                await _unitOfWork.InvitationRepository.InsertAsync(invalidInvitation);
                 await _unitOfWork.SaveChangesAsync(); // Persist changes, expecting an exception
             });
         }
@@ -170,7 +175,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _unitOfWork.Repository<InvitationEntity, InvitationDto>().InsertAsync(invalidInvitation);
+                await _unitOfWork.InvitationRepository.InsertAsync(invalidInvitation);
                 await _unitOfWork.SaveChangesAsync(); // Persist changes, expecting an exception
             });
         }
@@ -197,7 +202,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _unitOfWork.Repository<InvitationEntity, InvitationDto>().InsertAsync(invalidInvitation);
+                await _unitOfWork.InvitationRepository.InsertAsync(invalidInvitation);
                 await _unitOfWork.SaveChangesAsync(); // Persist changes, expecting an exception
             });
         }
@@ -224,7 +229,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _unitOfWork.Repository<InvitationEntity, InvitationDto>().UpdateAsync(nonExistentInvitation);
+                await _unitOfWork.InvitationRepository.UpdateAsync(nonExistentInvitation);
                 await _unitOfWork.SaveChangesAsync(); // Persist changes, expecting an exception
             });
         }
@@ -242,7 +247,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _unitOfWork.Repository<InvitationEntity, InvitationDto>().DeleteAsync(nonExistentInvitationId);
+                await _unitOfWork.InvitationRepository.DeleteAsync(nonExistentInvitationId);
                 await _unitOfWork.SaveChangesAsync(); // Persist changes, expecting an exception
             });
         }
@@ -269,7 +274,7 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(async () =>
             {
-                await _unitOfWork.Repository<InvitationEntity, InvitationDto>().InsertAsync(invitationToAdd);
+                await _unitOfWork.InvitationRepository.InsertAsync(invitationToAdd);
                 await _unitOfWork.SaveChangesAsync(); // Attempt to persist changes
             });
         }
@@ -299,11 +304,13 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             };
 
             // Act
-            await _unitOfWork.Repository<InvitationEntity, InvitationDto>().UpdateAsync(updatedInvitation);
+            await _unitOfWork.InvitationRepository.UpdateAsync(updatedInvitation);
             await _unitOfWork.SaveChangesAsync(); // Persist changes
 
             // Assert
-            var actualInvitation = await _unitOfWork.Repository<InvitationEntity, InvitationDto>().GetByIdAsync(updatedInvitation.Id);
+
+            var queryObject = new InvitationQueryObject().WithId(updatedInvitation.Id);
+            var actualInvitation = await _unitOfWork.InvitationRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualInvitation); // Ensure the invitation was updated
             Assert.Equal(updatedInvitation.ResponseDate, actualInvitation.ResponseDate); // Verify that the response date matches
         }
@@ -324,11 +331,12 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             };
 
             // Act
-            await _unitOfWork.Repository<InvitationEntity, InvitationDto>().UpdateAsync(updatedInvitation);
+            await _unitOfWork.InvitationRepository.UpdateAsync(updatedInvitation);
             await _unitOfWork.SaveChangesAsync(); // Persist changes
 
             // Assert
-            var actualInvitation = await _unitOfWork.Repository<InvitationEntity, InvitationDto>().GetByIdAsync(updatedInvitation.Id);
+            var queryObject = new InvitationQueryObject().WithId(updatedInvitation.Id);
+            var actualInvitation = await _unitOfWork.InvitationRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualInvitation); // Ensure the invitation was updated
             Assert.Null(actualInvitation.ResponseDate); // Verify that the response date is null
         }
@@ -351,11 +359,12 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             };
 
             // Act
-            await _unitOfWork.Repository<InvitationEntity, InvitationDto>().UpdateAsync(updatedInvitation);
+            await _unitOfWork.InvitationRepository.UpdateAsync(updatedInvitation);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var actualInvitation = await _unitOfWork.Repository<InvitationEntity, InvitationDto>().GetByIdAsync(existingInvitation.Id);
+            var queryObject = new InvitationQueryObject().WithId(updatedInvitation.Id);
+            var actualInvitation = await _unitOfWork.InvitationRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(actualInvitation);
             Assert.Equal(existingInvitation.SenderId, actualInvitation.SenderId); // SenderId should remain unchanged
             Assert.Equal(existingInvitation.ReceiverId, actualInvitation.ReceiverId); // ReceiverId should remain unchanged
@@ -382,11 +391,12 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             var invitationToDelete = InvitationSeeds.InvitationDianaToCharlieIntoFamily;
 
             // Act
-            await _unitOfWork.Repository<InvitationEntity, InvitationDto>().DeleteAsync(invitationToDelete.Id);
+            await _unitOfWork.InvitationRepository.DeleteAsync(invitationToDelete.Id);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var sender = await _unitOfWork.Repository<UserEntity, UserDto>().GetByIdAsync(invitationToDelete.SenderId);
+            var queryObject = new UserQueryObject().WithId(invitationToDelete.SenderId);
+            var sender = await _unitOfWork.UserRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(sender); // Ensure the sender still exists
             Assert.Equal(invitationToDelete.SenderId, sender.Id); // Verify that the sender is the same
         }
@@ -402,11 +412,12 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             var invitationToDelete = InvitationSeeds.InvitationJohnToDianaIntoFamily;
 
             // Act
-            await _unitOfWork.Repository<InvitationEntity, InvitationDto>().DeleteAsync(invitationToDelete.Id);
+            await _unitOfWork.InvitationRepository.DeleteAsync(invitationToDelete.Id);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var receiver = await _unitOfWork.Repository<UserEntity, UserDto>().GetByIdAsync(invitationToDelete.ReceiverId);
+            var queryObject = new UserQueryObject().WithId(invitationToDelete.ReceiverId);
+            var receiver = await _unitOfWork.UserRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(receiver); // Ensure the receiver still exists
             Assert.Equal(invitationToDelete.ReceiverId, receiver.Id); // Verify that the receiver is the same
         }
@@ -422,11 +433,12 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             var invitationToDelete = InvitationSeeds.InvitationJohnToDianaIntoWork;
 
             // Act
-            await _unitOfWork.Repository<InvitationEntity, InvitationDto>().DeleteAsync(invitationToDelete.Id);
+            await _unitOfWork.InvitationRepository.DeleteAsync(invitationToDelete.Id);
             await _unitOfWork.SaveChangesAsync();
 
             // Assert
-            var group = await _unitOfWork.Repository<GroupEntity, GroupDto>().GetByIdAsync(invitationToDelete.GroupId);
+            var queryObject = new GroupQueryObject().WithId(invitationToDelete.GroupId);
+            var group = await _unitOfWork.GroupRepository.SingleOrDefaultAsync(queryObject);
             Assert.NotNull(group); // Ensure the group still exists
             Assert.Equal(invitationToDelete.GroupId, group.Id); // Verify that the group is the same
         }
@@ -474,15 +486,15 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             {
                 // Act
                 // Insert
-                await _unitOfWork.Repository<InvitationEntity, InvitationDto>().InsertAsync(newInvitationDto);
+                await _unitOfWork.InvitationRepository.InsertAsync(newInvitationDto);
                 await _unitOfWork.SaveChangesAsync();
 
                 // Update
-                await _unitOfWork.Repository<InvitationEntity, InvitationDto>().UpdateAsync(updatedInvitationDto);
+                await _unitOfWork.InvitationRepository.UpdateAsync(updatedInvitationDto);
                 await _unitOfWork.SaveChangesAsync();
 
                 // Delete
-                await _unitOfWork.Repository<InvitationEntity, InvitationDto>().DeleteAsync(newInvitationDto.Id);
+                await _unitOfWork.InvitationRepository.DeleteAsync(newInvitationDto.Id);
                 await _unitOfWork.SaveChangesAsync();
             }
             catch
@@ -491,7 +503,8 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             }
 
             // Assert
-            var deletedInvitation = await _unitOfWork.Repository<InvitationEntity, InvitationDto>().GetByIdAsync(newInvitationDto.Id);
+            var queryObject = new InvitationQueryObject().WithId(newInvitationDto.Id);
+            var deletedInvitation = await _unitOfWork.InvitationRepository.SingleOrDefaultAsync(queryObject);
             Assert.Null(deletedInvitation); // Ensure the invitation was deleted
         }
 

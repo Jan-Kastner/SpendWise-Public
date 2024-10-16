@@ -18,7 +18,9 @@ namespace SpendWise.Common.Tests.Seeds
         {
             Id = Guid.NewGuid(),
             Name = "Family",
-            Description = "Family group"
+            Description = "Family group",
+            GroupUsers = new List<GroupUserEntity>(),
+            Invitations = new List<InvitationEntity>()
         };
 
         /// <summary>
@@ -28,7 +30,9 @@ namespace SpendWise.Common.Tests.Seeds
         {
             Id = Guid.NewGuid(),
             Name = "Friends",
-            Description = "Friends group"
+            Description = "Friends group",
+            GroupUsers = new List<GroupUserEntity>(),
+            Invitations = new List<InvitationEntity>()
         };
 
         /// <summary>
@@ -38,7 +42,9 @@ namespace SpendWise.Common.Tests.Seeds
         {
             Id = Guid.NewGuid(),
             Name = "Work",
-            Description = "Work group"
+            Description = "Work group",
+            GroupUsers = new List<GroupUserEntity>(),
+            Invitations = new List<InvitationEntity>()
         };
 
         /// <summary>

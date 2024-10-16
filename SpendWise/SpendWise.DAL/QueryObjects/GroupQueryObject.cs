@@ -1,6 +1,6 @@
-using System;
 using SpendWise.DAL.Entities;
-using System.Linq.Expressions;
+using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.GroupEntity;
+using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.GroupEntity.Interfaces;
 
 namespace SpendWise.DAL.QueryObjects
 {
@@ -8,8 +8,34 @@ namespace SpendWise.DAL.QueryObjects
     /// Provides a set of query methods to filter <see cref="GroupEntity"/> instances based on various criteria.
     /// Allows combining conditions with AND, OR, and NOT operations for flexible query building.
     /// </summary>
-    public class GroupQueryObject : BaseQueryObject<GroupEntity, GroupQueryObject>, IGroupQueryObject<GroupQueryObject>
+    public class GroupQueryObject : BaseQueryObject<GroupEntity, GroupQueryObject>, IGroupQueryObject
     {
+        private GroupEntityRelationsConfig _relations = new GroupEntityRelationsConfig();
+
+        /// <summary>
+        /// Gets the initial state for group relations.
+        /// </summary>
+        public IGroupEntityInitialState Relations => _relations;
+
+        /// <summary>
+        /// Gets the list of include properties for the query.
+        /// </summary>
+        public override List<string> Includes => _relations.Includes;
+
+        /// <summary>
+        /// Gets the collection of include directives used by the RelationConfigGenerator
+        /// to generate EntityRelationsConfiguration, which acts as a state machine for managing includes.
+        /// </summary>
+        public override ICollection<Func<GroupEntity, object>> IncludeDirectives { get; } = new List<Func<GroupEntity, object>>
+        {
+            entity => entity.GroupUsers,
+            entity => entity.Invitations,
+            entity => entity.GroupUsers.Select(gu => gu.User),
+            entity => entity.GroupUsers.Select(gu => gu.Limit),
+            entity => entity.GroupUsers.Select(gu => gu.TransactionGroupUsers),
+            entity => entity.GroupUsers.Select(gu => gu.TransactionGroupUsers.Select(tgu => tgu.Transaction))
+        };
+
         #region IIdQuery
 
         /// <summary>

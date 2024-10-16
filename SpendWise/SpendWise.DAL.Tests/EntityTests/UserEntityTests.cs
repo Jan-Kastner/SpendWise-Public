@@ -54,7 +54,9 @@ namespace SpendWise.DAL.Tests
                 ResetPasswordTokenExpiry = null,
                 IsTwoFactorEnabled = false,
                 TwoFactorSecret = null,
-                PreferredTheme = Theme.SystemDefault
+                PreferredTheme = Theme.SystemDefault,
+                ReinitPasswordToken = null,
+                ReinitPasswordTokenExpiry = null
             };
 
             // Act
@@ -190,7 +192,12 @@ namespace SpendWise.DAL.Tests
                 ResetPasswordTokenExpiry = null,
                 IsTwoFactorEnabled = false,
                 TwoFactorSecret = null,
-                PreferredTheme = Theme.SystemDefault
+                PreferredTheme = Theme.SystemDefault,
+                SentInvitations = new List<InvitationEntity>(),
+                GroupUsers = new List<GroupUserEntity>(),
+                ReceivedInvitations = new List<InvitationEntity>(),
+                ReinitPasswordToken = null,
+                ReinitPasswordTokenExpiry = null
             };
 
             // Act
@@ -234,7 +241,12 @@ namespace SpendWise.DAL.Tests
                 ResetPasswordTokenExpiry = null,
                 IsTwoFactorEnabled = false,
                 TwoFactorSecret = null,
-                PreferredTheme = Theme.SystemDefault
+                PreferredTheme = Theme.SystemDefault,
+                SentInvitations = new List<InvitationEntity>(),
+                GroupUsers = new List<GroupUserEntity>(),
+                ReceivedInvitations = new List<InvitationEntity>(),
+                ReinitPasswordToken = null,
+                ReinitPasswordTokenExpiry = null
             };
 
             SpendWiseDbContextSUT.Users.Add(userWithDuplicateEmail);
@@ -266,7 +278,12 @@ namespace SpendWise.DAL.Tests
                 ResetPasswordTokenExpiry = null,
                 IsTwoFactorEnabled = false,
                 TwoFactorSecret = null,
-                PreferredTheme = Theme.SystemDefault
+                PreferredTheme = Theme.SystemDefault,
+                SentInvitations = new List<InvitationEntity>(),
+                GroupUsers = new List<GroupUserEntity>(),
+                ReceivedInvitations = new List<InvitationEntity>(),
+                ReinitPasswordToken = null,
+                ReinitPasswordTokenExpiry = null
             };
 
             SpendWiseDbContextSUT.Users.Add(userWithInvalidDate);
@@ -654,7 +671,12 @@ namespace SpendWise.DAL.Tests
                 ResetPasswordTokenExpiry = null,
                 IsTwoFactorEnabled = false,
                 TwoFactorSecret = null,
-                PreferredTheme = Theme.SystemDefault
+                PreferredTheme = Theme.SystemDefault,
+                SentInvitations = new List<InvitationEntity>(),
+                GroupUsers = new List<GroupUserEntity>(),
+                ReceivedInvitations = new List<InvitationEntity>(),
+                ReinitPasswordToken = null,
+                ReinitPasswordTokenExpiry = null
             }).ToList();
 
             // Act

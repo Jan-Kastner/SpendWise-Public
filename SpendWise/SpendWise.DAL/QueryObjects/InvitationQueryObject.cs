@@ -1,6 +1,6 @@
-using System;
 using SpendWise.DAL.Entities;
-using SpendWise.DAL.QueryObjects;
+using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.InvitationEntity.Interfaces;
+using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.InvitationEntity;
 
 namespace SpendWise.DAL.QueryObjects
 {
@@ -8,8 +8,31 @@ namespace SpendWise.DAL.QueryObjects
     /// Represents a query object for the <see cref="InvitationEntity"/>.
     /// Enables query construction using methods for AND, OR, and NOT operations.
     /// </summary>
-    public class InvitationQueryObject : BaseQueryObject<InvitationEntity, InvitationQueryObject>, IInvitationQueryObject<InvitationQueryObject>
+    public class InvitationQueryObject : BaseQueryObject<InvitationEntity, InvitationQueryObject>, IInvitationQueryObject
     {
+        private InvitationEntityRelationsConfig _relations = new InvitationEntityRelationsConfig();
+
+        /// <summary>
+        /// Gets the initial state for invitation relations.
+        /// </summary>
+        public IInvitationEntityInitialState Relations => _relations;
+
+        /// <summary>
+        /// Gets the list of include properties for the query.
+        /// </summary>
+        public override List<string> Includes => _relations.Includes;
+
+        /// <summary>
+        /// Gets the collection of include directives used by the RelationConfigGenerator
+        /// to generate EntityRelationsConfiguration, which acts as a state machine for managing includes.
+        /// </summary>
+        public override ICollection<Func<InvitationEntity, object>> IncludeDirectives { get; } = new List<Func<InvitationEntity, object>>
+        {
+            entity => entity.Group,
+            entity => entity.Sender,
+            entity => entity.Receiver
+        };
+
         #region IIdQuery
 
         /// <summary>

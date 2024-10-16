@@ -160,7 +160,7 @@ namespace SpendWise.DAL.Tests
 
             var invalidInvitation = existingInvitation with
             {
-                SenderId = Guid.Empty // Invalid SenderId
+                SenderId = Guid.NewGuid() // Invalid SenderId
             };
 
             // Act & Assert
@@ -187,7 +187,7 @@ namespace SpendWise.DAL.Tests
 
             var invalidInvitation = existingInvitation with
             {
-                ReceiverId = Guid.Empty // Invalid ReceiverId
+                ReceiverId = Guid.NewGuid() // Invalid ReceiverId
             };
 
             // Act & Assert
@@ -214,7 +214,7 @@ namespace SpendWise.DAL.Tests
 
             var invalidInvitation = existingInvitation with
             {
-                GroupId = Guid.Empty // Invalid GroupId
+                GroupId = Guid.NewGuid() // Invalid GroupId
             };
 
             // Act & Assert

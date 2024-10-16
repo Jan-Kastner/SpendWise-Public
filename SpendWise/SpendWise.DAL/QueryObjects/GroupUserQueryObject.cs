@@ -1,5 +1,5 @@
-using System;
-using System.Linq.Expressions;
+using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.GroupUserEntity.Interfaces;
+using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.GroupUserEntity;
 using SpendWise.DAL.Entities;
 using SpendWise.Common.Enums;
 
@@ -9,8 +9,33 @@ namespace SpendWise.DAL.QueryObjects
     /// Represents a query object for the <see cref="GroupUserEntity"/>.
     /// Enables query construction using methods for AND, OR, and NOT operations.
     /// </summary>
-    public class GroupUserQueryObject : BaseQueryObject<GroupUserEntity, GroupUserQueryObject>, IGroupUserQueryObject<GroupUserQueryObject>
+    public class GroupUserQueryObject : BaseQueryObject<GroupUserEntity, GroupUserQueryObject>, IGroupUserQueryObject
     {
+        private GroupUserEntityRelationsConfig _relations = new GroupUserEntityRelationsConfig();
+
+        /// <summary>
+        /// Gets the initial state for group user relations.
+        /// </summary>
+        public IGroupUserEntityInitialState Relations => _relations;
+
+        /// <summary>
+        /// Gets the list of include properties for the query.
+        /// </summary>
+        public override List<string> Includes => _relations.Includes;
+
+        /// <summary>
+        /// Gets the collection of include directives used by the RelationConfigGenerator
+        /// to generate EntityRelationsConfiguration, which acts as a state machine for managing includes.
+        /// </summary>
+        public override ICollection<Func<GroupUserEntity, object>> IncludeDirectives { get; } = new List<Func<GroupUserEntity, object>>
+        {
+            entity => entity.User,
+            entity => entity.Group,
+            entity => entity.Limit!,
+            entity => entity.TransactionGroupUsers,
+            entity => entity.TransactionGroupUsers.Select(tgu => tgu.Transaction)
+        };
+
         #region IIdQuery
 
         /// <summary>
@@ -142,7 +167,7 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="limitId">The limit ID to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public GroupUserQueryObject WithLimit(Guid? limitId)
+        public GroupUserQueryObject WithLimit(Guid limitId)
         {
             And(entity => entity.LimitId != null && entity.LimitId == limitId);
             return this;
@@ -153,7 +178,7 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="limitId">The limit ID to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public GroupUserQueryObject OrWithLimit(Guid? limitId)
+        public GroupUserQueryObject OrWithLimit(Guid limitId)
         {
             Or(entity => entity.LimitId != null && entity.LimitId == limitId);
             return this;
@@ -164,7 +189,7 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="limitId">The limit ID to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public GroupUserQueryObject NotWithLimit(Guid? limitId)
+        public GroupUserQueryObject NotWithLimit(Guid limitId)
         {
             Not(entity => entity.LimitId != null && entity.LimitId == limitId);
             return this;

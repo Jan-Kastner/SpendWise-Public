@@ -10,6 +10,6 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the user role of the entity.
         /// </summary>
-        UserRole Role { get; set; }
+        UserRole Role { get; init; }
     }
 }

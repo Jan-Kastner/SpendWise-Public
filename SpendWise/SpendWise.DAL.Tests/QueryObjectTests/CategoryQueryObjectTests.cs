@@ -25,11 +25,10 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
         {
             // Arrange
             var categoryId = CategorySeeds.CategoryFood.Id;
-            var queryObject = new CategoryQueryObject();
+            var queryObject = new CategoryQueryObject().WithId(categoryId);
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.WithId(categoryId));
+            var categories = await _unitOfWork.CategoryRepository.ListAsync(queryObject);
 
             // Assert
             Assert.NotNull(categories);
@@ -51,8 +50,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.OrWithId(categoryId1).OrWithId(categoryId2));
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.OrWithId(categoryId1).OrWithId(categoryId2));
 
             // Assert
             Assert.NotNull(categories);
@@ -72,8 +71,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.NotWithId(categoryId));
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.NotWithId(categoryId));
 
             // Assert
             Assert.NotNull(categories);
@@ -97,8 +96,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.WithName(categoryName));
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.WithName(categoryName));
 
             // Assert
             Assert.NotNull(categories);
@@ -118,8 +117,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.WithNamePartialMatch(partialName));
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.WithNamePartialMatch(partialName));
 
             // Assert
             Assert.NotNull(categories);
@@ -140,8 +139,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.OrWithName(categoryName1).OrWithName(categoryName2));
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.OrWithName(categoryName1).OrWithName(categoryName2));
 
             // Assert
             Assert.NotNull(categories);
@@ -162,8 +161,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.OrWithNamePartialMatch(partialName1).OrWithNamePartialMatch(partialName2));
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.OrWithNamePartialMatch(partialName1).OrWithNamePartialMatch(partialName2));
 
             // Assert
             Assert.NotNull(categories);
@@ -183,8 +182,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.NotWithNamePartialMatch(excludedText));
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.NotWithNamePartialMatch(excludedText));
 
             // Assert
             Assert.NotNull(categories);
@@ -204,8 +203,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.NotWithName(categoryName));
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.NotWithName(categoryName));
 
             // Assert
             Assert.NotNull(categories);
@@ -229,8 +228,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.WithDescription(categoryDescription));
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.WithDescription(categoryDescription));
 
             // Assert
             Assert.NotNull(categories);
@@ -256,8 +255,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.OrWithDescription(categoryDescription1).OrWithDescription(categoryDescription2));
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.OrWithDescription(categoryDescription1).OrWithDescription(categoryDescription2));
 
             // Assert
             Assert.NotNull(categories);
@@ -283,8 +282,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.WithDescriptionPartialMatch(partialDescription));
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.WithDescriptionPartialMatch(partialDescription));
 
             // Assert
             Assert.NotNull(categories);
@@ -309,8 +308,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.OrWithDescriptionPartialMatch(partialDescription1).OrWithDescriptionPartialMatch(partialDescription2));
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.OrWithDescriptionPartialMatch(partialDescription1).OrWithDescriptionPartialMatch(partialDescription2));
 
             // Assert
             Assert.NotNull(categories);
@@ -334,8 +333,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.NotWithDescription(categoryDescription));
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.NotWithDescription(categoryDescription));
 
             // Assert
             Assert.NotNull(categories);
@@ -359,8 +358,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.NotWithDescriptionPartialMatch(excludedText));
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.NotWithDescriptionPartialMatch(excludedText));
 
             // Assert
             Assert.NotNull(categories);
@@ -383,8 +382,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.WithoutDescription());
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.WithoutDescription());
 
             // Assert
             Assert.NotNull(categories);
@@ -406,8 +405,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.OrWithoutDescription());
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.OrWithoutDescription());
 
             // Assert
             Assert.NotNull(categories);
@@ -429,8 +428,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.NotWithoutDescription());
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.NotWithoutDescription());
 
             // Assert
             Assert.NotNull(categories);
@@ -457,8 +456,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.WithColor(categoryColor));
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.WithColor(categoryColor));
 
             // Assert
             Assert.NotNull(categories);
@@ -479,8 +478,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.OrWithColor(categoryColor1).OrWithColor(categoryColor2));
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.OrWithColor(categoryColor1).OrWithColor(categoryColor2));
 
             // Assert
             Assert.NotNull(categories);
@@ -500,8 +499,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.NotWithColor(categoryColor));
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.NotWithColor(categoryColor));
 
             // Assert
             Assert.NotNull(categories);
@@ -524,8 +523,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.WithIcon());
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.WithIcon());
 
             // Assert
             Assert.NotNull(categories);
@@ -544,8 +543,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.OrWithIcon());
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.OrWithIcon());
 
             // Assert
             Assert.NotNull(categories);
@@ -564,8 +563,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.NotWithIcon());
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.NotWithIcon());
 
             // Assert
             Assert.NotNull(categories);
@@ -584,8 +583,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.WithoutIcon());
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.WithoutIcon());
 
             // Assert
             Assert.NotNull(categories);
@@ -604,8 +603,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.OrWithoutIcon());
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.OrWithoutIcon());
 
             // Assert
             Assert.NotNull(categories);
@@ -624,8 +623,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.NotWithoutIcon());
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.NotWithoutIcon());
 
             // Assert
             Assert.NotNull(categories);
@@ -650,8 +649,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.WithId(categoryId).WithName(categoryName));
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.WithId(categoryId).WithName(categoryName));
 
             // Assert
             Assert.NotNull(categories);
@@ -674,8 +673,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.WithColor(categoryColor).WithDescription(categoryDescription!));
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.WithColor(categoryColor).WithDescription(categoryDescription!));
 
             // Assert
             Assert.NotNull(categories);
@@ -698,8 +697,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.OrWithName(categoryName).OrWithColor(categoryColor));
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.OrWithName(categoryName).OrWithColor(categoryColor));
 
             // Assert
             Assert.NotNull(categories);
@@ -722,8 +721,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.WithName(categoryName)
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.WithName(categoryName)
                                      .WithDescription(categoryDescription!)
                                      .NotWithColor(excludedColor));
 
@@ -752,8 +751,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new CategoryQueryObject();
 
             // Act
-            var categories = await _unitOfWork.Repository<CategoryEntity, CategoryDto>()
-                .GetAsync(queryObject.OrWithNamePartialMatch("Foo").NotWithId(excludedCategoryId));
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.OrWithNamePartialMatch("Foo").NotWithId(excludedCategoryId));
 
             // Assert
             Assert.NotNull(categories);
@@ -762,6 +761,36 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
                 Assert.Contains("Foo", c.Name);
                 Assert.NotEqual(excludedCategoryId, c.Id);
             });
+        }
+
+        #endregion
+
+        #region RelationsQuery Tests
+
+        /// <summary>
+        /// Verifies that querying a category with transactions by its ID 
+        /// returns the correct entry from the database, including the associated transactions.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Fact]
+        public async Task WithIdIncludingTransactions_ShouldReturnCorrectCategoryWithTransactions()
+        {
+            // Arrange
+            var expectedCategory = CategorySeeds.CategoryFood;
+            var queryObject = new CategoryQueryObject();
+
+            queryObject.Relations.IncludeTransactions();
+
+            // Act
+            var categories = await _unitOfWork.CategoryRepository
+                .ListAsync(queryObject.WithId(expectedCategory.Id));
+
+            // Assert
+            Assert.NotNull(categories);
+            Assert.Single(categories);
+            Assert.Equal(expectedCategory.Id, categories.First().Id);
+            Assert.NotNull(categories.First().Transactions);
+            Assert.All(categories.First().Transactions, t => Assert.Equal(expectedCategory.Id, t.CategoryId));
         }
 
         #endregion

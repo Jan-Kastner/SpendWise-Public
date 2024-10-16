@@ -1,7 +1,7 @@
-namespace SpendWise.BLL.DTOs
+namespace SpendWise.BLL.DTOs.Interfaces
 {
     /// <summary>
-    /// Represents a Data Transfer Object (DTO) that can be used for creating entities.
+    /// Represents a marker interface for creatable DTOs.
     /// </summary>
     public interface ICreatableDto
     {

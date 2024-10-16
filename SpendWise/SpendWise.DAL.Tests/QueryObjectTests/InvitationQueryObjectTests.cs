@@ -33,8 +33,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.WithId(invitationId));
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.WithId(invitationId));
 
             // Assert
             Assert.NotNull(invitations);
@@ -56,8 +56,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.OrWithId(invitationId1).OrWithId(invitationId2));
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.OrWithId(invitationId1).OrWithId(invitationId2));
 
             // Assert
             Assert.NotNull(invitations);
@@ -77,8 +77,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.NotWithId(invitationId));
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.NotWithId(invitationId));
 
             // Assert
             Assert.NotNull(invitations);
@@ -102,8 +102,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.WithSentDate(sentDate));
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.WithSentDate(sentDate));
 
             // Assert
             Assert.NotNull(invitations);
@@ -124,8 +124,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.OrWithSentDate(sentDate1).OrWithSentDate(sentDate2));
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.OrWithSentDate(sentDate1).OrWithSentDate(sentDate2));
 
             // Assert
             Assert.NotNull(invitations);
@@ -145,8 +145,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.NotWithSentDate(sentDate));
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.NotWithSentDate(sentDate));
 
             // Assert
             Assert.NotNull(invitations);
@@ -170,8 +170,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.WithResponseDate(responseDate));
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.WithResponseDate(responseDate));
 
             // Assert
             Assert.NotNull(invitations);
@@ -192,8 +192,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.OrWithResponseDate(responseDate1).OrWithResponseDate(responseDate2));
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.OrWithResponseDate(responseDate1).OrWithResponseDate(responseDate2));
 
             // Assert
             Assert.NotNull(invitations);
@@ -213,8 +213,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.NotWithResponseDate(responseDate));
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.NotWithResponseDate(responseDate));
 
             // Assert
             Assert.NotNull(invitations);
@@ -233,8 +233,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.WithoutResponseDate());
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.WithoutResponseDate());
 
             // Assert
             Assert.NotNull(invitations);
@@ -253,8 +253,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.OrWithoutResponseDate());
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.OrWithoutResponseDate());
 
             // Assert
             Assert.NotNull(invitations);
@@ -273,8 +273,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.NotWithoutResponseDate());
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.NotWithoutResponseDate());
 
             // Assert
             Assert.NotNull(invitations);
@@ -297,8 +297,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.IsAccepted());
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.IsAccepted());
 
             // Assert
             Assert.NotNull(invitations);
@@ -321,8 +321,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.OrIsAccepted().OrIsPending());
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.OrIsAccepted().OrIsPending());
 
             // Assert
             Assert.NotNull(invitations);
@@ -344,8 +344,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.NotIsAccepted());
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.NotIsAccepted());
 
             // Assert
             Assert.NotNull(invitations);
@@ -367,8 +367,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.IsNotAccepted());
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.IsNotAccepted());
 
             // Assert
             Assert.NotNull(invitations);
@@ -391,8 +391,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.IsPending());
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.IsPending());
 
             // Assert
             Assert.NotNull(invitations);
@@ -419,8 +419,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.WithSender(senderId));
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.WithSender(senderId));
 
             // Assert
             Assert.NotNull(invitations);
@@ -442,8 +442,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.OrWithSender(senderId1).OrWithSender(senderId2));
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.OrWithSender(senderId1).OrWithSender(senderId2));
 
             // Assert
             Assert.NotNull(invitations);
@@ -463,8 +463,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.NotWithSender(senderId));
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.NotWithSender(senderId));
 
             // Assert
             Assert.NotNull(invitations);
@@ -488,8 +488,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.WithReceiver(receiverId));
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.WithReceiver(receiverId));
 
             // Assert
             Assert.NotNull(invitations);
@@ -511,8 +511,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.OrWithReceiver(receiverId1).OrWithReceiver(receiverId2));
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.OrWithReceiver(receiverId1).OrWithReceiver(receiverId2));
 
             // Assert
             Assert.NotNull(invitations);
@@ -532,8 +532,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.NotWithReceiver(receiverId));
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.NotWithReceiver(receiverId));
 
             // Assert
             Assert.NotNull(invitations);
@@ -557,8 +557,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.WithGroup(groupId));
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.WithGroup(groupId));
 
             // Assert
             Assert.NotNull(invitations);
@@ -579,8 +579,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.OrWithGroup(groupId1).OrWithGroup(groupId2));
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.OrWithGroup(groupId1).OrWithGroup(groupId2));
 
             // Assert
             Assert.NotNull(invitations);
@@ -600,8 +600,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.NotWithGroup(groupId));
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.NotWithGroup(groupId));
 
             // Assert
             Assert.NotNull(invitations);
@@ -626,8 +626,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.WithId(invitationId).WithSender(senderId));
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.WithId(invitationId).WithSender(senderId));
 
             // Assert
             Assert.NotNull(invitations);
@@ -650,8 +650,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.WithGroup(groupId).WithSentDate(sentDate));
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.WithGroup(groupId).WithSentDate(sentDate));
 
             // Assert
             Assert.NotNull(invitations);
@@ -674,8 +674,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.OrWithSender(senderId).OrWithReceiver(receiverId));
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.OrWithSender(senderId).OrWithReceiver(receiverId));
 
             // Assert
             Assert.NotNull(invitations);
@@ -698,8 +698,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.WithSender(senderId)
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.WithSender(senderId)
                                      .WithReceiver(receiverId)
                                      .NotWithGroup(excludedGroupId));
 
@@ -728,8 +728,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new InvitationQueryObject();
 
             // Act
-            var invitations = await _unitOfWork.Repository<InvitationEntity, InvitationDto>()
-                .GetAsync(queryObject.OrWithSentDate(new DateTime(2024, 7, 1, 12, 0, 0, DateTimeKind.Utc)).NotWithId(excludedInvitationId));
+            var invitations = await _unitOfWork.InvitationRepository
+                .ListAsync(queryObject.OrWithSentDate(new DateTime(2024, 7, 1, 12, 0, 0, DateTimeKind.Utc)).NotWithId(excludedInvitationId));
 
             // Assert
             Assert.NotNull(invitations);

@@ -10,37 +10,37 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the unique identifier for the transaction.
         /// </summary>
-        public required Guid Id { get; set; }
+        public required Guid Id { get; init; }
 
         /// <summary>
         /// Gets or sets the amount of the transaction.
         /// </summary>
-        public required decimal Amount { get; set; }
+        public required decimal Amount { get; init; }
 
         /// <summary>
         /// Gets or sets the date and time when the transaction occurred.
         /// </summary>
-        public required DateTime Date { get; set; }
+        public required DateTime Date { get; init; }
 
         /// <summary>
         /// Gets or sets the description of the transaction. Can be null.
         /// </summary>
-        public required string? Description { get; set; } = null;
+        public required string? Description { get; init; } = null;
 
         /// <summary>
         /// Gets or sets the type of the transaction.
         /// </summary>
-        public required TransactionType Type { get; set; }
+        public required TransactionType Type { get; init; }
 
         /// <summary>
         /// Gets or sets the unique identifier for the category associated with the transaction. Can be null.
         /// </summary>
-        public Guid? CategoryId { get; set; }
+        public required Guid? CategoryId { get; init; } = null;
 
         /// <summary>
         /// Gets or sets the category entity associated with this transaction. Can be null.
         /// </summary>
-        public CategoryEntity? Category { get; init; }
+        public required CategoryEntity? Category { get; init; } = null;
 
         /// <summary>
         /// Gets the collection of transaction group-user relationships associated with this transaction.
@@ -48,6 +48,6 @@ namespace SpendWise.DAL.Entities
         /// <remarks>
         /// This is a navigation property for the group-user relationships related to this transaction.
         /// </remarks>
-        public ICollection<TransactionGroupUserEntity> TransactionGroupUsers { get; init; } = new List<TransactionGroupUserEntity>();
+        public required ICollection<TransactionGroupUserEntity> TransactionGroupUsers { get; init; } = new List<TransactionGroupUserEntity>();
     }
 }

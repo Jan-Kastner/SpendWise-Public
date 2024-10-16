@@ -1,7 +1,7 @@
-namespace SpendWise.BLL.DTOs
+namespace SpendWise.BLL.DTOs.Interfaces
 {
     /// <summary>
-    /// Represents a Data Transfer Object (DTO) that can be used for updating entities.
+    /// Represents a marker interface for updatable DTOs.
     /// </summary>
     public interface IUpdatableDto
     {

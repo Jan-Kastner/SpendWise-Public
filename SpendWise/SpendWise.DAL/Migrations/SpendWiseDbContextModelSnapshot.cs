@@ -292,6 +292,12 @@ namespace SpendWise.DAL.Migrations
                     b.Property<int>("PreferredTheme")
                         .HasColumnType("integer");
 
+                    b.Property<string>("ReinitPasswordToken")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ReinitPasswordTokenExpiry")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("ResetPasswordToken")
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");

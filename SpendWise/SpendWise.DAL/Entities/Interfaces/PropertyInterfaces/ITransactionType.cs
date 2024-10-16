@@ -10,6 +10,6 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the transaction type of the entity.
         /// </summary>
-        TransactionType Type { get; set; }
+        TransactionType Type { get; init; }
     }
 }

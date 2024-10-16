@@ -28,8 +28,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.WithId(transactionId));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.WithId(transactionId));
 
             // Assert
             Assert.NotNull(transactions);
@@ -51,8 +51,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.OrWithId(transactionId1).OrWithId(transactionId2));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.OrWithId(transactionId1).OrWithId(transactionId2));
 
             // Assert
             Assert.NotNull(transactions);
@@ -71,8 +71,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.NotWithId(excludedTransactionId));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.NotWithId(excludedTransactionId));
 
             // Assert
             Assert.NotNull(transactions);
@@ -96,8 +96,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.WithAmount(amount));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.WithAmount(amount));
 
             // Assert
             Assert.NotNull(transactions);
@@ -118,8 +118,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.OrWithAmount(amount1).OrWithAmount(amount2));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.OrWithAmount(amount1).OrWithAmount(amount2));
 
             // Assert
             Assert.NotNull(transactions);
@@ -138,8 +138,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.NotWithAmount(excludedAmount));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.NotWithAmount(excludedAmount));
 
             // Assert
             Assert.NotNull(transactions);
@@ -163,8 +163,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.WithDate(date));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.WithDate(date));
 
             // Assert
             Assert.NotNull(transactions);
@@ -185,8 +185,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.OrWithDate(date1).OrWithDate(date2));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.OrWithDate(date1).OrWithDate(date2));
 
             // Assert
             Assert.NotNull(transactions);
@@ -205,8 +205,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.NotWithDate(excludedDate));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.NotWithDate(excludedDate));
 
             // Assert
             Assert.NotNull(transactions);
@@ -228,8 +228,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.WithDescription(transactionDescription));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.WithDescription(transactionDescription));
 
             // Assert
             Assert.NotNull(transactions);
@@ -255,8 +255,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.OrWithDescription(transactionDescription1).OrWithDescription(transactionDescription2));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.OrWithDescription(transactionDescription1).OrWithDescription(transactionDescription2));
 
             // Assert
             Assert.NotNull(transactions);
@@ -282,8 +282,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.WithDescriptionPartialMatch(partialDescription));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.WithDescriptionPartialMatch(partialDescription));
 
             // Assert
             Assert.NotNull(transactions);
@@ -308,8 +308,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.OrWithDescriptionPartialMatch(partialDescription1).OrWithDescriptionPartialMatch(partialDescription2));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.OrWithDescriptionPartialMatch(partialDescription1).OrWithDescriptionPartialMatch(partialDescription2));
 
             // Assert
             Assert.NotNull(transactions);
@@ -333,8 +333,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.NotWithDescription(transactionDescription));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.NotWithDescription(transactionDescription));
 
             // Assert
             Assert.NotNull(transactions);
@@ -358,8 +358,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.NotWithDescriptionPartialMatch(excludedText));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.NotWithDescriptionPartialMatch(excludedText));
 
             // Assert
             Assert.NotNull(transactions);
@@ -382,8 +382,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.WithoutDescription());
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.WithoutDescription());
 
             // Assert
             Assert.NotNull(transactions);
@@ -405,8 +405,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.OrWithoutDescription());
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.OrWithoutDescription());
 
             // Assert
             Assert.NotNull(transactions);
@@ -428,8 +428,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.NotWithoutDescription());
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.NotWithoutDescription());
 
             // Assert
             Assert.NotNull(transactions);
@@ -453,8 +453,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.WithType(type));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.WithType(type));
 
             // Assert
             Assert.NotNull(transactions);
@@ -478,8 +478,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.OrWithType(type1).OrWithType(type2));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.OrWithType(type1).OrWithType(type2));
 
             // Assert
             Assert.NotNull(transactions);
@@ -501,8 +501,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.NotWithType(excludedType));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.NotWithType(excludedType));
 
             // Assert
             Assert.NotNull(transactions);
@@ -529,8 +529,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.WithCategory(categoryId));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.WithCategory(categoryId));
 
             // Assert
             Assert.NotNull(transactions);
@@ -551,8 +551,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.OrWithCategory(categoryId1).OrWithCategory(categoryId2));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.OrWithCategory(categoryId1).OrWithCategory(categoryId2));
 
             // Assert
             Assert.NotNull(transactions);
@@ -571,8 +571,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.NotWithCategory(excludedCategoryId));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.NotWithCategory(excludedCategoryId));
 
             // Assert
             Assert.NotNull(transactions);
@@ -591,8 +591,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.WithoutCategory());
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.WithoutCategory());
 
             // Assert
             Assert.NotNull(transactions);
@@ -611,8 +611,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.OrWithoutCategory());
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.OrWithoutCategory());
 
             // Assert
             Assert.NotNull(transactions);
@@ -631,12 +631,12 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.NotWithoutCategory());
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.WithoutCategory());
 
             // Assert
             Assert.NotNull(transactions);
-            Assert.All(transactions, t => Assert.NotNull(t.CategoryId));
+            Assert.All(transactions, t => Assert.Null(t.CategoryId));
         }
 
         #endregion
@@ -656,8 +656,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.WithTransactionGroupUser(transactionGroupUser.Id));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.WithTransactionGroupUser(transactionGroupUser.Id));
 
             // Assert
             Assert.NotNull(transactions);
@@ -678,8 +678,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.OrWithTransactionGroupUser(transactionGroupUser1.Id).OrWithTransactionGroupUser(transactionGroupUser2.Id));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.OrWithTransactionGroupUser(transactionGroupUser1.Id).OrWithTransactionGroupUser(transactionGroupUser2.Id));
 
             // Assert
             Assert.NotNull(transactions);
@@ -700,8 +700,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.NotWithTransactionGroupUser(transactionGroupUser.Id));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.NotWithTransactionGroupUser(transactionGroupUser.Id));
 
             // Assert
             Assert.NotNull(transactions);
@@ -726,8 +726,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.WithId(transactionId).WithAmount(transactionAmount));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.WithId(transactionId).WithAmount(transactionAmount));
 
             // Assert
             Assert.NotNull(transactions);
@@ -750,8 +750,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.WithDate(transactionDate).WithDescription(transactionDescription));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.WithDate(transactionDate).WithDescription(transactionDescription));
 
             // Assert
             Assert.NotNull(transactions);
@@ -774,8 +774,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.OrWithAmount(transactionAmount).OrWithType(transactionType));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.OrWithAmount(transactionAmount).OrWithType(transactionType));
 
             // Assert
             Assert.NotNull(transactions);
@@ -798,8 +798,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.WithDescription(transactionDescription!)
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.WithDescription(transactionDescription!)
                                      .WithType(transactionType)
                                      .NotWithCategory(excludedCategoryId));
 
@@ -828,8 +828,8 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var queryObject = new TransactionQueryObject();
 
             // Act
-            var transactions = await _unitOfWork.Repository<TransactionEntity, TransactionDto>()
-                .GetAsync(queryObject.OrWithDescriptionPartialMatch("Dinner").NotWithId(excludedTransactionId));
+            var transactions = await _unitOfWork.TransactionRepository
+                .ListAsync(queryObject.OrWithDescriptionPartialMatch("Dinner").NotWithId(excludedTransactionId));
 
             // Assert
             Assert.NotNull(transactions);

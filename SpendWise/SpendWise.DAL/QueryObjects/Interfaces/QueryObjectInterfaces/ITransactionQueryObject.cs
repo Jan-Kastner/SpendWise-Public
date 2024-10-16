@@ -7,8 +7,7 @@ namespace SpendWise.DAL.QueryObjects
     /// Represents a query object interface for transactions.
     /// Provides methods for querying transactions by various properties.
     /// </summary>
-    /// <typeparam name="T">The type of the query object.</typeparam>
-    public interface ITransactionQueryObject<T> : IIdQuery<T>, IDescriptionQuery<T>, IAmountQuery<T>, ITransactionGroupUserQuery<T>, IDateQuery<T>, ITransactionTypeQuery<T>, ICategoryQuery<T>
+    public interface ITransactionQueryObject : IQueryObject, IIdQuery<TransactionQueryObject>, IDescriptionQuery<TransactionQueryObject>, IAmountQuery<TransactionQueryObject>, ITransactionGroupUserQuery<TransactionQueryObject>, IDateQuery<TransactionQueryObject>, ITransactionTypeQuery<TransactionQueryObject>, ICategoryQuery<TransactionQueryObject>
     {
     }
 }

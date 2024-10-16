@@ -8,6 +8,6 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the surname of the entity.
         /// </summary>
-        string Surname { get; set; }
+        string Surname { get; init; }
     }
 }

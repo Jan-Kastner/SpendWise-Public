@@ -8,6 +8,6 @@ namespace SpendWise.DAL.Entities
         /// <summary>
         /// Gets or sets the amount of the entity.
         /// </summary>
-        decimal Amount { get; set; }
+        decimal Amount { get; init; }
     }
 }
