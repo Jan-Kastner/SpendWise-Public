@@ -35,6 +35,7 @@ namespace SpendWise.DAL.QueryObjects
             entity => entity.SentInvitations,
             entity => entity.ReceivedInvitations,
             entity => entity.GroupUsers.Select(gu => gu.Group),
+            entity => entity.GroupUsers.Select(gu => gu.Group.GroupUsers.Select(ggu => ggu.User)),
         };
 
         #region IIdQuery

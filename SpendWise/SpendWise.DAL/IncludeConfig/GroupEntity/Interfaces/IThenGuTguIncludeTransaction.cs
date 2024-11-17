@@ -2,6 +2,6 @@ namespace SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.GroupEntity.Inte
 {
     public interface IThenGuTguIncludeTransaction
     {
-        IIncludeInvitations IncludeInvitations(string path = "Invitations");
+        void ThenGuTguTIncludeCategory(string path = "GroupUsers.TransactionGroupUsers.Transaction.Category");
     }
 }

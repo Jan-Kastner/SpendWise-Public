@@ -2,9 +2,9 @@ namespace SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.GroupUserEntity.
 {
     public interface IGroupUserEntityInitialState
     {
+        IIncludeUser IncludeUser(string path = "User");
+        IIncludeLimit IncludeLimit(string path = "Limit");
         IIncludeTransactionGroupUsers IncludeTransactionGroupUsers(string path = "TransactionGroupUsers");
         IIncludeGroup IncludeGroup(string path = "Group");
-        IIncludeLimit IncludeLimit(string path = "Limit");
-        IIncludeUser IncludeUser(string path = "User");
     }
 }

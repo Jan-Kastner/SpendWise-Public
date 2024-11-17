@@ -2,7 +2,7 @@ using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.TransactionEntity.In
 
 namespace SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.TransactionEntity
 {
-    public class TransactionEntityRelationsConfig : IThenTguIncludeGroupUser, IIncludeCategory, ITransactionEntityInitialState, IIncludeTransactionGroupUsers, IThenTguGuIncludeUser
+    public class TransactionEntityRelationsConfig : ITransactionEntityInitialState, IIncludeTransactionGroupUsers, IIncludeCategory, IThenTguGuIncludeGroup, IThenTguIncludeGroupUser, IThenTguGuGGuIncludeUser, IThenTguGuGIncludeGroupUsers, IThenTguGuIncludeUser
 {
 
         private readonly List<string> _includes = new List<string>(); // Stores the includes for related entities
@@ -52,7 +52,19 @@ namespace SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.TransactionEntit
             AddInclude(path);
             return this;
         }
+        public IThenTguGuIncludeGroup ThenTguGuIncludeGroup(string path = "TransactionGroupUsers.GroupUser.Group") {
+            AddInclude(path);
+            return this;
+        }
         public IThenTguGuIncludeUser ThenTguGuIncludeUser(string path = "TransactionGroupUsers.GroupUser.User") {
+            AddInclude(path);
+            return this;
+        }
+        public IThenTguGuGIncludeGroupUsers ThenTguGuGIncludeGroupUsers(string path = "TransactionGroupUsers.GroupUser.Group.GroupUsers") {
+            AddInclude(path);
+            return this;
+        }
+        public IThenTguGuGGuIncludeUser ThenTguGuGGuIncludeUser(string path = "TransactionGroupUsers.GroupUser.Group.GroupUsers.User") {
             AddInclude(path);
             return this;
         }

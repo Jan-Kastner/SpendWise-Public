@@ -37,6 +37,8 @@ namespace SpendWise.DAL.DTOs
         /// </summary>
         public Guid? CategoryId { get; init; } = null;
 
+        public CategoryDto? Category { get; init; } = null;
+
         /// <summary>
         /// Gets the collection of transaction group-user relationships associated with this transaction.
         /// </summary>

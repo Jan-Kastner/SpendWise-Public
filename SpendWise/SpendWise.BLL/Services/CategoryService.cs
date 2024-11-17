@@ -71,11 +71,11 @@ namespace SpendWise.BLL.Services
         /// Retrieves a category by its identifier asynchronously.
         /// </summary>
         /// <typeparam name="TDto">The type of the DTO to return.</typeparam>
-        /// <param name="id">The identifier of the category to retrieve.</param>
+        /// <param name="query">The query object containing the identifier of the category to retrieve.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains the DTO of the category.</returns>
         public async Task<TDto> GetByIdAsync<TDto>(IIdQuery query) where TDto : class, IQueryableDto
         {
-            var queryObject = BuildQueryObject(query, typeof(TDto));
+            var queryObject = BuildQueryObject(query);
             var dalEntity = await _unitOfWork.CategoryRepository.SingleOrDefaultAsync(queryObject);
             return _mapper.Map<TDto>(dalEntity);
         }
@@ -84,11 +84,11 @@ namespace SpendWise.BLL.Services
         /// Retrieves categories based on a query object asynchronously.
         /// </summary>
         /// <typeparam name="TDto">The type of the DTO to return.</typeparam>
-        /// <param name="queryObject">The query object used to filter the categories.</param>
+        /// <param name="query">The query object used to filter the categories.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains a collection of DTOs of the categories.</returns>
         public async Task<IEnumerable<TDto>> GetAsync<TDto>(ICategoryCriteriaQuery query) where TDto : class, IQueryableDto
         {
-            var queryObject = BuildQueryObject(query, typeof(TDto));
+            var queryObject = BuildQueryObject(query);
             var dalEntities = await _unitOfWork.CategoryRepository.ListAsync(queryObject);
             return _mapper.Map<IEnumerable<TDto>>(dalEntities);
         }
@@ -97,11 +97,10 @@ namespace SpendWise.BLL.Services
         /// Builds a DAL query object based on an ID-based BLL query object.
         /// </summary>
         /// <param name="idQuery">The ID-based BLL query object.</param>
-        /// <param name="dtoType">The type of the DTO.</param>
         /// <returns>The DAL query object.</returns>
-        private CategoryQueryObject BuildQueryObject(IIdQuery idQuery, Type dtoType)
+        private CategoryQueryObject BuildQueryObject(IIdQuery idQuery)
         {
-            var dalQuery = SetupQueryObjectIncludes(dtoType);
+            var dalQuery = SetupQueryObjectIncludes((ICategoryIncludeQuery)idQuery);
             return dalQuery.WithId(idQuery.Id);
         }
 
@@ -109,12 +108,12 @@ namespace SpendWise.BLL.Services
         /// Builds a DAL query object based on a criteria-based BLL query object.
         /// </summary>
         /// <param name="query">The criteria-based BLL query object.</param>
-        /// <param name="dtoType">The type of the DTO.</param>
         /// <returns>The DAL query object.</returns>
-        private CategoryQueryObject BuildQueryObject(ICategoryCriteriaQuery query, Type dtoType)
+        private CategoryQueryObject BuildQueryObject(ICategoryCriteriaQuery query)
         {
-            var dalQuery = SetupQueryObjectIncludes(dtoType);
+            var dalQuery = SetupQueryObjectIncludes((ICategoryIncludeQuery)query);
 
+            // Apply filters based on the query object
             if (query.Name != null)
                 dalQuery = dalQuery.WithName(query.Name);
 
@@ -165,29 +164,39 @@ namespace SpendWise.BLL.Services
         }
 
         /// <summary>
-        /// Sets up the query object with necessary includes based on the DTO type.
+        /// Sets up the query object with necessary includes based on the query.
         /// </summary>
-        /// <param name="dtoType">The type of the DTO.</param>
+        /// <param name="query">The criteria-based BLL query object.</param>
         /// <returns>The query object with necessary includes.</returns>
-        private CategoryQueryObject SetupQueryObjectIncludes(Type dtoType)
+        private CategoryQueryObject SetupQueryObjectIncludes(ICategoryIncludeQuery query)
         {
             var dalQuery = new CategoryQueryObject();
 
-            var includeActions = new Dictionary<Type, Action<CategoryQueryObject>>
+            // Iterate through the include actions and apply them if the conditions are met
+            foreach (var (condition, action) in IncludeActions)
             {
-                { typeof(ITransactionsDto<>), query => query.Relations.IncludeTransactions() }
-            };
-
-            foreach (var includeAction in includeActions)
-            {
-                if (dtoType.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == includeAction.Key))
+                if (condition(query))
                 {
-                    Console.WriteLine($"Including {includeAction.Key.Name}.");
-                    includeAction.Value(dalQuery);
+                    Console.WriteLine($"Including action for condition {condition.Method.Name}.");
+                    action(dalQuery);
                 }
             }
 
             return dalQuery;
         }
+
+        /// <summary>
+        /// Gets the include actions for setting up the query object.
+        /// </summary>
+        private IEnumerable<(Func<ICategoryIncludeQuery, bool> Condition, Action<CategoryQueryObject> Action)> IncludeActions =>
+            new List<(Func<ICategoryIncludeQuery, bool> Condition, Action<CategoryQueryObject> Action)>
+            {
+                // Add include actions
+                // Example:
+                // (
+                //    query => query.IncludeRelatedEntity,
+                //    q => q.Relations.IncludeRelatedEntity()
+                // )
+            };
     }
 }

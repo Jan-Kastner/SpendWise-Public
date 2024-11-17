@@ -1,51 +1,55 @@
-using SpendWise.Common.Enums;
 using SpendWise.BLL.DTOs.Interfaces;
+using SpendWise.Common.Enums;
 
 namespace SpendWise.BLL.DTOs
 {
     /// <summary>
     /// Represents detailed information about a transaction.
     /// </summary>
-    public record TransactionDetailDto : IQueryableDto, ITransactionGroupUsersDto<TransactionGroupUserListDto>, ICategoryDto<CategoryListDto>
+    public record TransactionDetailDto : IQueryableDto
     {
         /// <summary>
-        /// Gets or sets the unique identifier of the transaction.
+        /// Gets or sets the unique identifier for the transaction.
         /// </summary>
-        public required Guid Id { get; set; }
+        public required Guid Id { get; init; }
 
         /// <summary>
         /// Gets or sets the amount of the transaction.
         /// </summary>
-        public required decimal Amount { get; set; }
+        public required decimal Amount { get; init; }
 
         /// <summary>
-        /// Gets or sets the date of the transaction.
+        /// Gets or sets the date and time when the transaction occurred.
         /// </summary>
-        public required DateTime Date { get; set; }
+        public required DateTime Date { get; init; }
 
         /// <summary>
-        /// Gets or sets the description of the transaction.
+        /// Gets or sets the description of the transaction. Can be null.
         /// </summary>
-        public string? Description { get; set; }
+        public required string? Description { get; init; }
 
         /// <summary>
         /// Gets or sets the type of the transaction.
         /// </summary>
-        public required TransactionType Type { get; set; }
+        public required TransactionType Type { get; init; }
 
         /// <summary>
-        /// Gets or sets the unique identifier of the category associated with the transaction, if any.
+        /// Gets or sets the unique identifier for the category associated with the transaction. Can be null.
         /// </summary>
-        public Guid? CategoryId { get; set; }
+        public Guid? CategoryId { get; init; } = null;
 
         /// <summary>
-        /// Gets or sets the category associated with the transaction, if any.
+        /// Gets the collection of transaction group-user relationships associated with this transaction.
         /// </summary>
-        public CategoryListDto? Category { get; set; }
+        public CategorySummaryDto? Category { get; init; }
+        /// <remarks>
+        /// This is a navigation property for the group-user relationships related to this transaction.
+        /// </remarks>
+        public ICollection<GroupListDto> Groups { get; init; } = new List<GroupListDto>();
 
-        /// <summary>
-        /// Gets or sets the list of group users associated with the transaction.
-        /// </summary>
-        public IEnumerable<TransactionGroupUserListDto> TransactionGroupUsers { get; set; } = new List<TransactionGroupUserListDto>();
+        /// <remarks>
+        /// This is a navigation property for the group-user relationships related to this transaction.
+        /// </remarks>
+        public UserSummaryDto? User { get; init; } = null;
     }
 }

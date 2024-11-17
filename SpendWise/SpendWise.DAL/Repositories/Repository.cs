@@ -113,7 +113,6 @@ namespace SpendWise.DAL.Repositories
             {
                 var entity = _mapper.Map<TEntity>(dto);
                 await _dbSet.AddAsync(entity).ConfigureAwait(false);
-                await _dbContext.SaveChangesAsync().ConfigureAwait(false);
                 return _mapper.Map<TDto>(entity);
             }
             catch (Exception ex)
@@ -134,7 +133,6 @@ namespace SpendWise.DAL.Repositories
                 var entity = _mapper.Map<TEntity>(dto);
                 TEntity existingEntity = await _dbSet.SingleAsync(e => e.Id == entity.Id).ConfigureAwait(false);
                 _mapper.Map(entity, existingEntity);
-                await _dbContext.SaveChangesAsync().ConfigureAwait(false);
                 return _mapper.Map<TDto>(existingEntity);
             }
             catch (Exception ex)
@@ -158,7 +156,6 @@ namespace SpendWise.DAL.Repositories
                     throw new KeyNotFoundException($"Entity with ID {entityId} not found.");
                 }
                 _dbSet.Remove(entity);
-                await _dbContext.SaveChangesAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
             {

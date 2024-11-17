@@ -3,7 +3,7 @@ namespace SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.GroupUserEntity.
     public interface IIncludeUser
     {
         IIncludeTransactionGroupUsers IncludeTransactionGroupUsers(string path = "TransactionGroupUsers");
-        IIncludeGroup IncludeGroup(string path = "Group");
         IIncludeLimit IncludeLimit(string path = "Limit");
+        IIncludeGroup IncludeGroup(string path = "Group");
     }
 }

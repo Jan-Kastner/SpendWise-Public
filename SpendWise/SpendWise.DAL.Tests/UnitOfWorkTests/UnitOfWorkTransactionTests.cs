@@ -205,7 +205,6 @@ namespace SpendWise.DAL.Tests.UnitOfWorkTests
             {
                 CategoryId = CategorySeeds.CategoryTransport.Id // Change CategoryId
             };
-
             await _unitOfWork.TransactionRepository.UpdateAsync(updatedTransaction);
             await _unitOfWork.SaveChangesAsync();
 

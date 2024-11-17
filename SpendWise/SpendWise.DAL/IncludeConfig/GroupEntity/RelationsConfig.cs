@@ -2,7 +2,7 @@ using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.GroupEntity.Interfac
 
 namespace SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.GroupEntity
 {
-    public class GroupEntityRelationsConfig : IThenGuIncludeLimit, IIncludeGroupUsers, IThenGuIncludeTransactionGroupUsers, IIncludeInvitations, IThenGuIncludeUser, IGroupEntityInitialState, IThenGuTguIncludeTransaction
+    public class GroupEntityRelationsConfig : IThenGuTguIncludeTransaction, IThenGuIncludeUser, IIncludeGroupUsers, IThenGuIncludeTransactionGroupUsers, IGroupEntityInitialState
 {
 
         private readonly List<string> _includes = new List<string>(); // Stores the includes for related entities
@@ -44,14 +44,6 @@ namespace SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.GroupEntity
             AddInclude(path);
             return this;
         }
-        public IIncludeInvitations IncludeInvitations(string path = "Invitations") {
-            AddInclude(path);
-            return this;
-        }
-        public IThenGuIncludeLimit ThenGuIncludeLimit(string path = "GroupUsers.Limit") {
-            AddInclude(path);
-            return this;
-        }
         public IThenGuIncludeTransactionGroupUsers ThenGuIncludeTransactionGroupUsers(string path = "GroupUsers.TransactionGroupUsers") {
             AddInclude(path);
             return this;
@@ -63,6 +55,9 @@ namespace SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.GroupEntity
         public IThenGuTguIncludeTransaction ThenGuTguIncludeTransaction(string path = "GroupUsers.TransactionGroupUsers.Transaction") {
             AddInclude(path);
             return this;
+        }
+        public void ThenGuTguTIncludeCategory(string path = "GroupUsers.TransactionGroupUsers.Transaction.Category") {
+            AddInclude(path);
         }
     }
 }

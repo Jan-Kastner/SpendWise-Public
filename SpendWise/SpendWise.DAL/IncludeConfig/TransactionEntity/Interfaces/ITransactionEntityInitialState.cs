@@ -2,7 +2,7 @@ namespace SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.TransactionEntit
 {
     public interface ITransactionEntityInitialState
     {
-        IIncludeCategory IncludeCategory(string path = "Category");
         IIncludeTransactionGroupUsers IncludeTransactionGroupUsers(string path = "TransactionGroupUsers");
+        IIncludeCategory IncludeCategory(string path = "Category");
     }
 }

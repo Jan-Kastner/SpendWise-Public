@@ -5,6 +5,6 @@ namespace SpendWise.BLL.DTOs
     /// </summary>
     public interface IQueryableDto
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; init; }
     }
 }

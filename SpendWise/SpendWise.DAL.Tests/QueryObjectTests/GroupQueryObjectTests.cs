@@ -730,67 +730,6 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
         }
 
         /// <summary>
-        /// Verifies that querying a group with invitations by its ID 
-        /// returns the correct entry from the database, including the associated invitations.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task WithIdIncludingInvitations_ShouldReturnCorrectGroupWithInvitations()
-        {
-            // Arrange
-            var expectedGroupId = GroupSeeds.GroupFamily.Id;
-            var queryObject = new GroupQueryObject();
-
-            // Include invitations in the query
-            queryObject.Relations
-                .IncludeInvitations();
-
-            // Act
-            var groups = await _unitOfWork.GroupRepository
-                .ListAsync(queryObject.WithId(expectedGroupId));
-
-            // Assert
-            Assert.NotNull(groups);
-            Assert.Single(groups);
-            Assert.Equal(expectedGroupId, groups.First().Id);
-
-            Assert.NotNull(groups.First().Invitations);
-            Assert.NotEmpty(groups.First().Invitations);
-            Assert.All(groups.First().Invitations, inv => Assert.Equal(expectedGroupId, inv.GroupId));
-        }
-
-        /// <summary>
-        /// Verifies that querying a group with users and their limits by its ID 
-        /// returns the correct entry from the database, including the associated users and their limits.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task WithIdIncludingGroupUsersAndLimits_ShouldReturnCorrectGroupWithUsersAndLimits()
-        {
-            // Arrange
-            var expectedGroupId = GroupSeeds.GroupFamily.Id;
-            var queryObject = new GroupQueryObject();
-
-            // Include users and their limits in the query
-            queryObject.Relations
-                .IncludeGroupUsers()
-                .ThenGuIncludeLimit();
-
-            // Act
-            var groups = await _unitOfWork.GroupRepository
-                .ListAsync(queryObject.WithId(expectedGroupId));
-
-            // Assert
-            Assert.NotNull(groups);
-            Assert.Single(groups);
-            Assert.Equal(expectedGroupId, groups.First().Id);
-
-            Assert.NotNull(groups.First().GroupUsers);
-            Assert.NotEmpty(groups.First().GroupUsers);
-            Assert.All(groups.First().GroupUsers, gu => Assert.Equal(expectedGroupId, gu.GroupId));
-        }
-
-        /// <summary>
         /// Verifies that querying a group with users and their transaction group users by its ID 
         /// returns the correct entry from the database, including the associated users and their transaction group users.
         /// </summary>

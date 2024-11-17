@@ -1,5 +1,3 @@
-using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.CategoryEntity.Interfaces;
-using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.CategoryEntity;
 using SpendWise.DAL.Entities;
 
 namespace SpendWise.DAL.QueryObjects
@@ -10,25 +8,12 @@ namespace SpendWise.DAL.QueryObjects
     /// </summary>
     public class CategoryQueryObject : BaseQueryObject<CategoryEntity, CategoryQueryObject>, ICategoryQueryObject
     {
-        private CategoryEntityRelationsConfig _relations = new CategoryEntityRelationsConfig();
-
-        /// <summary>
-        /// Gets the initial state for category relations.
-        /// </summary>
-        public ICategoryEntityInitialState Relations => _relations;
-
-        /// <summary>
-        /// Gets the list of include properties for the query.
-        /// </summary>
-        public override List<string> Includes => _relations.Includes;
-
         /// <summary>
         /// Gets the collection of include directives used by the RelationConfigGenerator
         /// to generate EntityRelationsConfiguration, which acts as a state machine for managing includes.
         /// </summary>
         public override ICollection<Func<CategoryEntity, object>> IncludeDirectives { get; } = new List<Func<CategoryEntity, object>>
         {
-            entity => entity.Transactions
         };
 
         #region IIdQuery

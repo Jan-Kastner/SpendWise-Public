@@ -764,35 +764,5 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
         }
 
         #endregion
-
-        #region RelationsQuery Tests
-
-        /// <summary>
-        /// Verifies that querying a category with transactions by its ID 
-        /// returns the correct entry from the database, including the associated transactions.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        [Fact]
-        public async Task WithIdIncludingTransactions_ShouldReturnCorrectCategoryWithTransactions()
-        {
-            // Arrange
-            var expectedCategory = CategorySeeds.CategoryFood;
-            var queryObject = new CategoryQueryObject();
-
-            queryObject.Relations.IncludeTransactions();
-
-            // Act
-            var categories = await _unitOfWork.CategoryRepository
-                .ListAsync(queryObject.WithId(expectedCategory.Id));
-
-            // Assert
-            Assert.NotNull(categories);
-            Assert.Single(categories);
-            Assert.Equal(expectedCategory.Id, categories.First().Id);
-            Assert.NotNull(categories.First().Transactions);
-            Assert.All(categories.First().Transactions, t => Assert.Equal(expectedCategory.Id, t.CategoryId));
-        }
-
-        #endregion
     }
 }

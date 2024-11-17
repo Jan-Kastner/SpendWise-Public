@@ -2,7 +2,7 @@ using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.UserEntity.Interface
 
 namespace SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.UserEntity
 {
-    public class UserEntityRelationsConfig : IIncludeGroupUsers, IIncludeSentInvitations, IIncludeReceivedInvitations, IThenGuIncludeGroup, IUserEntityInitialState
+    public class UserEntityRelationsConfig : IIncludeReceivedInvitations, IThenGuGGuIncludeUser, IThenGuIncludeGroup, IThenGuGIncludeGroupUsers, IIncludeSentInvitations, IIncludeGroupUsers, IUserEntityInitialState
 {
 
         private readonly List<string> _includes = new List<string>(); // Stores the includes for related entities
@@ -53,6 +53,14 @@ namespace SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.UserEntity
             return this;
         }
         public IThenGuIncludeGroup ThenGuIncludeGroup(string path = "GroupUsers.Group") {
+            AddInclude(path);
+            return this;
+        }
+        public IThenGuGIncludeGroupUsers ThenGuGIncludeGroupUsers(string path = "GroupUsers.Group.GroupUsers") {
+            AddInclude(path);
+            return this;
+        }
+        public IThenGuGGuIncludeUser ThenGuGGuIncludeUser(string path = "GroupUsers.Group.GroupUsers.User") {
             AddInclude(path);
             return this;
         }

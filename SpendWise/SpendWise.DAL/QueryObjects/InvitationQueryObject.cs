@@ -30,7 +30,8 @@ namespace SpendWise.DAL.QueryObjects
         {
             entity => entity.Group,
             entity => entity.Sender,
-            entity => entity.Receiver
+            entity => entity.Receiver,
+            entity => entity.Group.GroupUsers.Select(groupUser => groupUser.User)
         };
 
         #region IIdQuery

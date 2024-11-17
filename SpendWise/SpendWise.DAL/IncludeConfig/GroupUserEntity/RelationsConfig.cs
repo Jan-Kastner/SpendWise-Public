@@ -2,7 +2,7 @@ using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.GroupUserEntity.Inte
 
 namespace SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.GroupUserEntity
 {
-    public class GroupUserEntityRelationsConfig : IGroupUserEntityInitialState, IIncludeGroup, IIncludeUser, IIncludeLimit, IIncludeTransactionGroupUsers, IThenTguIncludeTransaction
+    public class GroupUserEntityRelationsConfig : IThenTguTIncludeCategory, IIncludeGroup, IIncludeTransactionGroupUsers, IIncludeUser, IIncludeLimit, IThenTguIncludeTransaction, IGroupUserEntityInitialState
 {
 
         private readonly List<string> _includes = new List<string>(); // Stores the includes for related entities
@@ -57,6 +57,10 @@ namespace SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.GroupUserEntity
             return this;
         }
         public IThenTguIncludeTransaction ThenTguIncludeTransaction(string path = "TransactionGroupUsers.Transaction") {
+            AddInclude(path);
+            return this;
+        }
+        public IThenTguTIncludeCategory ThenTguTIncludeCategory(string path = "TransactionGroupUsers.Transaction.Category") {
             AddInclude(path);
             return this;
         }

@@ -33,7 +33,8 @@ namespace SpendWise.DAL.QueryObjects
             entity => entity.Group,
             entity => entity.Limit!,
             entity => entity.TransactionGroupUsers,
-            entity => entity.TransactionGroupUsers.Select(tgu => tgu.Transaction)
+            entity => entity.TransactionGroupUsers.Select(tgu => tgu.Transaction),
+            entity => entity.TransactionGroupUsers.Select(tgu => tgu.Transaction.Category),
         };
 
         #region IIdQuery

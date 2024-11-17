@@ -4,5 +4,6 @@ namespace SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.InvitationEntity
     {
         IIncludeReceiver IncludeReceiver(string path = "Receiver");
         IIncludeSender IncludeSender(string path = "Sender");
+        IThenGIncludeGroupUsers ThenGIncludeGroupUsers(string path = "Group.GroupUsers");
     }
 }

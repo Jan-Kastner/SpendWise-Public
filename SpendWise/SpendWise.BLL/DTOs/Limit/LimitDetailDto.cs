@@ -1,5 +1,5 @@
-using SpendWise.Common.Enums;
 using SpendWise.BLL.DTOs.Interfaces;
+using SpendWise.Common.Enums;
 
 namespace SpendWise.BLL.DTOs
 {
@@ -9,18 +9,23 @@ namespace SpendWise.BLL.DTOs
     public record LimitDetailDto : IQueryableDto
     {
         /// <summary>
-        /// Gets or sets the unique identifier of the limit.
+        /// Gets or sets the unique identifier for the limit.
         /// </summary>
-        public required Guid Id { get; set; }
+        public required Guid Id { get; init; }
+
+        /// <summary>
+        /// Gets or sets the unique identifier for the associated group-user relationship.
+        /// </summary>
+        public required Guid GroupUserId { get; init; }
 
         /// <summary>
         /// Gets or sets the amount of the limit.
         /// </summary>
-        public required decimal Amount { get; set; }
+        public required decimal Amount { get; init; }
 
         /// <summary>
         /// Gets or sets the type of notice associated with the limit.
         /// </summary>
-        public required NoticeType NoticeType { get; set; } = NoticeType.InApp;
+        public required NoticeType NoticeType { get; init; } = NoticeType.InApp;
     }
 }

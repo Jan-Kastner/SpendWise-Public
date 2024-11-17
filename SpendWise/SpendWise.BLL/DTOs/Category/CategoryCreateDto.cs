@@ -10,21 +10,21 @@ namespace SpendWise.BLL.DTOs
         /// <summary>
         /// Gets or sets the name of the category.
         /// </summary>
-        public required string Name { get; set; }
+        public required string Name { get; init; }
 
         /// <summary>
         /// Gets or sets the description of the category. Can be null.
         /// </summary>
-        public string? Description { get; set; }
+        public string? Description { get; init; } = null;
 
         /// <summary>
         /// Gets or sets the color associated with the category.
         /// </summary>
-        public required string Color { get; set; }
+        public required string Color { get; init; }
 
         /// <summary>
         /// Gets or sets the icon for the category. Can be null.
         /// </summary>
-        public required byte[] Icon { get; set; }
+        public byte[] Icon { get; init; } = new byte[] { };
     }
 }

@@ -2,7 +2,6 @@ namespace SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.GroupEntity.Inte
 {
     public interface IGroupEntityInitialState
     {
-        IIncludeInvitations IncludeInvitations(string path = "Invitations");
         IIncludeGroupUsers IncludeGroupUsers(string path = "GroupUsers");
     }
 }

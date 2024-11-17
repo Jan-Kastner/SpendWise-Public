@@ -29,11 +29,10 @@ namespace SpendWise.DAL.QueryObjects
         public override ICollection<Func<GroupEntity, object>> IncludeDirectives { get; } = new List<Func<GroupEntity, object>>
         {
             entity => entity.GroupUsers,
-            entity => entity.Invitations,
             entity => entity.GroupUsers.Select(gu => gu.User),
-            entity => entity.GroupUsers.Select(gu => gu.Limit),
             entity => entity.GroupUsers.Select(gu => gu.TransactionGroupUsers),
-            entity => entity.GroupUsers.Select(gu => gu.TransactionGroupUsers.Select(tgu => tgu.Transaction))
+            entity => entity.GroupUsers.Select(gu => gu.TransactionGroupUsers.Select(tgu => tgu.Transaction)),
+            entity => entity.GroupUsers.Select(gu => gu.TransactionGroupUsers.Select(tgu => tgu.Transaction.Category))
         };
 
         #region IIdQuery

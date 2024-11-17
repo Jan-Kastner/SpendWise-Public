@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using SpendWise.BLL.DTOs.Interfaces;
 
 namespace SpendWise.BLL.DTOs
@@ -5,41 +6,56 @@ namespace SpendWise.BLL.DTOs
     /// <summary>
     /// Represents detailed information about an invitation.
     /// </summary>
-    public record InvitationDetailDto : IQueryableDto, IGroupDto<GroupListDto>, ISenderDto<UserListDto>, IReceiverDto<UserListDto>
+    public record InvitationDetailDto : IQueryableDto
     {
         /// <summary>
-        /// Gets or sets the unique identifier of the invitation.
+        /// Gets or sets the unique identifier for the invitation.
         /// </summary>
-        public required Guid Id { get; set; }
+        public required Guid Id { get; init; }
 
         /// <summary>
-        /// Gets or sets the sender of the invitation.
+        /// Gets or sets the unique identifier for the sender of the invitation.
         /// </summary>
-        public required UserListDto Sender { get; set; }
+        public required Guid SenderId { get; init; }
 
         /// <summary>
-        /// Gets or sets the receiver of the invitation.
+        /// Gets or sets the unique identifier for the receiver of the invitation.
         /// </summary>
-        public required UserListDto Receiver { get; set; }
+        public required Guid ReceiverId { get; init; }
 
         /// <summary>
-        /// Gets or sets the group associated with the invitation.
+        /// Gets or sets the unique identifier for the group associated with the invitation.
         /// </summary>
-        public required GroupListDto Group { get; set; }
+        public required Guid GroupId { get; init; }
 
         /// <summary>
-        /// Gets or sets the date the invitation was sent.
+        /// Gets or sets the date and time when the invitation was sent.
         /// </summary>
         public required DateTime SentDate { get; init; }
 
         /// <summary>
-        /// Gets or sets the date the invitation was responded to, if any.
+        /// Gets or sets the date and time when the invitation was responded to. Can be null.
         /// </summary>
-        public required DateTime? ResponseDate { get; set; }
+        public required DateTime? ResponseDate { get; init; } = null;
 
         /// <summary>
-        /// Gets or sets a value indicating whether the invitation was accepted.
+        /// Gets or sets a value indicating whether the invitation was accepted. Can be null.
         /// </summary>
-        public required bool? IsAccepted { get; set; }
+        public required bool? IsAccepted { get; init; } = null;
+
+        /// <summary>
+        /// Gets or sets the user entity representing the sender of the invitation. Can be null.
+        /// </summary>
+        public UserSummaryDto? Sender { get; init; } = null;
+
+        /// <summary>
+        /// Gets or sets the user entity representing the receiver of the invitation. Can be null.
+        /// </summary>
+        public UserSummaryDto? Receiver { get; init; } = null;
+
+        /// <summary>
+        /// Gets or sets the group entity associated with the invitation. Can be null.
+        /// </summary>
+        public GroupListDto? Group { get; init; } = null;
     }
 }
