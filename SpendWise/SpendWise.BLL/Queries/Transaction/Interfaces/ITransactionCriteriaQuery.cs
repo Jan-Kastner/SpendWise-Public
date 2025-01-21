@@ -5,22 +5,43 @@ namespace SpendWise.BLL.Queries.Interfaces
     /// <summary>
     /// Represents an interface for transaction criteria-based queries.
     /// </summary>
-    public interface ITransactionCriteriaQuery : ICriteriaQuery
+    public interface ITransactionCriteriaQuery : ICriteriaQuery<ITransactionCriteriaQuery>
     {
-        /// <summary>
-        /// Gets the unique identifier of the transaction that should not match.
-        /// </summary>
-        Guid? NotId { get; }
+        #region Amount
 
         /// <summary>
         /// Gets the amount of the transaction.
         /// </summary>
-        decimal? Amount { get; }
+        decimal? AmountEqual { get; }
 
         /// <summary>
         /// Gets the amount that should not match the transaction amount.
         /// </summary>
-        decimal? NotAmount { get; }
+        decimal? NotAmountEqual { get; }
+
+        /// <summary>
+        /// Gets the amount greater than the transaction amount.
+        /// </summary>
+        decimal? AmountGreaterThan { get; }
+
+        /// <summary>
+        /// Gets the amount that should not be greater than the transaction amount.
+        /// </summary>
+        decimal? NotAmountGreaterThan { get; }
+
+        /// <summary>
+        /// Gets the amount less than the transaction amount.
+        /// </summary>
+        decimal? AmountLessThan { get; }
+
+        /// <summary>
+        /// Gets the amount that should not be less than the transaction amount.
+        /// </summary>
+        decimal? NotAmountLessThan { get; }
+
+        #endregion
+
+        #region Date
 
         /// <summary>
         /// Gets the date of the transaction.
@@ -31,6 +52,20 @@ namespace SpendWise.BLL.Queries.Interfaces
         /// Gets the date that should not match the transaction date.
         /// </summary>
         DateTime? NotDate { get; }
+
+        /// <summary>
+        /// Gets the date from which the transaction should be.
+        /// </summary>
+        DateTime? DateFrom { get; }
+
+        /// <summary>
+        /// Gets the date to which the transaction should be.
+        /// </summary>
+        DateTime? DateTo { get; }
+
+        #endregion
+
+        #region Description
 
         /// <summary>
         /// Gets the description of the transaction.
@@ -55,12 +90,11 @@ namespace SpendWise.BLL.Queries.Interfaces
         /// <summary>
         /// Gets a value indicating whether the transaction should be without a description.
         /// </summary>
-        bool? WithoutDescription { get; }
+        bool? WithDescription { get; }
 
-        /// <summary>
-        /// Gets a value indicating whether the transaction should not be without a description.
-        /// </summary>
-        bool? NotWithoutDescription { get; }
+        #endregion
+
+        #region Type
 
         /// <summary>
         /// Gets the type of the transaction.
@@ -71,6 +105,10 @@ namespace SpendWise.BLL.Queries.Interfaces
         /// Gets the type that should not match the transaction type.
         /// </summary>
         TransactionType? NotType { get; }
+
+        #endregion
+
+        #region Category
 
         /// <summary>
         /// Gets the unique identifier of the category.
@@ -83,14 +121,41 @@ namespace SpendWise.BLL.Queries.Interfaces
         Guid? NotCategoryId { get; }
 
         /// <summary>
-        /// Gets a value indicating whether the transaction should be without a category.
+        /// Gets a value indicating whether the transaction should be with a category.
         /// </summary>
-        bool? WithoutCategory { get; }
+        bool? WithCategory { get; }
+
+        #endregion
+
+        #region User
 
         /// <summary>
-        /// Gets a value indicating whether the transaction should not be without a category.
+        /// Gets the unique identifier of the user.
         /// </summary>
-        bool? NotWithoutCategory { get; }
+        Guid? UserId { get; }
+
+        /// <summary>
+        /// Gets the unique identifier of the user that should not match.
+        /// </summary>
+        Guid? NotUserId { get; }
+
+        #endregion
+
+        #region Group
+
+        /// <summary>
+        /// Gets the unique identifier of the group.
+        /// </summary>
+        Guid? GroupId { get; }
+
+        /// <summary>
+        /// Gets the unique identifier of the group that should not match.
+        /// </summary>
+        Guid? NotGroupId { get; }
+
+        #endregion
+
+        #region TransactionGroupUser
 
         /// <summary>
         /// Gets the unique identifier of the transaction group user.
@@ -101,5 +166,7 @@ namespace SpendWise.BLL.Queries.Interfaces
         /// Gets the unique identifier of the transaction group user that should not match.
         /// </summary>
         Guid? NotTransactionGroupUserId { get; }
+
+        #endregion
     }
 }

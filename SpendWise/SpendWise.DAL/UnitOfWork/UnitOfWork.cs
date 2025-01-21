@@ -4,8 +4,6 @@ using SpendWise.DAL.DTOs;
 using SpendWise.DAL.Repositories;
 using SpendWise.DAL.dbContext;
 using AutoMapper;
-using System;
-using System.Threading.Tasks;
 
 namespace SpendWise.DAL.UnitOfWork
 {
@@ -78,7 +76,6 @@ namespace SpendWise.DAL.UnitOfWork
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while saving changes to the database.");
                 throw new Exception("An error occurred while saving changes to the database.", ex);
             }
         }
@@ -97,7 +94,6 @@ namespace SpendWise.DAL.UnitOfWork
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "An error occurred while disposing the UnitOfWork.");
                     throw new Exception("An error occurred while disposing the UnitOfWork.", ex);
                 }
                 finally
@@ -122,7 +118,6 @@ namespace SpendWise.DAL.UnitOfWork
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "An error occurred while disposing the DbContext.");
                     throw new Exception("An error occurred while disposing the DbContext.", ex);
                 }
             }

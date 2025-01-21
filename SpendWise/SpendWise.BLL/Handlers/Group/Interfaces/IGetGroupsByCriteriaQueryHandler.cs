@@ -1,6 +1,6 @@
 using SpendWise.BLL.DTOs;
+using SpendWise.BLL.DTOs.Interfaces;
 using SpendWise.BLL.Queries.Interfaces;
-using System.Collections.Generic;
 
 namespace SpendWise.BLL.Handlers.Interfaces
 {

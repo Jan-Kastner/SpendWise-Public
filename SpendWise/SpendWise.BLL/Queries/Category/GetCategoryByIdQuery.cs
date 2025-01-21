@@ -1,5 +1,4 @@
 using SpendWise.BLL.Queries.Interfaces;
-using System;
 
 namespace SpendWise.BLL.Queries
 {
@@ -14,19 +13,13 @@ namespace SpendWise.BLL.Queries
         public Guid Id { get; }
 
         /// <summary>
-        /// Gets a value indicating whether to include transactions in the query result.
-        /// </summary>
-        public bool IncludeTransactions { get; }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="GetCategoryByIdQuery"/> class.
         /// </summary>
         /// <param name="id">The ID of the category.</param>
         /// <param name="includeTransactions">A value indicating whether to include transactions in the query result. Default is false.</param>
-        public GetCategoryByIdQuery(Guid id, bool includeTransactions = false)
+        public GetCategoryByIdQuery(Guid id)
         {
             Id = id;
-            IncludeTransactions = includeTransactions;
         }
     }
 }

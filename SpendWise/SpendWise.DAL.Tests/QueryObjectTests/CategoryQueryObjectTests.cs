@@ -529,6 +529,10 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             // Assert
             Assert.NotNull(categories);
             Assert.All(categories, c => Assert.True(c.Icon.Length > 0));
+            foreach (var category in categories)
+            {
+                Console.WriteLine($"Category: {category.Name}");
+            }
         }
 
         /// <summary>

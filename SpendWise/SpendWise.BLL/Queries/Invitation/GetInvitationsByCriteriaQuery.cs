@@ -1,5 +1,4 @@
 using SpendWise.BLL.Queries.Interfaces;
-using System;
 
 namespace SpendWise.BLL.Queries
 {
@@ -8,15 +7,7 @@ namespace SpendWise.BLL.Queries
     /// </summary>
     public class GetInvitationsByCriteriaQuery : IInvitationCriteriaQuery, IInvitationIncludeQuery
     {
-        /// <summary>
-        /// Gets the unique identifier of the invitation.
-        /// </summary>
-        public Guid? Id { get; }
-
-        /// <summary>
-        /// Gets the unique identifier of the invitation that should not match.
-        /// </summary>
-        public Guid? NotId { get; }
+        #region SentDate
 
         /// <summary>
         /// Gets the sent date of the invitation.
@@ -29,6 +20,20 @@ namespace SpendWise.BLL.Queries
         public DateTime? NotSentDate { get; }
 
         /// <summary>
+        /// Gets the sent date range from.
+        /// </summary>
+        public DateTime? SentDateFrom { get; }
+
+        /// <summary>
+        /// Gets the sent date range to.
+        /// </summary>
+        public DateTime? SentDateTo { get; }
+
+        #endregion
+
+        #region ResponseDate
+
+        /// <summary>
         /// Gets the response date of the invitation.
         /// </summary>
         public DateTime? ResponseDate { get; }
@@ -39,14 +44,27 @@ namespace SpendWise.BLL.Queries
         public DateTime? NotResponseDate { get; }
 
         /// <summary>
-        /// Gets a value indicating whether the invitation should be without a response date.
+        /// Gets the response date range from.
         /// </summary>
-        public bool? WithoutResponseDate { get; }
+        public DateTime? ResponseDateFrom { get; }
 
         /// <summary>
-        /// Gets a value indicating whether the invitation should not be without a response date.
+        /// Gets the response date range to.
         /// </summary>
-        public bool? NotWithoutResponseDate { get; }
+        public DateTime? ResponseDateTo { get; }
+
+        #endregion
+
+        #region WithoutResponseDate
+
+        /// <summary>
+        /// Gets a value indicating whether the invitation should be without a response date.
+        /// </summary>
+        public bool? WithResponseDate { get; }
+
+        #endregion
+
+        #region Status
 
         /// <summary>
         /// Gets a value indicating whether the invitation is accepted.
@@ -54,19 +72,13 @@ namespace SpendWise.BLL.Queries
         public bool? IsAccepted { get; }
 
         /// <summary>
-        /// Gets a value indicating whether the invitation is not accepted.
-        /// </summary>
-        public bool? NotIsAccepted { get; }
-
-        /// <summary>
         /// Gets a value indicating whether the invitation is pending.
         /// </summary>
         public bool? IsPending { get; }
 
-        /// <summary>
-        /// Gets a value indicating whether the invitation is not pending.
-        /// </summary>
-        public bool? NotIsPending { get; }
+        #endregion
+
+        #region Sender
 
         /// <summary>
         /// Gets the unique identifier of the sender.
@@ -78,6 +90,10 @@ namespace SpendWise.BLL.Queries
         /// </summary>
         public Guid? NotSenderId { get; }
 
+        #endregion
+
+        #region Receiver
+
         /// <summary>
         /// Gets the unique identifier of the receiver.
         /// </summary>
@@ -88,6 +104,10 @@ namespace SpendWise.BLL.Queries
         /// </summary>
         public Guid? NotReceiverId { get; }
 
+        #endregion
+
+        #region Group
+
         /// <summary>
         /// Gets the unique identifier of the group.
         /// </summary>
@@ -97,6 +117,10 @@ namespace SpendWise.BLL.Queries
         /// Gets the unique identifier of the group that should not match.
         /// </summary>
         public Guid? NotGroupId { get; }
+
+        #endregion
+
+        #region IncludeOptions
 
         /// <summary>
         /// Gets a value indicating whether to include the group in the query result.
@@ -118,21 +142,41 @@ namespace SpendWise.BLL.Queries
         /// </summary>
         public bool IncludeGroupParticipants { get; }
 
+        #endregion
+
+        #region LogicalOperators
+
+        /// <summary>
+        /// Gets the list of query objects to combine with AND.
+        /// </summary>
+        public List<IInvitationCriteriaQuery>? And { get; }
+
+        /// <summary>
+        /// Gets the list of query objects to combine with OR.
+        /// </summary>
+        public List<IInvitationCriteriaQuery>? Or { get; }
+
+        /// <summary>
+        /// Gets the list of query objects to negate.
+        /// </summary>
+        public List<IInvitationCriteriaQuery>? Not { get; }
+
+        #endregion
+
         /// <summary>
         /// Initializes a new instance of the <see cref="GetInvitationsByCriteriaQuery"/> class.
         /// </summary>
-        /// <param name="id">The unique identifier of the invitation.</param>
-        /// <param name="notId">The unique identifier of the invitation that should not match.</param>
         /// <param name="sentDate">The sent date of the invitation.</param>
         /// <param name="notSentDate">The sent date that should not match.</param>
+        /// <param name="sentDateFrom">The sent date range from.</param>
+        /// <param name="sentDateTo">The sent date range to.</param>
         /// <param name="responseDate">The response date of the invitation.</param>
         /// <param name="notResponseDate">The response date that should not match.</param>
-        /// <param name="withoutResponseDate">Indicates whether the invitation should be without a response date.</param>
-        /// <param name="notWithoutResponseDate">Indicates whether the invitation should not be without a response date.</param>
+        /// <param name="responseDateFrom">The response date range from.</param>
+        /// <param name="responseDateTo">The response date range to.</param>
+        /// <param name="withResponseDate">Indicates whether the invitation should be without a response date.</param>
         /// <param name="isAccepted">Indicates whether the invitation is accepted.</param>
-        /// <param name="notIsAccepted">Indicates whether the invitation is not accepted.</param>
         /// <param name="isPending">Indicates whether the invitation is pending.</param>
-        /// <param name="notIsPending">Indicates whether the invitation is not pending.</param>
         /// <param name="senderId">The unique identifier of the sender.</param>
         /// <param name="notSenderId">The unique identifier of the sender that should not match.</param>
         /// <param name="receiverId">The unique identifier of the receiver.</param>
@@ -143,19 +187,21 @@ namespace SpendWise.BLL.Queries
         /// <param name="includeSender">A value indicating whether to include the sender in the query result. Default is false.</param>
         /// <param name="includeReceiver">A value indicating whether to include the receiver in the query result. Default is false.</param>
         /// <param name="includeGroupParticipants">A value indicating whether to include the group participants in the query result. Default is false.</param>
+        /// <param name="and">The list of query objects to combine with AND.</param>
+        /// <param name="or">The list of query objects to combine with OR.</param>
+        /// <param name="not">The list of query objects to negate.</param>
         public GetInvitationsByCriteriaQuery(
-            Guid? id = null,
-            Guid? notId = null,
             DateTime? sentDate = null,
             DateTime? notSentDate = null,
+            DateTime? sentDateFrom = null,
+            DateTime? sentDateTo = null,
             DateTime? responseDate = null,
             DateTime? notResponseDate = null,
-            bool? withoutResponseDate = null,
-            bool? notWithoutResponseDate = null,
+            DateTime? responseDateFrom = null,
+            DateTime? responseDateTo = null,
+            bool? withResponseDate = null,
             bool? isAccepted = null,
-            bool? notIsAccepted = null,
             bool? isPending = null,
-            bool? notIsPending = null,
             Guid? senderId = null,
             Guid? notSenderId = null,
             Guid? receiverId = null,
@@ -165,20 +211,22 @@ namespace SpendWise.BLL.Queries
             bool includeGroup = false,
             bool includeSender = false,
             bool includeReceiver = false,
-            bool includeGroupParticipants = false)
+            bool includeGroupParticipants = false,
+            List<IInvitationCriteriaQuery>? and = null,
+            List<IInvitationCriteriaQuery>? or = null,
+            List<IInvitationCriteriaQuery>? not = null)
         {
-            Id = id;
-            NotId = notId;
             SentDate = sentDate;
             NotSentDate = notSentDate;
+            SentDateFrom = sentDateFrom;
+            SentDateTo = sentDateTo;
             ResponseDate = responseDate;
             NotResponseDate = notResponseDate;
-            WithoutResponseDate = withoutResponseDate;
-            NotWithoutResponseDate = notWithoutResponseDate;
+            ResponseDateFrom = responseDateFrom;
+            ResponseDateTo = responseDateTo;
+            WithResponseDate = withResponseDate;
             IsAccepted = isAccepted;
-            NotIsAccepted = notIsAccepted;
             IsPending = isPending;
-            NotIsPending = notIsPending;
             SenderId = senderId;
             NotSenderId = notSenderId;
             ReceiverId = receiverId;
@@ -189,6 +237,9 @@ namespace SpendWise.BLL.Queries
             IncludeSender = includeSender;
             IncludeReceiver = includeReceiver;
             IncludeGroupParticipants = includeGroupParticipants;
+            And = and;
+            Or = or;
+            Not = not;
         }
     }
 }

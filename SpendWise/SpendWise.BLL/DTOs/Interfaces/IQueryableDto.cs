@@ -1,4 +1,4 @@
-namespace SpendWise.BLL.DTOs
+namespace SpendWise.BLL.DTOs.Interfaces
 {
     /// <summary>
     /// Represents a Data Transfer Object (DTO) that can be queried.

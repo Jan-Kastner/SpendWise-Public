@@ -1,5 +1,5 @@
 using SpendWise.BLL.Queries.Interfaces;
-using System;
+using SpendWise.DAL.QueryObjects;
 
 namespace SpendWise.BLL.Queries
 {
@@ -8,10 +8,7 @@ namespace SpendWise.BLL.Queries
     /// </summary>
     public class GetCategoriesByCriteriaQuery : ICategoryIncludeQuery, ICategoryCriteriaQuery
     {
-        /// <summary>
-        /// Gets the unique identifier of the category.
-        /// </summary>
-        public Guid? Id { get; }
+        #region Name
 
         /// <summary>
         /// Gets the name of the category.
@@ -33,6 +30,10 @@ namespace SpendWise.BLL.Queries
         /// </summary>
         public string? NotNamePartialMatch { get; }
 
+        #endregion
+
+        #region Description
+
         /// <summary>
         /// Gets the description of the category.
         /// </summary>
@@ -53,6 +54,10 @@ namespace SpendWise.BLL.Queries
         /// </summary>
         public string? NotDescriptionPartialMatch { get; }
 
+        #endregion
+
+        #region Color
+
         /// <summary>
         /// Gets the color associated with the category.
         /// </summary>
@@ -63,30 +68,48 @@ namespace SpendWise.BLL.Queries
         /// </summary>
         public string? NotColor { get; }
 
+        #endregion
+
+        #region WithDescription
+
         /// <summary>
         /// Gets a value indicating whether the category should be without a description.
         /// </summary>
-        public bool? WithoutDescription { get; }
+        public bool? WithDescription { get; }
 
-        /// <summary>
-        /// Gets a value indicating whether the category should not be without a description.
-        /// </summary>
-        public bool? NotWithoutDescription { get; }
+        #endregion
+
+        #region WithIcon
 
         /// <summary>
         /// Gets a value indicating whether the category should be without an icon.
         /// </summary>
-        public bool? WithoutIcon { get; }
+        public bool? WithIcon { get; }
+
+        #endregion
+
+        #region LogicalOperators
 
         /// <summary>
-        /// Gets a value indicating whether the category should not be without an icon.
+        /// Gets the list of query objects to combine with AND.
         /// </summary>
-        public bool? NotWithoutIcon { get; }
+        public List<ICategoryCriteriaQuery>? And { get; }
+
+        /// <summary>
+        /// Gets the list of query objects to combine with OR.
+        /// </summary>
+        public List<ICategoryCriteriaQuery>? Or { get; }
+
+        /// <summary>
+        /// Gets the list of query objects to negate.
+        /// </summary>
+        public List<ICategoryCriteriaQuery>? Not { get; }
+
+        #endregion
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetCategoriesByCriteriaQuery"/> class.
         /// </summary>
-        /// <param name="id">The unique identifier of the category.</param>
         /// <param name="name">The name of the category.</param>
         /// <param name="namePartialMatch">The partial match for the category name.</param>
         /// <param name="notName">The name that should not match the category name.</param>
@@ -97,12 +120,12 @@ namespace SpendWise.BLL.Queries
         /// <param name="notDescriptionPartialMatch">The partial match for the description that should not match the category description.</param>
         /// <param name="color">The color associated with the category.</param>
         /// <param name="notColor">The color that should not match the category color.</param>
-        /// <param name="withoutDescription">Indicates whether the category should be without a description.</param>
-        /// <param name="notWithoutDescription">Indicates whether the category should not be without a description.</param>
-        /// <param name="withoutIcon">Indicates whether the category should be without an icon.</param>
-        /// <param name="notWithoutIcon">Indicates whether the category should not be without an icon.</param>
+        /// <param name="withDescription">A value indicating whether the category should be without a description.</param>
+        /// <param name="withIcon">A value indicating whether the category should be without an icon.</param>
+        /// <param name="and">The list of query objects to combine with AND.</param>
+        /// <param name="or">The list of query objects to combine with OR.</param>
+        /// <param name="not">The list of query objects to negate.</param>
         public GetCategoriesByCriteriaQuery(
-            Guid? id = null,
             string? name = null,
             string? namePartialMatch = null,
             string? notName = null,
@@ -113,12 +136,12 @@ namespace SpendWise.BLL.Queries
             string? notDescriptionPartialMatch = null,
             string? color = null,
             string? notColor = null,
-            bool? withoutDescription = null,
-            bool? notWithoutDescription = null,
-            bool? withoutIcon = null,
-            bool? notWithoutIcon = null)
+            bool? withDescription = null,
+            bool? withIcon = null,
+            List<GetCategoriesByCriteriaQuery>? and = null,
+            List<GetCategoriesByCriteriaQuery>? or = null,
+            List<GetCategoriesByCriteriaQuery>? not = null)
         {
-            Id = id;
             Name = name;
             NamePartialMatch = namePartialMatch;
             NotName = notName;
@@ -129,10 +152,11 @@ namespace SpendWise.BLL.Queries
             NotDescriptionPartialMatch = notDescriptionPartialMatch;
             Color = color;
             NotColor = notColor;
-            WithoutDescription = withoutDescription;
-            NotWithoutDescription = notWithoutDescription;
-            WithoutIcon = withoutIcon;
-            NotWithoutIcon = notWithoutIcon;
+            WithDescription = withDescription;
+            WithIcon = withIcon;
+            And = and?.Cast<ICategoryCriteriaQuery>().ToList();
+            Or = or?.Cast<ICategoryCriteriaQuery>().ToList();
+            Not = not?.Cast<ICategoryCriteriaQuery>().ToList();
         }
     }
 }

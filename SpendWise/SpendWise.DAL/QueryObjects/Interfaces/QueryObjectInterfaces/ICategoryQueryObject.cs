@@ -1,6 +1,7 @@
+using SpendWise.DAL.Entities;
 using SpendWise.DAL.QueryObjects.Interfaces.QueryPropertyInterfaces;
 
-namespace SpendWise.DAL.QueryObjects
+namespace SpendWise.DAL.QueryObjects.Interfaces
 {
     /// <summary>
     /// Represents a query object interface for categories.

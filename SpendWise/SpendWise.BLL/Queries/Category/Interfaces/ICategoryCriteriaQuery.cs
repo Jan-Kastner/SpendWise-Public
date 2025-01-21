@@ -3,8 +3,10 @@ namespace SpendWise.BLL.Queries.Interfaces
     /// <summary>
     /// Represents an interface for category criteria-based queries.
     /// </summary>
-    public interface ICategoryCriteriaQuery : ICriteriaQuery
+    public interface ICategoryCriteriaQuery : ICriteriaQuery<ICategoryCriteriaQuery>
     {
+        #region Name
+
         /// <summary>
         /// Gets the name of the category.
         /// </summary>
@@ -24,6 +26,10 @@ namespace SpendWise.BLL.Queries.Interfaces
         /// Gets the partial match for the name that should not match the category name.
         /// </summary>
         string? NotNamePartialMatch { get; }
+
+        #endregion
+
+        #region Description
 
         /// <summary>
         /// Gets the description of the category.
@@ -45,6 +51,10 @@ namespace SpendWise.BLL.Queries.Interfaces
         /// </summary>
         string? NotDescriptionPartialMatch { get; }
 
+        #endregion
+
+        #region Color
+
         /// <summary>
         /// Gets the color associated with the category.
         /// </summary>
@@ -55,24 +65,24 @@ namespace SpendWise.BLL.Queries.Interfaces
         /// </summary>
         string? NotColor { get; }
 
-        /// <summary>
-        /// Gets a value indicating whether the category should be without a description.
-        /// </summary>
-        bool? WithoutDescription { get; }
+        #endregion
+
+        #region WithDescription
 
         /// <summary>
-        /// Gets a value indicating whether the category should not be without a description.
+        /// Gets a value indicating whether the category should be with a description.
         /// </summary>
-        bool? NotWithoutDescription { get; }
+        bool? WithDescription { get; }
+
+        #endregion
+
+        #region WithIcon
 
         /// <summary>
-        /// Gets a value indicating whether the category should be without an icon.
+        /// Gets a value indicating whether the category should be with an icon.
         /// </summary>
-        bool? WithoutIcon { get; }
+        bool? WithIcon { get; }
 
-        /// <summary>
-        /// Gets a value indicating whether the category should not be without an icon.
-        /// </summary>
-        bool? NotWithoutIcon { get; }
+        #endregion
     }
 }

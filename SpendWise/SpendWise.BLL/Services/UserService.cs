@@ -3,13 +3,12 @@ using SpendWise.BLL.DTOs;
 using SpendWise.BLL.DTOs.Interfaces;
 using SpendWise.BLL.Queries.Interfaces;
 using SpendWise.BLL.Services.Interfaces;
-using SpendWise.DAL.Entities;
 using SpendWise.DAL.UnitOfWork;
 using SpendWise.DAL.QueryObjects;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using SpendWise.DAL.DTOs;
+using SpendWise.BLL.Handlers;
+using SpendWise.BLL.Mappers;
+using SpendWise.BLL.Queries;
 
 namespace SpendWise.BLL.Services
 {
@@ -20,16 +19,19 @@ namespace SpendWise.BLL.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IGroupUserService _groupUserService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserService"/> class.
         /// </summary>
         /// <param name="unitOfWork">The unit of work used to interact with the data layer.</param>
         /// <param name="mapper">The mapper used to map between DTOs and entities.</param>
+        /// <param name="groupUserService">The service used to manage group users.</param>
         public UserService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _groupUserService = new GroupUserService(unitOfWork, mapper);
         }
 
         /// <summary>
@@ -87,6 +89,34 @@ namespace SpendWise.BLL.Services
         /// <param name="query">The query object used to filter the users.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains a collection of DTOs of the users.</returns>
         public async Task<IEnumerable<TDto>> GetAsync<TDto>(IUserCriteriaQuery query) where TDto : class, IQueryableDto
+        {
+            if (typeof(TDto).GetInterfaces().Contains(typeof(IRole)))
+            {
+                return await GetGroupUsersAsync<TDto>(query);
+            }
+            return await GetUsersAsync<TDto>(query);
+        }
+
+        /// <summary>
+        /// Retrieves group users based on a query object asynchronously.
+        /// </summary>
+        /// <typeparam name="TDto">The type of the DTO to return.</typeparam>
+        /// <param name="query">The query object used to filter the group users.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains a collection of DTOs of the group users.</returns>
+        private async Task<IEnumerable<TDto>> GetGroupUsersAsync<TDto>(IUserCriteriaQuery query) where TDto : class, IQueryableDto
+        {
+            var groupUserQuery = _mapper.Map<GetGroupUsersByCriteriaQuery>(query);
+            var handler = new GetGroupUsersByCriteriaQueryHandler<TDto>(_groupUserService);
+            return await handler.Handle(groupUserQuery);
+        }
+
+        /// <summary>
+        /// Retrieves users based on a query object asynchronously.
+        /// </summary>
+        /// <typeparam name="TDto">The type of the DTO to return.</typeparam>
+        /// <param name="query">The query object used to filter the users.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains a collection of DTOs of the users.</returns>
+        private async Task<IEnumerable<TDto>> GetUsersAsync<TDto>(IUserCriteriaQuery query) where TDto : class, IQueryableDto
         {
             var queryObject = BuildQueryObject(query);
             var dalEntities = await _unitOfWork.UserRepository.ListAsync(queryObject);
@@ -146,9 +176,6 @@ namespace SpendWise.BLL.Services
             if (query.PasswordHash != null)
                 dalQuery = dalQuery.WithPassword(query.PasswordHash);
 
-            if (query.NotPasswordHash != null)
-                dalQuery = dalQuery.NotWithPassword(query.NotPasswordHash);
-
             if (query.DateOfRegistration.HasValue)
                 dalQuery = dalQuery.WithDateOfRegistration(query.DateOfRegistration.Value);
 
@@ -163,28 +190,12 @@ namespace SpendWise.BLL.Services
                     dalQuery = dalQuery.WithoutPhoto();
             }
 
-            if (query.NotWithPhoto.HasValue)
-            {
-                if (query.NotWithPhoto.Value)
-                    dalQuery = dalQuery.NotWithPhoto();
-                else
-                    dalQuery = dalQuery.NotWithoutPhoto();
-            }
-
             if (query.EmailConfirmed.HasValue)
             {
                 if (query.EmailConfirmed.Value)
                     dalQuery = dalQuery.WithEmailConfirmed();
                 else
                     dalQuery = dalQuery.WithoutEmailConfirmed();
-            }
-
-            if (query.NotEmailConfirmed.HasValue)
-            {
-                if (query.NotEmailConfirmed.Value)
-                    dalQuery = dalQuery.NotWithEmailConfirmed();
-                else
-                    dalQuery = dalQuery.NotWithoutEmailConfirmed();
             }
 
             if (query.TwoFactorEnabled.HasValue)
@@ -195,19 +206,8 @@ namespace SpendWise.BLL.Services
                     dalQuery = dalQuery.WithoutTwoFactorEnabled();
             }
 
-            if (query.NotTwoFactorEnabled.HasValue)
-            {
-                if (query.NotTwoFactorEnabled.Value)
-                    dalQuery = dalQuery.NotWithTwoFactorEnabled();
-                else
-                    dalQuery = dalQuery.NotWithoutTwoFactorEnabled();
-            }
-
             if (query.ResetPasswordToken != null)
                 dalQuery = dalQuery.WithResetPasswordToken(query.ResetPasswordToken);
-
-            if (query.NotResetPasswordToken != null)
-                dalQuery = dalQuery.NotWithResetPasswordToken(query.NotResetPasswordToken);
 
             if (query.PreferredTheme.HasValue)
                 dalQuery = dalQuery.WithPreferredTheme(query.PreferredTheme.Value);
@@ -227,11 +227,11 @@ namespace SpendWise.BLL.Services
             if (query.NotReceivedInvitationId.HasValue)
                 dalQuery = dalQuery.NotWithReceivedInvitation(query.NotReceivedInvitationId.Value);
 
-            if (query.GroupUserId.HasValue)
-                dalQuery = dalQuery.WithGroupUser(query.GroupUserId.Value);
+            if (query.GroupId.HasValue)
+                dalQuery = dalQuery.WithGroup(query.GroupId.Value);
 
-            if (query.NotGroupUserId.HasValue)
-                dalQuery = dalQuery.NotWithGroupUser(query.NotGroupUserId.Value);
+            if (query.NotGroupId.HasValue)
+                dalQuery = dalQuery.NotWithGroup(query.NotGroupId.Value);
 
             if (query.FullName != null)
                 dalQuery = dalQuery.WithFullName(query.FullName);
@@ -294,6 +294,10 @@ namespace SpendWise.BLL.Services
                 (
                     query => query.IncludeGroupParticipants,
                     q => q.Relations.IncludeGroupUsers().ThenGuIncludeGroup().ThenGuGIncludeGroupUsers().ThenGuGGuIncludeUser()
+                ),
+                (
+                    query => query.IncludeTransactions,
+                    q => q.Relations.IncludeGroupUsers().ThenGuIncludeTransactionGroupUsers().ThenGuTguIncludeTransaction()
                 )
             };
     }

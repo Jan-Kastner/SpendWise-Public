@@ -2,7 +2,7 @@ using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.GroupUserEntity.Inte
 
 namespace SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.GroupUserEntity
 {
-    public class GroupUserEntityRelationsConfig : IThenTguTIncludeCategory, IIncludeGroup, IIncludeTransactionGroupUsers, IIncludeUser, IIncludeLimit, IThenTguIncludeTransaction, IGroupUserEntityInitialState
+    public class GroupUserEntityRelationsConfig : IGroupUserEntityInitialState, IIncludeUser, IIncludeLimit, IIncludeTransactionGroupUsers, IThenTguTIncludeCategory, IIncludeGroup, IThenTguIncludeTransaction
 {
 
         private readonly List<string> _includes = new List<string>(); // Stores the includes for related entities

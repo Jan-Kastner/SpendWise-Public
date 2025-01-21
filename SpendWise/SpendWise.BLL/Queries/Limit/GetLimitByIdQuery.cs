@@ -1,5 +1,4 @@
 using SpendWise.BLL.Queries.Interfaces;
-using System;
 
 namespace SpendWise.BLL.Queries
 {

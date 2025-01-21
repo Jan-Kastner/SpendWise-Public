@@ -3,13 +3,12 @@ using SpendWise.BLL.DTOs;
 using SpendWise.BLL.DTOs.Interfaces;
 using SpendWise.BLL.Queries.Interfaces;
 using SpendWise.BLL.Services.Interfaces;
-using SpendWise.DAL.Entities;
 using SpendWise.DAL.UnitOfWork;
 using SpendWise.DAL.QueryObjects;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using SpendWise.DAL.DTOs;
+using SpendWise.BLL.Handlers;
+using SpendWise.BLL.Mappers;
+using SpendWise.BLL.Queries;
 
 namespace SpendWise.BLL.Services
 {
@@ -20,6 +19,7 @@ namespace SpendWise.BLL.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly ITransactionGroupUserService _transactionGroupUserService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionService"/> class.
@@ -30,6 +30,7 @@ namespace SpendWise.BLL.Services
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _transactionGroupUserService = new TransactionGroupUserService(unitOfWork, mapper);
         }
 
         /// <summary>
@@ -88,6 +89,34 @@ namespace SpendWise.BLL.Services
         /// <returns>A task that represents the asynchronous operation. The task result contains a collection of DTOs of the transactions.</returns>
         public async Task<IEnumerable<TDto>> GetAsync<TDto>(ITransactionCriteriaQuery query) where TDto : class, IQueryableDto
         {
+            if (typeof(TDto).GetInterfaces().Contains(typeof(IIsRead)))
+            {
+                return await GetTransactionGroupUsersAsync<TDto>(query);
+            }
+            return await GetTransactionsAsync<TDto>(query);
+        }
+
+        /// <summary>
+        /// Retrieves transaction group users based on a query object asynchronously.
+        /// </summary>
+        /// <typeparam name="TDto">The type of the DTO to return.</typeparam>
+        /// <param name="query">The query object used to filter the transaction group users.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains a collection of DTOs of the transaction group users.</returns>
+        private async Task<IEnumerable<TDto>> GetTransactionGroupUsersAsync<TDto>(ITransactionCriteriaQuery query) where TDto : class, IQueryableDto
+        {
+            var transactionGroupUserQuery = _mapper.Map<GetTransactionGroupUsersByCriteriaQuery>(query);
+            var handler = new GetTransactionGroupUsersByCriteriaQueryHandler<TDto>(_transactionGroupUserService);
+            return await handler.Handle(transactionGroupUserQuery);
+        }
+
+        /// <summary>
+        /// Retrieves transactions based on a query object asynchronously.
+        /// </summary>
+        /// <typeparam name="TDto">The type of the DTO to return.</typeparam>
+        /// <param name="query">The query object used to filter the transactions.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains a collection of DTOs of the transactions.</returns>
+        private async Task<IEnumerable<TDto>> GetTransactionsAsync<TDto>(ITransactionCriteriaQuery query) where TDto : class, IQueryableDto
+        {
             var queryObject = BuildQueryObject(query);
             var dalEntities = await _unitOfWork.TransactionRepository.ListAsync(queryObject);
             return _mapper.Map<IEnumerable<TDto>>(dalEntities);
@@ -113,17 +142,35 @@ namespace SpendWise.BLL.Services
         {
             var dalQuery = SetupQueryObjectIncludes((ITransactionIncludeQuery)query);
 
-            if (query.Amount.HasValue)
-                dalQuery = dalQuery.WithAmount(query.Amount.Value);
+            if (query.AmountEqual.HasValue)
+                dalQuery = dalQuery.WithAmountEqual(query.AmountEqual.Value);
 
-            if (query.NotAmount.HasValue)
-                dalQuery = dalQuery.NotWithAmount(query.NotAmount.Value);
+            if (query.NotAmountEqual.HasValue)
+                dalQuery = dalQuery.NotWithAmountEqual(query.NotAmountEqual.Value);
+
+            if (query.AmountGreaterThan.HasValue)
+                dalQuery = dalQuery.WithAmountGreaterThan(query.AmountGreaterThan.Value);
+
+            if (query.NotAmountGreaterThan.HasValue)
+                dalQuery = dalQuery.NotWithAmountGreaterThan(query.NotAmountGreaterThan.Value);
+
+            if (query.AmountLessThan.HasValue)
+                dalQuery = dalQuery.WithAmountLessThan(query.AmountLessThan.Value);
+
+            if (query.NotAmountLessThan.HasValue)
+                dalQuery = dalQuery.NotWithAmountLessThan(query.NotAmountLessThan.Value);
 
             if (query.Date.HasValue)
                 dalQuery = dalQuery.WithDate(query.Date.Value);
 
             if (query.NotDate.HasValue)
                 dalQuery = dalQuery.NotWithDate(query.NotDate.Value);
+
+            if (query.DateFrom.HasValue)
+                dalQuery = dalQuery.WithDateFrom(query.DateFrom.Value);
+
+            if (query.DateTo.HasValue)
+                dalQuery = dalQuery.WithDateTo(query.DateTo.Value);
 
             if (query.Description != null)
                 dalQuery = dalQuery.WithDescription(query.Description);
@@ -137,12 +184,12 @@ namespace SpendWise.BLL.Services
             if (query.NotDescriptionPartialMatch != null)
                 dalQuery = dalQuery.NotWithDescriptionPartialMatch(query.NotDescriptionPartialMatch);
 
-            if (query.WithoutDescription.HasValue)
+            if (query.WithDescription.HasValue)
             {
-                if (query.WithoutDescription.Value)
-                    dalQuery = dalQuery.WithoutDescription();
-                else
+                if (query.WithDescription.Value)
                     dalQuery = dalQuery.NotWithoutDescription();
+                else
+                    dalQuery = dalQuery.WithoutDescription();
             }
 
             if (query.Type.HasValue)
@@ -157,13 +204,25 @@ namespace SpendWise.BLL.Services
             if (query.NotCategoryId.HasValue)
                 dalQuery = dalQuery.NotWithCategory(query.NotCategoryId.Value);
 
-            if (query.WithoutCategory.HasValue)
+            if (query.WithCategory.HasValue)
             {
-                if (query.WithoutCategory.Value)
-                    dalQuery = dalQuery.WithoutCategory();
-                else
+                if (query.WithCategory.Value)
                     dalQuery = dalQuery.NotWithoutCategory();
+                else
+                    dalQuery = dalQuery.WithoutCategory();
             }
+
+            if (query.UserId.HasValue)
+                dalQuery = dalQuery.WithUser(query.UserId.Value);
+
+            if (query.NotUserId.HasValue)
+                dalQuery = dalQuery.NotWithUser(query.NotUserId.Value);
+
+            if (query.GroupId.HasValue)
+                dalQuery = dalQuery.WithGroup(query.GroupId.Value);
+
+            if (query.NotGroupId.HasValue)
+                dalQuery = dalQuery.NotWithGroup(query.NotGroupId.Value);
 
             if (query.TransactionGroupUserId.HasValue)
                 dalQuery = dalQuery.WithTransactionGroupUser(query.TransactionGroupUserId.Value);

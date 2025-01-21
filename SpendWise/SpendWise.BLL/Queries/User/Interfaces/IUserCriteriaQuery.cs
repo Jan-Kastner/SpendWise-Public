@@ -5,12 +5,9 @@ namespace SpendWise.BLL.Queries.Interfaces
     /// <summary>
     /// Represents an interface for user criteria-based queries.
     /// </summary>
-    public interface IUserCriteriaQuery : ICriteriaQuery
+    public interface IUserCriteriaQuery : ICriteriaQuery<IUserCriteriaQuery>
     {
-        /// <summary>
-        /// Gets the unique identifier of the user that should not match.
-        /// </summary>
-        Guid? NotId { get; }
+        #region Name
 
         /// <summary>
         /// Gets the name of the user.
@@ -32,6 +29,10 @@ namespace SpendWise.BLL.Queries.Interfaces
         /// </summary>
         string? NotNamePartialMatch { get; }
 
+        #endregion
+
+        #region Surname
+
         /// <summary>
         /// Gets the surname of the user.
         /// </summary>
@@ -52,6 +53,10 @@ namespace SpendWise.BLL.Queries.Interfaces
         /// </summary>
         string? NotSurnamePartialMatch { get; }
 
+        #endregion
+
+        #region Email
+
         /// <summary>
         /// Gets the email of the user.
         /// </summary>
@@ -62,15 +67,18 @@ namespace SpendWise.BLL.Queries.Interfaces
         /// </summary>
         string? NotEmail { get; }
 
+        #endregion
+
+        #region Password
+
         /// <summary>
         /// Gets the password hash of the user.
         /// </summary>
         string? PasswordHash { get; }
 
-        /// <summary>
-        /// Gets the password hash that should not match the user password hash.
-        /// </summary>
-        string? NotPasswordHash { get; }
+        #endregion
+
+        #region DateOfRegistration
 
         /// <summary>
         /// Gets the date of registration of the user.
@@ -82,45 +90,45 @@ namespace SpendWise.BLL.Queries.Interfaces
         /// </summary>
         DateTime? NotDateOfRegistration { get; }
 
+        #endregion
+
+        #region Photo
+
         /// <summary>
         /// Gets a value indicating whether the user should have a photo.
         /// </summary>
         bool? WithPhoto { get; }
 
-        /// <summary>
-        /// Gets a value indicating whether the user should not have a photo.
-        /// </summary>
-        bool? NotWithPhoto { get; }
+        #endregion
+
+        #region EmailConfirmed
 
         /// <summary>
         /// Gets a value indicating whether the user's email should be confirmed.
         /// </summary>
         bool? EmailConfirmed { get; }
 
-        /// <summary>
-        /// Gets a value indicating whether the user's email should not be confirmed.
-        /// </summary>
-        bool? NotEmailConfirmed { get; }
+        #endregion
+
+        #region TwoFactorEnabled
 
         /// <summary>
         /// Gets a value indicating whether the user should have two-factor authentication enabled.
         /// </summary>
         bool? TwoFactorEnabled { get; }
 
-        /// <summary>
-        /// Gets a value indicating whether the user should not have two-factor authentication enabled.
-        /// </summary>
-        bool? NotTwoFactorEnabled { get; }
+        #endregion
+
+        #region ResetPasswordToken
 
         /// <summary>
         /// Gets the reset password token of the user.
         /// </summary>
         string? ResetPasswordToken { get; }
 
-        /// <summary>
-        /// Gets the reset password token that should not match the user reset password token.
-        /// </summary>
-        string? NotResetPasswordToken { get; }
+        #endregion
+
+        #region PreferredTheme
 
         /// <summary>
         /// Gets the preferred theme of the user.
@@ -132,6 +140,10 @@ namespace SpendWise.BLL.Queries.Interfaces
         /// </summary>
         Theme? NotPreferredTheme { get; }
 
+        #endregion
+
+        #region SentInvitation
+
         /// <summary>
         /// Gets the unique identifier of the sent invitation.
         /// </summary>
@@ -141,6 +153,10 @@ namespace SpendWise.BLL.Queries.Interfaces
         /// Gets the unique identifier of the sent invitation that should not match.
         /// </summary>
         Guid? NotSentInvitationId { get; }
+
+        #endregion
+
+        #region ReceivedInvitation
 
         /// <summary>
         /// Gets the unique identifier of the received invitation.
@@ -152,15 +168,23 @@ namespace SpendWise.BLL.Queries.Interfaces
         /// </summary>
         Guid? NotReceivedInvitationId { get; }
 
+        #endregion
+
+        #region Group
+
         /// <summary>
         /// Gets the unique identifier of the group user.
         /// </summary>
-        Guid? GroupUserId { get; }
+        Guid? GroupId { get; }
 
         /// <summary>
         /// Gets the unique identifier of the group user that should not match.
         /// </summary>
-        Guid? NotGroupUserId { get; }
+        Guid? NotGroupId { get; }
+
+        #endregion
+
+        #region FullName
 
         /// <summary>
         /// Gets the full name of the user.
@@ -172,6 +196,10 @@ namespace SpendWise.BLL.Queries.Interfaces
         /// </summary>
         string? NotFullName { get; }
 
+        #endregion
+
+        #region EmailDomain
+
         /// <summary>
         /// Gets the email domain of the user.
         /// </summary>
@@ -181,5 +209,7 @@ namespace SpendWise.BLL.Queries.Interfaces
         /// Gets the email domain that should not match the user email domain.
         /// </summary>
         string? NotEmailDomain { get; }
+
+        #endregion
     }
 }

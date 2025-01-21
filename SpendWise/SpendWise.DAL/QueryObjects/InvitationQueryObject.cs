@@ -1,6 +1,8 @@
 using SpendWise.DAL.Entities;
 using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.InvitationEntity.Interfaces;
 using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.InvitationEntity;
+using SpendWise.DAL.QueryObjects.Interfaces;
+using System.Linq.Expressions;
 
 namespace SpendWise.DAL.QueryObjects
 {
@@ -66,21 +68,63 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="sentDate">The sent date to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public InvitationQueryObject WithSentDate(DateTime sentDate) => ApplySentDateFilter(sentDate, filter => And(filter));
+        public InvitationQueryObject WithSentDate(DateTime sentDate) => ApplyDateFilter(entity => entity.SentDate, sentDate, filter => And(filter), "Equal");
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified sent date.
         /// </summary>
         /// <param name="sentDate">The sent date to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public InvitationQueryObject OrWithSentDate(DateTime sentDate) => ApplySentDateFilter(sentDate, filter => Or(filter));
+        public InvitationQueryObject OrWithSentDate(DateTime sentDate) => ApplyDateFilter(entity => entity.SentDate, sentDate, filter => Or(filter), "Equal");
 
         /// <summary>
         /// Filters the query to exclude items with the specified sent date.
         /// </summary>
         /// <param name="sentDate">The sent date to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public InvitationQueryObject NotWithSentDate(DateTime sentDate) => ApplySentDateFilter(sentDate, filter => Not(filter));
+        public InvitationQueryObject NotWithSentDate(DateTime sentDate) => ApplyDateFilter(entity => entity.SentDate, sentDate, filter => Not(filter), "Equal");
+
+        /// <summary>
+        /// Filters the query to include items with the sent date greater than or equal to the specified date.
+        /// </summary>
+        /// <param name="sentDateFrom">The start sent date to filter by.</param>
+        /// <returns>The query object with the applied filter.</returns>
+        public InvitationQueryObject WithSentDateFrom(DateTime sentDateFrom) => ApplyDateFilter(entity => entity.SentDate, sentDateFrom, filter => And(filter), "GreaterThanOrEqual");
+
+        /// <summary>
+        /// Adds an OR condition to the query to include items with the sent date greater than or equal to the specified date.
+        /// </summary>
+        /// <param name="sentDateFrom">The start sent date to filter by.</param>
+        /// <returns>The query object with the applied OR condition.</returns>
+        public InvitationQueryObject OrWithSentDateFrom(DateTime sentDateFrom) => ApplyDateFilter(entity => entity.SentDate, sentDateFrom, filter => Or(filter), "GreaterThanOrEqual");
+
+        /// <summary>
+        /// Filters the query to exclude items with the sent date greater than or equal to the specified date.
+        /// </summary>
+        /// <param name="sentDateFrom">The start sent date to exclude.</param>
+        /// <returns>The query object with the applied exclusion filter.</returns>
+        public InvitationQueryObject NotWithSentDateFrom(DateTime sentDateFrom) => ApplyDateFilter(entity => entity.SentDate, sentDateFrom, filter => Not(filter), "GreaterThanOrEqual");
+
+        /// <summary>
+        /// Filters the query to include items with the sent date less than or equal to the specified date.
+        /// </summary>
+        /// <param name="sentDateTo">The end sent date to filter by.</param>
+        /// <returns>The query object with the applied filter.</returns>
+        public InvitationQueryObject WithSentDateTo(DateTime sentDateTo) => ApplyDateFilter(entity => entity.SentDate, sentDateTo, filter => And(filter), "LessThanOrEqual");
+
+        /// <summary>
+        /// Adds an OR condition to the query to include items with the sent date less than or equal to the specified date.
+        /// </summary>
+        /// <param name="sentDateTo">The end sent date to filter by.</param>
+        /// <returns>The query object with the applied OR condition.</returns>
+        public InvitationQueryObject OrWithSentDateTo(DateTime sentDateTo) => ApplyDateFilter(entity => entity.SentDate, sentDateTo, filter => Or(filter), "LessThanOrEqual");
+
+        /// <summary>
+        /// Filters the query to exclude items with the sent date less than or equal to the specified date.
+        /// </summary>
+        /// <param name="sentDateTo">The end sent date to exclude.</param>
+        /// <returns>The query object with the applied exclusion filter.</returns>
+        public InvitationQueryObject NotWithSentDateTo(DateTime sentDateTo) => ApplyDateFilter(entity => entity.SentDate, sentDateTo, filter => Not(filter), "LessThanOrEqual");
 
         #endregion
 
@@ -91,39 +135,81 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="responseDate">The response date to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public InvitationQueryObject WithResponseDate(DateTime? responseDate) => ApplyResponseDateFilter(responseDate, filter => And(filter));
+        public InvitationQueryObject WithResponseDate(DateTime? responseDate) => ApplyDateFilter(entity => entity.ResponseDate, responseDate, filter => And(filter), "Equal");
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified response date.
         /// </summary>
         /// <param name="responseDate">The response date to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public InvitationQueryObject OrWithResponseDate(DateTime? responseDate) => ApplyResponseDateFilter(responseDate, filter => Or(filter));
+        public InvitationQueryObject OrWithResponseDate(DateTime? responseDate) => ApplyDateFilter(entity => entity.ResponseDate, responseDate, filter => Or(filter), "Equal");
 
         /// <summary>
         /// Filters the query to exclude items with the specified response date.
         /// </summary>
         /// <param name="responseDate">The response date to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public InvitationQueryObject NotWithResponseDate(DateTime? responseDate) => ApplyResponseDateFilter(responseDate, filter => Not(filter));
+        public InvitationQueryObject NotWithResponseDate(DateTime? responseDate) => ApplyDateFilter(entity => entity.ResponseDate, responseDate, filter => Not(filter), "Equal");
 
         /// <summary>
         /// Filters the query to include items without any response date (null).
         /// </summary>
         /// <returns>The query object with the applied filter.</returns>
-        public InvitationQueryObject WithoutResponseDate() => ApplyResponseDateFilter(null, filter => And(filter), isNullCheck: true);
+        public InvitationQueryObject WithoutResponseDate() => ApplyDateFilter(entity => entity.ResponseDate, null, filter => And(filter), "Equal", true);
 
         /// <summary>
         /// Adds an OR condition to the query to include items without any response date (null).
         /// </summary>
         /// <returns>The query object with the applied OR condition.</returns>
-        public InvitationQueryObject OrWithoutResponseDate() => ApplyResponseDateFilter(null, filter => Or(filter), isNullCheck: true);
+        public InvitationQueryObject OrWithoutResponseDate() => ApplyDateFilter(entity => entity.ResponseDate, null, filter => Or(filter), "Equal", true);
 
         /// <summary>
         /// Filters the query to exclude items without any response date (null).
         /// </summary>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public InvitationQueryObject NotWithoutResponseDate() => ApplyResponseDateFilter(null, filter => Not(filter), isNullCheck: true);
+        public InvitationQueryObject NotWithoutResponseDate() => ApplyDateFilter(entity => entity.ResponseDate, null, filter => Not(filter), "Equal", true);
+
+        /// <summary>
+        /// Filters the query to include items with the response date greater than or equal to the specified date.
+        /// </summary>
+        /// <param name="responseDateFrom">The start response date to filter by.</param>
+        /// <returns>The query object with the applied filter.</returns>
+        public InvitationQueryObject WithResponseDateFrom(DateTime responseDateFrom) => ApplyDateFilter(entity => entity.ResponseDate, responseDateFrom, filter => And(filter), "GreaterThanOrEqual");
+
+        /// <summary>
+        /// Adds an OR condition to the query to include items with the response date greater than or equal to the specified date.
+        /// </summary>
+        /// <param name="responseDateFrom">The start response date to filter by.</param>
+        /// <returns>The query object with the applied OR condition.</returns>
+        public InvitationQueryObject OrWithResponseDateFrom(DateTime responseDateFrom) => ApplyDateFilter(entity => entity.ResponseDate, responseDateFrom, filter => Or(filter), "GreaterThanOrEqual");
+
+        /// <summary>
+        /// Filters the query to exclude items with the response date greater than or equal to the specified date.
+        /// </summary>
+        /// <param name="responseDateFrom">The start response date to exclude.</param>
+        /// <returns>The query object with the applied exclusion filter.</returns>
+        public InvitationQueryObject NotWithResponseDateFrom(DateTime responseDateFrom) => ApplyDateFilter(entity => entity.ResponseDate, responseDateFrom, filter => Not(filter), "GreaterThanOrEqual");
+
+        /// <summary>
+        /// Filters the query to include items with the response date less than or equal to the specified date.
+        /// </summary>
+        /// <param name="responseDateTo">The end response date to filter by.</param>
+        /// <returns>The query object with the applied filter.</returns>
+        public InvitationQueryObject WithResponseDateTo(DateTime responseDateTo) => ApplyDateFilter(entity => entity.ResponseDate, responseDateTo, filter => And(filter), "LessThanOrEqual");
+
+        /// <summary>
+        /// Adds an OR condition to the query to include items with the response date less than or equal to the specified date.
+        /// </summary>
+        /// <param name="responseDateTo">The end response date to filter by.</param>
+        /// <returns>The query object with the applied OR condition.</returns>
+        public InvitationQueryObject OrWithResponseDateTo(DateTime responseDateTo) => ApplyDateFilter(entity => entity.ResponseDate, responseDateTo, filter => Or(filter), "LessThanOrEqual");
+
+        /// <summary>
+        /// Filters the query to exclude items with the response date less than or equal to the specified date.
+        /// </summary>
+        /// <param name="responseDateTo">The end response date to exclude.</param>
+        /// <returns>The query object with the applied exclusion filter.</returns>
+        public InvitationQueryObject NotWithResponseDateTo(DateTime responseDateTo) => ApplyDateFilter(entity => entity.ResponseDate, responseDateTo, filter => Not(filter), "LessThanOrEqual");
 
         #endregion
 
@@ -133,55 +219,55 @@ namespace SpendWise.DAL.QueryObjects
         /// Filters the query to include items that are accepted.
         /// </summary>
         /// <returns>The query object with the applied filter.</returns>
-        public InvitationQueryObject IsAccepted() => ApplyIsAcceptedFilter(true, filter => And(filter));
+        public InvitationQueryObject IsAccepted() => ApplyIsAcceptedFilter(entity => entity.IsAccepted, true, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items that are accepted.
         /// </summary>
         /// <returns>The query object with the applied OR condition.</returns>
-        public InvitationQueryObject OrIsAccepted() => ApplyIsAcceptedFilter(true, filter => Or(filter));
+        public InvitationQueryObject OrIsAccepted() => ApplyIsAcceptedFilter(entity => entity.IsAccepted, true, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items that are accepted.
         /// </summary>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public InvitationQueryObject NotIsAccepted() => ApplyIsAcceptedFilter(true, filter => Not(filter));
+        public InvitationQueryObject NotIsAccepted() => ApplyIsAcceptedFilter(entity => entity.IsAccepted, true, filter => Not(filter));
 
         /// <summary>
         /// Filters the query to include items that are not accepted.
         /// </summary>
         /// <returns>The query object with the applied filter.</returns>
-        public InvitationQueryObject IsNotAccepted() => ApplyIsAcceptedFilter(false, filter => And(filter));
+        public InvitationQueryObject IsNotAccepted() => ApplyIsAcceptedFilter(entity => entity.IsAccepted, false, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items that are not accepted.
         /// </summary>
         /// <returns>The query object with the applied OR condition.</returns>
-        public InvitationQueryObject OrIsNotAccepted() => ApplyIsAcceptedFilter(false, filter => Or(filter));
+        public InvitationQueryObject OrIsNotAccepted() => ApplyIsAcceptedFilter(entity => entity.IsAccepted, false, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items that are not accepted.
         /// </summary>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public InvitationQueryObject NotIsNotAccepted() => ApplyIsAcceptedFilter(false, filter => Not(filter));
+        public InvitationQueryObject NotIsNotAccepted() => ApplyIsAcceptedFilter(entity => entity.IsAccepted, false, filter => Not(filter));
 
         /// <summary>
         /// Filters the query to include items that are pending.
         /// </summary>
         /// <returns>The query object with the applied filter.</returns>
-        public InvitationQueryObject IsPending() => ApplyIsAcceptedFilter(null, filter => And(filter));
+        public InvitationQueryObject IsPending() => ApplyIsAcceptedFilter(entity => entity.IsAccepted, null, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items that are pending.
         /// </summary>
         /// <returns>The query object with the applied OR condition.</returns>
-        public InvitationQueryObject OrIsPending() => ApplyIsAcceptedFilter(null, filter => Or(filter));
+        public InvitationQueryObject OrIsPending() => ApplyIsAcceptedFilter(entity => entity.IsAccepted, null, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items that are pending.
         /// </summary>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public InvitationQueryObject NotIsPending() => ApplyIsAcceptedFilter(null, filter => Not(filter));
+        public InvitationQueryObject NotIsPending() => ApplyIsAcceptedFilter(entity => entity.IsAccepted, null, filter => Not(filter));
 
         #endregion
 

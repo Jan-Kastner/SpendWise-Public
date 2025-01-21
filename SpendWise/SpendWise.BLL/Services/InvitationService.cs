@@ -119,31 +119,47 @@ namespace SpendWise.BLL.Services
             if (query.NotSentDate.HasValue)
                 dalQuery = dalQuery.NotWithSentDate(query.NotSentDate.Value);
 
+            if (query.SentDateFrom.HasValue)
+                dalQuery = dalQuery.WithSentDateFrom(query.SentDateFrom.Value);
+
+            if (query.SentDateTo.HasValue)
+                dalQuery = dalQuery.WithSentDateTo(query.SentDateTo.Value);
+
             if (query.ResponseDate.HasValue)
                 dalQuery = dalQuery.WithResponseDate(query.ResponseDate.Value);
 
             if (query.NotResponseDate.HasValue)
                 dalQuery = dalQuery.NotWithResponseDate(query.NotResponseDate.Value);
 
-            if (query.WithoutResponseDate.HasValue)
+            if (query.ResponseDateFrom.HasValue)
+                dalQuery = dalQuery.WithResponseDateFrom(query.ResponseDateFrom.Value);
+
+            if (query.ResponseDateTo.HasValue)
+                dalQuery = dalQuery.WithResponseDateTo(query.ResponseDateTo.Value);
+
+            if (query.WithResponseDate.HasValue)
             {
-                if (query.WithoutResponseDate.Value)
-                    dalQuery = dalQuery.WithoutResponseDate();
-                else
+                if (query.WithResponseDate.Value)
                     dalQuery = dalQuery.NotWithoutResponseDate();
+                else
+                    dalQuery = dalQuery.WithoutResponseDate();
             }
 
             if (query.IsAccepted.HasValue)
-                dalQuery = dalQuery.IsAccepted();
-
-            if (query.NotIsAccepted.HasValue)
-                dalQuery = dalQuery.NotIsAccepted();
+            {
+                if (query.IsAccepted.Value)
+                    dalQuery = dalQuery.IsAccepted();
+                else
+                    dalQuery = dalQuery.NotIsAccepted();
+            }
 
             if (query.IsPending.HasValue)
-                dalQuery = dalQuery.IsPending();
-
-            if (query.NotIsPending.HasValue)
-                dalQuery = dalQuery.NotIsPending();
+            {
+                if (query.IsPending.Value)
+                    dalQuery = dalQuery.IsPending();
+                else
+                    dalQuery = dalQuery.NotIsPending();
+            }
 
             if (query.SenderId.HasValue)
                 dalQuery = dalQuery.WithSender(query.SenderId.Value);

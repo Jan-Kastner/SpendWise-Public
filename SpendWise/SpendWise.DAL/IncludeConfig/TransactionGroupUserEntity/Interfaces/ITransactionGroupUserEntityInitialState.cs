@@ -2,7 +2,6 @@ namespace SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.TransactionGroup
 {
     public interface ITransactionGroupUserEntityInitialState
     {
-        IIncludeGroupUser IncludeGroupUser(string path = "GroupUser");
         IIncludeTransaction IncludeTransaction(string path = "Transaction");
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using SpendWise.BLL.Queries.Interfaces;
 
 namespace SpendWise.BLL.Queries

@@ -114,11 +114,23 @@ namespace SpendWise.BLL.Services
             var dalQuery = SetupQueryObjectIncludes((ILimitIncludeQuery)query);
 
             // Apply filters based on the query object
-            if (query.Amount.HasValue)
-                dalQuery = dalQuery.WithAmount(query.Amount.Value);
+            if (query.AmountEqual.HasValue)
+                dalQuery = dalQuery.WithAmountEqual(query.AmountEqual.Value);
 
-            if (query.NotAmount.HasValue)
-                dalQuery = dalQuery.NotWithAmount(query.NotAmount.Value);
+            if (query.NotAmountEqual.HasValue)
+                dalQuery = dalQuery.NotWithAmountEqual(query.NotAmountEqual.Value);
+
+            if (query.AmountGreaterThan.HasValue)
+                dalQuery = dalQuery.WithAmountGreaterThan(query.AmountGreaterThan.Value);
+
+            if (query.NotAmountGreaterThan.HasValue)
+                dalQuery = dalQuery.NotWithAmountGreaterThan(query.NotAmountGreaterThan.Value);
+
+            if (query.AmountLessThan.HasValue)
+                dalQuery = dalQuery.WithAmountLessThan(query.AmountLessThan.Value);
+
+            if (query.NotAmountLessThan.HasValue)
+                dalQuery = dalQuery.NotWithAmountLessThan(query.NotAmountLessThan.Value);
 
             if (query.NoticeType.HasValue)
                 dalQuery = dalQuery.WithNoticeType(query.NoticeType.Value);

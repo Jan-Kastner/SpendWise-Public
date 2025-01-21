@@ -89,7 +89,7 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task WithAmount_ShouldReturnCorrectTransactions()
+        public async Task WithAmountEqual_ShouldReturnCorrectTransactions()
         {
             // Arrange
             var amount = TransactionSeeds.TransactionDianaDinner.Amount;
@@ -97,7 +97,7 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
 
             // Act
             var transactions = await _unitOfWork.TransactionRepository
-                .ListAsync(queryObject.WithAmount(amount));
+                .ListAsync(queryObject.WithAmountEqual(amount));
 
             // Assert
             Assert.NotNull(transactions);
@@ -110,7 +110,7 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task OrWithAmount_ShouldReturnCorrectTransactions()
+        public async Task OrWithAmountEqual_ShouldReturnCorrectTransactions()
         {
             // Arrange
             var amount1 = TransactionSeeds.TransactionDianaDinner.Amount;
@@ -119,7 +119,7 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
 
             // Act
             var transactions = await _unitOfWork.TransactionRepository
-                .ListAsync(queryObject.OrWithAmount(amount1).OrWithAmount(amount2));
+                .ListAsync(queryObject.OrWithAmountEqual(amount1).OrWithAmountEqual(amount2));
 
             // Assert
             Assert.NotNull(transactions);
@@ -131,7 +131,7 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task NotWithAmount_ShouldReturnCorrectTransactions()
+        public async Task NotWithAmountEqual_ShouldReturnCorrectTransactions()
         {
             // Arrange
             var excludedAmount = TransactionSeeds.TransactionDianaDinner.Amount;
@@ -139,7 +139,7 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
 
             // Act
             var transactions = await _unitOfWork.TransactionRepository
-                .ListAsync(queryObject.NotWithAmount(excludedAmount));
+                .ListAsync(queryObject.NotWithAmountEqual(excludedAmount));
 
             // Assert
             Assert.NotNull(transactions);
@@ -727,7 +727,7 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
 
             // Act
             var transactions = await _unitOfWork.TransactionRepository
-                .ListAsync(queryObject.WithId(transactionId).WithAmount(transactionAmount));
+                .ListAsync(queryObject.WithId(transactionId).WithAmountEqual(transactionAmount));
 
             // Assert
             Assert.NotNull(transactions);
@@ -766,7 +766,7 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
-        public async Task OrWithAmountOrType_ShouldReturnCorrectEntries()
+        public async Task OrWithAmountEqualOrType_ShouldReturnCorrectEntries()
         {
             // Arrange
             var transactionAmount = TransactionSeeds.TransactionDianaDinner.Amount;
@@ -775,7 +775,7 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
 
             // Act
             var transactions = await _unitOfWork.TransactionRepository
-                .ListAsync(queryObject.OrWithAmount(transactionAmount).OrWithType(transactionType));
+                .ListAsync(queryObject.OrWithAmountEqual(transactionAmount).OrWithType(transactionType));
 
             // Assert
             Assert.NotNull(transactions);

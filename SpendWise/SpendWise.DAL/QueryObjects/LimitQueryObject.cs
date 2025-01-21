@@ -1,9 +1,6 @@
-using System;
 using SpendWise.Common.Enums;
 using SpendWise.DAL.Entities;
-using SpendWise.DAL.QueryObjects;
-using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.GroupUserEntity.Interfaces;
-using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.GroupUserEntity;
+using SpendWise.DAL.QueryObjects.Interfaces;
 
 namespace SpendWise.DAL.QueryObjects
 {
@@ -53,21 +50,63 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="amount">The amount to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public LimitQueryObject WithAmount(decimal amount) => ApplyAmountFilter(amount, filter => And(filter));
+        public LimitQueryObject WithAmountEqual(decimal amount) => ApplyAmountFilter(entity => entity.Amount, amount, filter => And(filter), "Equal");
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified amount.
         /// </summary>
         /// <param name="amount">The amount to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public LimitQueryObject OrWithAmount(decimal amount) => ApplyAmountFilter(amount, filter => Or(filter));
+        public LimitQueryObject OrWithAmountEqual(decimal amount) => ApplyAmountFilter(entity => entity.Amount, amount, filter => Or(filter), "Equal");
 
         /// <summary>
         /// Filters the query to exclude items with the specified amount.
         /// </summary>
         /// <param name="amount">The amount to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public LimitQueryObject NotWithAmount(decimal amount) => ApplyAmountFilter(amount, filter => Not(filter));
+        public LimitQueryObject NotWithAmountEqual(decimal amount) => ApplyAmountFilter(entity => entity.Amount, amount, filter => Not(filter), "Equal");
+
+        /// <summary>
+        /// Filters the query to include items with the amount greater than the specified value.
+        /// </summary>
+        /// <param name="amount">The amount to filter by.</param>
+        /// <returns>The query object with the applied filter.</returns>
+        public LimitQueryObject WithAmountGreaterThan(decimal amount) => ApplyAmountFilter(entity => entity.Amount, amount, filter => And(filter), "GreaterThan");
+
+        /// <summary>
+        /// Adds an OR condition to the query to include items with the amount greater than the specified value.
+        /// </summary>
+        /// <param name="amount">The amount to filter by.</param>
+        /// <returns>The query object with the applied OR condition.</returns>
+        public LimitQueryObject OrWithAmountGreaterThan(decimal amount) => ApplyAmountFilter(entity => entity.Amount, amount, filter => Or(filter), "GreaterThan");
+
+        /// <summary>
+        /// Filters the query to exclude items with the amount greater than the specified value.
+        /// </summary>
+        /// <param name="amount">The amount to exclude.</param>
+        /// <returns>The query object with the applied exclusion filter.</returns>
+        public LimitQueryObject NotWithAmountGreaterThan(decimal amount) => ApplyAmountFilter(entity => entity.Amount, amount, filter => Not(filter), "GreaterThan");
+
+        /// <summary>
+        /// Filters the query to include items with the amount less than the specified value.
+        /// </summary>
+        /// <param name="amount">The amount to filter by.</param>
+        /// <returns>The query object with the applied filter.</returns>
+        public LimitQueryObject WithAmountLessThan(decimal amount) => ApplyAmountFilter(entity => entity.Amount, amount, filter => And(filter), "LessThan");
+
+        /// <summary>
+        /// Adds an OR condition to the query to include items with the amount less than the specified value.
+        /// </summary>
+        /// <param name="amount">The amount to filter by.</param>
+        /// <returns>The query object with the applied OR condition.</returns>
+        public LimitQueryObject OrWithAmountLessThan(decimal amount) => ApplyAmountFilter(entity => entity.Amount, amount, filter => Or(filter), "LessThan");
+
+        /// <summary>
+        /// Filters the query to exclude items with the amount less than the specified value.
+        /// </summary>
+        /// <param name="amount">The amount to exclude.</param>
+        /// <returns>The query object with the applied exclusion filter.</returns>
+        public LimitQueryObject NotWithAmountLessThan(decimal amount) => ApplyAmountFilter(entity => entity.Amount, amount, filter => Not(filter), "LessThan");
 
         #endregion
 
@@ -78,21 +117,21 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="noticeType">The notice type to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public LimitQueryObject WithNoticeType(NoticeType noticeType) => ApplyNoticeTypeFilter(noticeType, filter => And(filter));
+        public LimitQueryObject WithNoticeType(NoticeType noticeType) => ApplyNoticeTypeFilter(entity => entity.NoticeType, noticeType, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified notice type.
         /// </summary>
         /// <param name="noticeType">The notice type to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public LimitQueryObject OrWithNoticeType(NoticeType noticeType) => ApplyNoticeTypeFilter(noticeType, filter => Or(filter));
+        public LimitQueryObject OrWithNoticeType(NoticeType noticeType) => ApplyNoticeTypeFilter(entity => entity.NoticeType, noticeType, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with the specified notice type.
         /// </summary>
         /// <param name="noticeType">The notice type to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public LimitQueryObject NotWithNoticeType(NoticeType noticeType) => ApplyNoticeTypeFilter(noticeType, filter => Not(filter));
+        public LimitQueryObject NotWithNoticeType(NoticeType noticeType) => ApplyNoticeTypeFilter(entity => entity.NoticeType, noticeType, filter => Not(filter));
 
         #endregion
 

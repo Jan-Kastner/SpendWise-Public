@@ -117,15 +117,6 @@ namespace SpendWise.BLL.Services
             if (query.Name != null)
                 dalQuery = dalQuery.WithName(query.Name);
 
-            if (query.Id.HasValue)
-                dalQuery = dalQuery.WithId(query.Id.Value);
-
-            if (query.Description != null)
-                dalQuery = dalQuery.WithDescription(query.Description);
-
-            if (query.Color != null)
-                dalQuery = dalQuery.WithColor(query.Color);
-
             if (query.NamePartialMatch != null)
                 dalQuery = dalQuery.WithNamePartialMatch(query.NamePartialMatch);
 
@@ -135,29 +126,38 @@ namespace SpendWise.BLL.Services
             if (query.NotNamePartialMatch != null)
                 dalQuery = dalQuery.NotWithNamePartialMatch(query.NotNamePartialMatch);
 
+            if (query.Description != null)
+                dalQuery = dalQuery.WithDescription(query.Description);
+
+            if (query.DescriptionPartialMatch != null)
+                dalQuery = dalQuery.WithDescriptionPartialMatch(query.DescriptionPartialMatch);
+
             if (query.NotDescription != null)
                 dalQuery = dalQuery.NotWithDescription(query.NotDescription);
 
             if (query.NotDescriptionPartialMatch != null)
                 dalQuery = dalQuery.NotWithDescriptionPartialMatch(query.NotDescriptionPartialMatch);
 
+            if (query.Color != null)
+                dalQuery = dalQuery.WithColor(query.Color);
+
             if (query.NotColor != null)
                 dalQuery = dalQuery.NotWithColor(query.NotColor);
 
-            if (query.WithoutDescription.HasValue)
+            if (query.WithDescription.HasValue)
             {
-                if (query.WithoutDescription.Value)
-                    dalQuery = dalQuery.WithoutDescription();
-                else
+                if (query.WithDescription.Value)
                     dalQuery = dalQuery.NotWithoutDescription();
+                else
+                    dalQuery = dalQuery.WithoutDescription();
             }
 
-            if (query.WithoutIcon.HasValue)
+            if (query.WithIcon.HasValue)
             {
-                if (query.WithoutIcon.Value)
-                    dalQuery = dalQuery.WithoutIcon();
-                else
+                if (query.WithIcon.Value)
                     dalQuery = dalQuery.NotWithoutIcon();
+                else
+                    dalQuery = dalQuery.WithoutIcon();
             }
 
             return dalQuery;

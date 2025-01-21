@@ -2,7 +2,7 @@ using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.InvitationEntity.Int
 
 namespace SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.InvitationEntity
 {
-    public class InvitationEntityRelationsConfig : IIncludeGroup, IIncludeSender, IThenGIncludeGroupUsers, IInvitationEntityInitialState, IIncludeReceiver, IThenGGuIncludeUser
+    public class InvitationEntityRelationsConfig : IIncludeSender, IThenGIncludeGroupUsers, IThenGGuIncludeUser, IInvitationEntityInitialState, IIncludeReceiver, IIncludeGroup
 {
 
         private readonly List<string> _includes = new List<string>(); // Stores the includes for related entities

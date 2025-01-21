@@ -29,5 +29,10 @@ namespace SpendWise.BLL.Queries.Interfaces
         /// Gets a value indicating whether to include the group participants in the query result.
         /// </summary>
         bool IncludeGroupParticipants { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether to include the transactions in the query result.
+        /// </summary>
+        bool IncludeTransactions { get; }
     }
 }

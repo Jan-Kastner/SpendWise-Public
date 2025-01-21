@@ -1,7 +1,7 @@
-using System;
 using System.Linq.Expressions;
 using LinqKit;
-using SpendWise.DAL.Entities;
+using SpendWise.DAL.Entities.Interfaces;
+using SpendWise.DAL.QueryObjects.Interfaces;
 
 namespace SpendWise.DAL.QueryObjects
 {
@@ -123,5 +123,7 @@ namespace SpendWise.DAL.QueryObjects
         /// to generate EntityRelationsConfiguration, which acts as a state machine for managing includes.
         /// </summary>
         public virtual ICollection<Func<TEntity, object>> IncludeDirectives => new List<Func<TEntity, object>>();
+
+
     }
 }

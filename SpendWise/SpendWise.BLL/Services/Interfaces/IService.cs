@@ -13,7 +13,7 @@ namespace SpendWise.BLL.Services.Interfaces
     public interface IService<TCreateDto, TUpdateDto, TCriteriaQuery>
         where TCreateDto : ICreatableDto
         where TUpdateDto : IUpdatableDto
-        where TCriteriaQuery : ICriteriaQuery
+        where TCriteriaQuery : class, ICriteriaQuery<TCriteriaQuery>
     {
         Task CreateAsync(TCreateDto dto);
         Task DeleteAsync(Guid id);

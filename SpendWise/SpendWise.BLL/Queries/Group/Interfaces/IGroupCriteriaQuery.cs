@@ -3,8 +3,10 @@ namespace SpendWise.BLL.Queries.Interfaces
     /// <summary>
     /// Represents an interface for group criteria-based queries.
     /// </summary>
-    public interface IGroupCriteriaQuery : ICriteriaQuery
+    public interface IGroupCriteriaQuery : ICriteriaQuery<IGroupCriteriaQuery>
     {
+        #region Name
+
         /// <summary>
         /// Gets the name of the group.
         /// </summary>
@@ -24,6 +26,10 @@ namespace SpendWise.BLL.Queries.Interfaces
         /// Gets the partial match for the name that should not match the group name.
         /// </summary>
         string? NotNamePartialMatch { get; }
+
+        #endregion
+
+        #region Description
 
         /// <summary>
         /// Gets the description of the group.
@@ -45,25 +51,18 @@ namespace SpendWise.BLL.Queries.Interfaces
         /// </summary>
         string? NotDescriptionPartialMatch { get; }
 
-        /// <summary>
-        /// Gets a value indicating whether the group should be without a description.
-        /// </summary>
-        bool? WithoutDescription { get; }
+        #endregion
+
+        #region WithDescription
 
         /// <summary>
-        /// Gets a value indicating whether the group should not be without a description.
+        /// Gets a value indicating whether the group has a description.
         /// </summary>
-        bool? NotWithoutDescription { get; }
+        bool? WithDescription { get; }
 
-        /// <summary>
-        /// Gets the unique identifier of the group user.
-        /// </summary>
-        Guid? GroupUserId { get; }
+        #endregion
 
-        /// <summary>
-        /// Gets the unique identifier of the group user that should not match.
-        /// </summary>
-        Guid? NotGroupUserId { get; }
+        #region InvitationId
 
         /// <summary>
         /// Gets the unique identifier of the invitation.
@@ -74,5 +73,7 @@ namespace SpendWise.BLL.Queries.Interfaces
         /// Gets the unique identifier of the invitation that should not match.
         /// </summary>
         Guid? NotInvitationId { get; }
+
+        #endregion
     }
 }

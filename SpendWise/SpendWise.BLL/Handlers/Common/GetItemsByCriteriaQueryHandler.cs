@@ -15,7 +15,7 @@ namespace SpendWise.BLL.Handlers
     public abstract class GetItemsByCriteriaQueryHandler<TCreateDto, TUpdateDto, TCriteriaQuery, TDto>
         where TCreateDto : class, ICreatableDto
         where TUpdateDto : class, IUpdatableDto
-        where TCriteriaQuery : ICriteriaQuery
+        where TCriteriaQuery : class, ICriteriaQuery<TCriteriaQuery>
         where TDto : class, IQueryableDto
     {
         protected readonly IService<TCreateDto, TUpdateDto, TCriteriaQuery> _service;

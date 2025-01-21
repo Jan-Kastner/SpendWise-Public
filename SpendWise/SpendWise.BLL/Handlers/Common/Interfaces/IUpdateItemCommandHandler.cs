@@ -7,7 +7,7 @@ namespace SpendWise.BLL.Handlers.Interfaces
     public interface IUpdateItemCommandHandler<TCreateDto, TUpdateDto, TCriteriaQuery>
         where TCreateDto : class, ICreatableDto
         where TUpdateDto : class, IUpdatableDto
-        where TCriteriaQuery : ICriteriaQuery
+        where TCriteriaQuery : class, ICriteriaQuery<TCriteriaQuery>
     {
         Task Handle(UpdateCommand<TUpdateDto> command);
     }

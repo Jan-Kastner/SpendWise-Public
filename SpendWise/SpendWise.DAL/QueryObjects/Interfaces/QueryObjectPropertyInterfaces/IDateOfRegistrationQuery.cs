@@ -1,5 +1,3 @@
-using System;
-
 namespace SpendWise.DAL.QueryObjects.Interfaces.QueryPropertyInterfaces
 {
     /// <summary>

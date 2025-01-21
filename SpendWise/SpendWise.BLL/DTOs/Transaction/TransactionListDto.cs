@@ -6,7 +6,7 @@ namespace SpendWise.BLL.DTOs
     /// <summary>
     /// Represents a summary of a transaction for listing purposes.
     /// </summary>
-    public record TransactionListDto : IQueryableDto
+    public record TransactionListDto : IQueryableDto, ITransactionGroupUserDto, IIsRead
     {
         /// <summary>
         /// Gets or sets the unique identifier for the transaction.
@@ -36,7 +36,7 @@ namespace SpendWise.BLL.DTOs
         /// <summary>
         /// Gets or sets a value indicating whether the transaction has been read by the user.
         /// </summary>
-        public required bool IsRead { get; init; } = false;
+        public bool? IsRead { get; init; }
 
         /// <summary>
         /// Gets or sets the category associated with the transaction.

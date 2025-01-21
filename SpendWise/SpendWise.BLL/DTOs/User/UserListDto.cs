@@ -7,7 +7,7 @@ namespace SpendWise.BLL.DTOs
     /// <summary>
     /// Represents a summary of a user for listing purposes.
     /// </summary>
-    public record UserListDto : IQueryableDto
+    public record UserListDto : IQueryableDto, IRole
     {
         /// <summary>
         /// Gets or sets the unique identifier for the user.
@@ -17,7 +17,7 @@ namespace SpendWise.BLL.DTOs
         /// <summary>
         /// Gets or sets the role of the participant within the group.
         /// </summary>
-        public required UserRole Role { get; init; }
+        public required UserRole? Role { get; init; } = null;
 
         /// <summary>
         /// Gets or sets the name of the user. Must be at least 2 characters long.

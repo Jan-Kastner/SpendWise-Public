@@ -1,7 +1,5 @@
 using SpendWise.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using SpendWise.Common.Enums;
 
 namespace SpendWise.Common.Tests.Seeds

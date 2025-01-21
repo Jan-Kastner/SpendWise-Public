@@ -1,6 +1,6 @@
 using SpendWise.DAL.DTOs;
-using SpendWise.DAL.Entities;
-using SpendWise.DAL.QueryObjects;
+using SpendWise.DAL.Entities.Interfaces;
+using SpendWise.DAL.QueryObjects.Interfaces;
 
 namespace SpendWise.DAL.Repositories
 {

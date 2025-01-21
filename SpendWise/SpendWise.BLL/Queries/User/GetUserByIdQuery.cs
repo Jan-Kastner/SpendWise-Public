@@ -1,4 +1,3 @@
-using System;
 using SpendWise.BLL.Queries.Interfaces;
 
 namespace SpendWise.BLL.Queries
@@ -39,6 +38,11 @@ namespace SpendWise.BLL.Queries
         public bool IncludeGroupParticipants { get; }
 
         /// <summary>
+        /// Gets a value indicating whether to include the transactions in the query result.
+        /// </summary>
+        public bool IncludeTransactions { get; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="GetUserByIdQuery"/> class.
         /// </summary>
         /// <param name="id">The unique identifier of the entity.</param>
@@ -47,7 +51,8 @@ namespace SpendWise.BLL.Queries
         /// <param name="includeReceivedInvitations">A value indicating whether to include the received invitations in the query result. Default is false.</param>
         /// <param name="includeGroups">A value indicating whether to include the groups in the query result. Default is false.</param>
         /// <param name="includeGroupParticipants">A value indicating whether to include the group participants in the query result. Default is false.</param>
-        public GetUserByIdQuery(Guid id, bool includeGroupUsers = false, bool includeSentInvitations = false, bool includeReceivedInvitations = false, bool includeGroups = false, bool includeGroupParticipants = false)
+        /// <param name="includeTransactions">A value indicating whether to include the transactions in the query result. Default is false.</param>
+        public GetUserByIdQuery(Guid id, bool includeGroupUsers = false, bool includeSentInvitations = false, bool includeReceivedInvitations = false, bool includeGroups = false, bool includeGroupParticipants = false, bool includeTransactions = false)
         {
             Id = id;
             IncludeGroupUsers = includeGroupUsers;
@@ -55,6 +60,7 @@ namespace SpendWise.BLL.Queries
             IncludeReceivedInvitations = includeReceivedInvitations;
             IncludeGroups = includeGroups;
             IncludeGroupParticipants = includeGroupParticipants;
+            IncludeTransactions = includeTransactions;
         }
     }
 }

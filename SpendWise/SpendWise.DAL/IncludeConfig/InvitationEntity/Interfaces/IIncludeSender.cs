@@ -2,7 +2,7 @@ namespace SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.InvitationEntity
 {
     public interface IIncludeSender
     {
-        IIncludeReceiver IncludeReceiver(string path = "Receiver");
         IIncludeGroup IncludeGroup(string path = "Group");
+        IIncludeReceiver IncludeReceiver(string path = "Receiver");
     }
 }

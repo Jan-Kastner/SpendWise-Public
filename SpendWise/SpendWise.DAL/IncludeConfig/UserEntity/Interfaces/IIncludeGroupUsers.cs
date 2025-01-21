@@ -2,8 +2,9 @@ namespace SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.UserEntity.Inter
 {
     public interface IIncludeGroupUsers
     {
+        IThenGuIncludeTransactionGroupUsers ThenGuIncludeTransactionGroupUsers(string path = "GroupUsers.TransactionGroupUsers");
         IIncludeReceivedInvitations IncludeReceivedInvitations(string path = "ReceivedInvitations");
-        IIncludeSentInvitations IncludeSentInvitations(string path = "SentInvitations");
         IThenGuIncludeGroup ThenGuIncludeGroup(string path = "GroupUsers.Group");
+        IIncludeSentInvitations IncludeSentInvitations(string path = "SentInvitations");
     }
 }

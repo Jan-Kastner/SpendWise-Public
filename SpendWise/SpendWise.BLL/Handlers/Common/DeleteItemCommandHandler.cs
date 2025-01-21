@@ -15,7 +15,7 @@ namespace SpendWise.BLL.Handlers
     public abstract class DeleteItemCommandHandler<TCreateDto, TUpdateDto, TCriteriaQuery>
         where TCreateDto : class, ICreatableDto
         where TUpdateDto : class, IUpdatableDto
-        where TCriteriaQuery : ICriteriaQuery
+        where TCriteriaQuery : class, ICriteriaQuery<TCriteriaQuery>
     {
         protected readonly IService<TCreateDto, TUpdateDto, TCriteriaQuery> _service;
 

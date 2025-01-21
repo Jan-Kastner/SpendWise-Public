@@ -1,9 +1,9 @@
-using System;
-using System.Linq;
 using SpendWise.Common.Enums;
 using SpendWise.DAL.Entities;
 using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.UserEntity;
 using SpendWise.SpendWise.DAL.IncludeConfig.RelationsConfig.UserEntity.Interfaces;
+using SpendWise.DAL.QueryObjects.Interfaces;
+using System.Linq.Expressions;
 
 namespace SpendWise.DAL.QueryObjects
 {
@@ -36,6 +36,7 @@ namespace SpendWise.DAL.QueryObjects
             entity => entity.ReceivedInvitations,
             entity => entity.GroupUsers.Select(gu => gu.Group),
             entity => entity.GroupUsers.Select(gu => gu.Group.GroupUsers.Select(ggu => ggu.User)),
+            entity => entity.GroupUsers.Select(gu => gu.TransactionGroupUsers.Select(tgu => tgu.Transaction)),
         };
 
         #region IIdQuery
@@ -70,42 +71,42 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="name">The name to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public UserQueryObject WithName(string name) => ApplyNameFilter(name, filter => And(filter));
+        public UserQueryObject WithName(string name) => ApplyNameFilter(name, entity => entity.Name, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified name.
         /// </summary>
         /// <param name="name">The name to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public UserQueryObject OrWithName(string name) => ApplyNameFilter(name, filter => Or(filter));
+        public UserQueryObject OrWithName(string name) => ApplyNameFilter(name, entity => entity.Name, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with the specified name.
         /// </summary>
         /// <param name="name">The name to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public UserQueryObject NotWithName(string name) => ApplyNameFilter(name, filter => Not(filter));
+        public UserQueryObject NotWithName(string name) => ApplyNameFilter(name, entity => entity.Name, filter => Not(filter));
 
         /// <summary>
         /// Filters the query to include items with a partial match of the specified text in the name.
         /// </summary>
         /// <param name="text">The text to partially match in the name.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public UserQueryObject WithNamePartialMatch(string text) => ApplyNameFilter(text, filter => And(filter), true);
+        public UserQueryObject WithNamePartialMatch(string text) => ApplyNameFilter(text, entity => entity.Name, filter => And(filter), true);
 
         /// <summary>
         /// Adds an OR condition to the query to include items with a partial match of the specified text in the name.
         /// </summary>
         /// <param name="text">The text to partially match in the name.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public UserQueryObject OrWithNamePartialMatch(string text) => ApplyNameFilter(text, filter => Or(filter), true);
+        public UserQueryObject OrWithNamePartialMatch(string text) => ApplyNameFilter(text, entity => entity.Name, filter => Or(filter), true);
 
         /// <summary>
         /// Filters the query to exclude items with a partial match of the specified text in the name.
         /// </summary>
         /// <param name="text">The text to partially match in the name.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public UserQueryObject NotWithNamePartialMatch(string text) => ApplyNameFilter(text, filter => Not(filter), true);
+        public UserQueryObject NotWithNamePartialMatch(string text) => ApplyNameFilter(text, entity => entity.Name, filter => Not(filter), true);
 
         #endregion
 
@@ -116,42 +117,42 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="surname">The surname to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public UserQueryObject WithSurname(string surname) => ApplySurnameFilter(surname, filter => And(filter));
+        public UserQueryObject WithSurname(string surname) => ApplySurnameFilter(entity => entity.Surname, surname, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified surname.
         /// </summary>
         /// <param name="surname">The surname to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public UserQueryObject OrWithSurname(string surname) => ApplySurnameFilter(surname, filter => Or(filter));
+        public UserQueryObject OrWithSurname(string surname) => ApplySurnameFilter(entity => entity.Surname, surname, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with the specified surname.
         /// </summary>
         /// <param name="surname">The surname to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public UserQueryObject NotWithSurname(string surname) => ApplySurnameFilter(surname, filter => Not(filter));
+        public UserQueryObject NotWithSurname(string surname) => ApplySurnameFilter(entity => entity.Surname, surname, filter => Not(filter));
 
         /// <summary>
         /// Filters the query to include items with a partial match of the specified text in the surname.
         /// </summary>
         /// <param name="text">The text to partially match in the surname.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public UserQueryObject WithSurnamePartialMatch(string text) => ApplySurnameFilter(text, filter => And(filter), true);
+        public UserQueryObject WithSurnamePartialMatch(string text) => ApplySurnameFilter(entity => entity.Surname, text, filter => And(filter), true);
 
         /// <summary>
         /// Adds an OR condition to the query to include items with a partial match of the specified text in the surname.
         /// </summary>
         /// <param name="text">The text to partially match in the surname.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public UserQueryObject OrWithSurnamePartialMatch(string text) => ApplySurnameFilter(text, filter => Or(filter), true);
+        public UserQueryObject OrWithSurnamePartialMatch(string text) => ApplySurnameFilter(entity => entity.Surname, text, filter => Or(filter), true);
 
         /// <summary>
         /// Filters the query to exclude items with a partial match of the specified text in the surname.
         /// </summary>
         /// <param name="text">The text to partially match in the surname.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public UserQueryObject NotWithSurnamePartialMatch(string text) => ApplySurnameFilter(text, filter => Not(filter), true);
+        public UserQueryObject NotWithSurnamePartialMatch(string text) => ApplySurnameFilter(entity => entity.Surname, text, filter => Not(filter), true);
 
         #endregion
 
@@ -162,21 +163,21 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="email">The email to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public UserQueryObject WithEmail(string email) => ApplyEmailFilter(email, filter => And(filter));
+        public UserQueryObject WithEmail(string email) => ApplyEmailFilter(entity => entity.Email, email, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified email.
         /// </summary>
         /// <param name="email">The email to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public UserQueryObject OrWithEmail(string email) => ApplyEmailFilter(email, filter => Or(filter));
+        public UserQueryObject OrWithEmail(string email) => ApplyEmailFilter(entity => entity.Email, email, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with the specified email.
         /// </summary>
         /// <param name="email">The email to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public UserQueryObject NotWithEmail(string email) => ApplyEmailFilter(email, filter => Not(filter));
+        public UserQueryObject NotWithEmail(string email) => ApplyEmailFilter(entity => entity.Email, email, filter => Not(filter));
 
         #endregion
 
@@ -187,21 +188,21 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="password">The password to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public UserQueryObject WithPassword(string password) => ApplyPasswordFilter(password, filter => And(filter));
+        public UserQueryObject WithPassword(string password) => ApplyPasswordFilter(entity => entity.PasswordHash, password, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified password.
         /// </summary>
         /// <param name="password">The password to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public UserQueryObject OrWithPassword(string password) => ApplyPasswordFilter(password, filter => Or(filter));
+        public UserQueryObject OrWithPassword(string password) => ApplyPasswordFilter(entity => entity.PasswordHash, password, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with the specified password.
         /// </summary>
         /// <param name="password">The password to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public UserQueryObject NotWithPassword(string password) => ApplyPasswordFilter(password, filter => Not(filter));
+        public UserQueryObject NotWithPassword(string password) => ApplyPasswordFilter(entity => entity.PasswordHash, password, filter => Not(filter));
 
         #endregion
 
@@ -212,21 +213,21 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="dateOfRegistration">The date of registration to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public UserQueryObject WithDateOfRegistration(DateTime dateOfRegistration) => ApplyDateOfRegistrationFilter(dateOfRegistration, filter => And(filter));
+        public UserQueryObject WithDateOfRegistration(DateTime dateOfRegistration) => ApplyDateOfRegistrationFilter(entity => entity.DateOfRegistration, dateOfRegistration, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified date of registration.
         /// </summary>
         /// <param name="dateOfRegistration">The date of registration to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public UserQueryObject OrWithDateOfRegistration(DateTime dateOfRegistration) => ApplyDateOfRegistrationFilter(dateOfRegistration, filter => Or(filter));
+        public UserQueryObject OrWithDateOfRegistration(DateTime dateOfRegistration) => ApplyDateOfRegistrationFilter(entity => entity.DateOfRegistration, dateOfRegistration, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with the specified date of registration.
         /// </summary>
         /// <param name="dateOfRegistration">The date of registration to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public UserQueryObject NotWithDateOfRegistration(DateTime dateOfRegistration) => ApplyDateOfRegistrationFilter(dateOfRegistration, filter => Not(filter));
+        public UserQueryObject NotWithDateOfRegistration(DateTime dateOfRegistration) => ApplyDateOfRegistrationFilter(entity => entity.DateOfRegistration, dateOfRegistration, filter => Not(filter));
 
         #endregion
 
@@ -236,37 +237,37 @@ namespace SpendWise.DAL.QueryObjects
         /// Filters the query to include items with a photo.
         /// </summary>
         /// <returns>The query object with the applied filter.</returns>
-        public UserQueryObject WithPhoto() => ApplyPhotoFilter(true, filter => And(filter));
+        public UserQueryObject WithPhoto() => ApplyPhotoFilter(entity => entity.Photo, true, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with a photo.
         /// </summary>
         /// <returns>The query object with the applied OR condition.</returns>
-        public UserQueryObject OrWithPhoto() => ApplyPhotoFilter(true, filter => Or(filter));
+        public UserQueryObject OrWithPhoto() => ApplyPhotoFilter(entity => entity.Photo, true, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with a photo.
         /// </summary>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public UserQueryObject NotWithPhoto() => ApplyPhotoFilter(true, filter => Not(filter));
+        public UserQueryObject NotWithPhoto() => ApplyPhotoFilter(entity => entity.Photo, true, filter => Not(filter));
 
         /// <summary>
         /// Filters the query to include items without a photo.
         /// </summary>
         /// <returns>The query object with the applied filter.</returns>
-        public UserQueryObject WithoutPhoto() => ApplyPhotoFilter(false, filter => And(filter));
+        public UserQueryObject WithoutPhoto() => ApplyPhotoFilter(entity => entity.Photo, false, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items without a photo.
         /// </summary>
         /// <returns>The query object with the applied OR condition.</returns>
-        public UserQueryObject OrWithoutPhoto() => ApplyPhotoFilter(false, filter => Or(filter));
+        public UserQueryObject OrWithoutPhoto() => ApplyPhotoFilter(entity => entity.Photo, false, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items without a photo.
         /// </summary>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public UserQueryObject NotWithoutPhoto() => ApplyPhotoFilter(false, filter => Not(filter));
+        public UserQueryObject NotWithoutPhoto() => ApplyPhotoFilter(entity => entity.Photo, false, filter => Not(filter));
 
         #endregion
 
@@ -276,37 +277,37 @@ namespace SpendWise.DAL.QueryObjects
         /// Filters the query to include items with confirmed email.
         /// </summary>
         /// <returns>The query object with the applied filter.</returns>
-        public UserQueryObject WithEmailConfirmed() => ApplyEmailConfirmedFilter(true, filter => And(filter));
+        public UserQueryObject WithEmailConfirmed() => ApplyEmailConfirmedFilter(entity => entity.IsEmailConfirmed, true, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with confirmed email.
         /// </summary>
         /// <returns>The query object with the applied OR condition.</returns>
-        public UserQueryObject OrWithEmailConfirmed() => ApplyEmailConfirmedFilter(true, filter => Or(filter));
+        public UserQueryObject OrWithEmailConfirmed() => ApplyEmailConfirmedFilter(entity => entity.IsEmailConfirmed, true, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with confirmed email.
         /// </summary>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public UserQueryObject NotWithEmailConfirmed() => ApplyEmailConfirmedFilter(true, filter => Not(filter));
+        public UserQueryObject NotWithEmailConfirmed() => ApplyEmailConfirmedFilter(entity => entity.IsEmailConfirmed, true, filter => Not(filter));
 
         /// <summary>
         /// Filters the query to include items without confirmed email.
         /// </summary>
         /// <returns>The query object with the applied filter.</returns>
-        public UserQueryObject WithoutEmailConfirmed() => ApplyEmailConfirmedFilter(false, filter => And(filter));
+        public UserQueryObject WithoutEmailConfirmed() => ApplyEmailConfirmedFilter(entity => entity.IsEmailConfirmed, false, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items without confirmed email.
         /// </summary>
         /// <returns>The query object with the applied OR condition.</returns>
-        public UserQueryObject OrWithoutEmailConfirmed() => ApplyEmailConfirmedFilter(false, filter => Or(filter));
+        public UserQueryObject OrWithoutEmailConfirmed() => ApplyEmailConfirmedFilter(entity => entity.IsEmailConfirmed, false, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items without confirmed email.
         /// </summary>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public UserQueryObject NotWithoutEmailConfirmed() => ApplyEmailConfirmedFilter(false, filter => Not(filter));
+        public UserQueryObject NotWithoutEmailConfirmed() => ApplyEmailConfirmedFilter(entity => entity.IsEmailConfirmed, false, filter => Not(filter));
 
         #endregion
 
@@ -316,37 +317,37 @@ namespace SpendWise.DAL.QueryObjects
         /// Filters the query to include items with two-factor authentication enabled.
         /// </summary>
         /// <returns>The query object with the applied filter.</returns>
-        public UserQueryObject WithTwoFactorEnabled() => ApplyTwoFactorEnabledFilter(true, filter => And(filter));
+        public UserQueryObject WithTwoFactorEnabled() => ApplyTwoFactorEnabledFilter(entity => entity.IsTwoFactorEnabled, true, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with two-factor authentication enabled.
         /// </summary>
         /// <returns>The query object with the applied OR condition.</returns>
-        public UserQueryObject OrWithTwoFactorEnabled() => ApplyTwoFactorEnabledFilter(true, filter => Or(filter));
+        public UserQueryObject OrWithTwoFactorEnabled() => ApplyTwoFactorEnabledFilter(entity => entity.IsTwoFactorEnabled, true, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with two-factor authentication enabled.
         /// </summary>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public UserQueryObject NotWithTwoFactorEnabled() => ApplyTwoFactorEnabledFilter(true, filter => Not(filter));
+        public UserQueryObject NotWithTwoFactorEnabled() => ApplyTwoFactorEnabledFilter(entity => entity.IsTwoFactorEnabled, true, filter => Not(filter));
 
         /// <summary>
         /// Filters the query to include items without two-factor authentication enabled.
         /// </summary>
         /// <returns>The query object with the applied filter.</returns>
-        public UserQueryObject WithoutTwoFactorEnabled() => ApplyTwoFactorEnabledFilter(false, filter => And(filter));
+        public UserQueryObject WithoutTwoFactorEnabled() => ApplyTwoFactorEnabledFilter(entity => entity.IsTwoFactorEnabled, false, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items without two-factor authentication enabled.
         /// </summary>
         /// <returns>The query object with the applied OR condition.</returns>
-        public UserQueryObject OrWithoutTwoFactorEnabled() => ApplyTwoFactorEnabledFilter(false, filter => Or(filter));
+        public UserQueryObject OrWithoutTwoFactorEnabled() => ApplyTwoFactorEnabledFilter(entity => entity.IsTwoFactorEnabled, false, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items without two-factor authentication enabled.
         /// </summary>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public UserQueryObject NotWithoutTwoFactorEnabled() => ApplyTwoFactorEnabledFilter(false, filter => Not(filter));
+        public UserQueryObject NotWithoutTwoFactorEnabled() => ApplyTwoFactorEnabledFilter(entity => entity.IsTwoFactorEnabled, false, filter => Not(filter));
 
         #endregion
 
@@ -357,39 +358,39 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="token">The reset password token to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public UserQueryObject WithResetPasswordToken(string token) => ApplyResetPasswordTokenFilter(token, filter => And(filter));
+        public UserQueryObject WithResetPasswordToken(string token) => ApplyResetPasswordTokenFilter(entity => entity.ResetPasswordToken, token, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified reset password token.
         /// </summary>
         /// <param name="token">The reset password token to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public UserQueryObject OrWithResetPasswordToken(string token) => ApplyResetPasswordTokenFilter(token, filter => Or(filter));
+        public UserQueryObject OrWithResetPasswordToken(string token) => ApplyResetPasswordTokenFilter(entity => entity.ResetPasswordToken, token, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items with the specified reset password token.
         /// </summary>
         /// <param name="token">The reset password token to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public UserQueryObject NotWithResetPasswordToken(string token) => ApplyResetPasswordTokenFilter(token, filter => Not(filter));
+        public UserQueryObject NotWithResetPasswordToken(string token) => ApplyResetPasswordTokenFilter(entity => entity.ResetPasswordToken, token, filter => Not(filter));
 
         /// <summary>
         /// Filters the query to include items without a reset password token.
         /// </summary>
         /// <returns>The query object with the applied filter.</returns>
-        public UserQueryObject WithoutResetPasswordToken() => ApplyResetPasswordTokenFilter(null, filter => And(filter));
+        public UserQueryObject WithoutResetPasswordToken() => ApplyResetPasswordTokenFilter(entity => entity.ResetPasswordToken, null, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items without a reset password token.
         /// </summary>
         /// <returns>The query object with the applied OR condition.</returns>
-        public UserQueryObject OrWithoutResetPasswordToken() => ApplyResetPasswordTokenFilter(null, filter => Or(filter));
+        public UserQueryObject OrWithoutResetPasswordToken() => ApplyResetPasswordTokenFilter(entity => entity.ResetPasswordToken, null, filter => Or(filter));
 
         /// <summary>
         /// Filters the query to exclude items without a reset password token.
         /// </summary>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public UserQueryObject NotWithoutResetPasswordToken() => ApplyResetPasswordTokenFilter(null, filter => Not(filter));
+        public UserQueryObject NotWithoutResetPasswordToken() => ApplyResetPasswordTokenFilter(entity => entity.ResetPasswordToken, null, filter => Not(filter));
 
         #endregion
 
@@ -400,20 +401,20 @@ namespace SpendWise.DAL.QueryObjects
         /// </summary>
         /// <param name="theme">The preferred theme to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        public UserQueryObject WithPreferredTheme(Theme theme) => ApplyPreferredThemeFilter(theme, filter => And(filter));
+        public UserQueryObject WithPreferredTheme(Theme theme) => ApplyPreferredThemeFilter(entity => entity.PreferredTheme, theme, filter => And(filter));
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified preferred theme.
         /// </summary>
         /// <param name="theme">The preferred theme to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        public UserQueryObject OrWithPreferredTheme(Theme theme) => ApplyPreferredThemeFilter(theme, filter => Or(filter));
+        public UserQueryObject OrWithPreferredTheme(Theme theme) => ApplyPreferredThemeFilter(entity => entity.PreferredTheme, theme, filter => Or(filter));
         /// <summary>
         /// Filters the query to exclude items with the specified preferred theme.
         /// </summary>
         /// <param name="theme">The preferred theme to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        public UserQueryObject NotWithPreferredTheme(Theme theme) => ApplyPreferredThemeFilter(theme, filter => Not(filter));
+        public UserQueryObject NotWithPreferredTheme(Theme theme) => ApplyPreferredThemeFilter(entity => entity.PreferredTheme, theme, filter => Not(filter));
 
         #endregion
 
@@ -527,6 +528,42 @@ namespace SpendWise.DAL.QueryObjects
         }
 
         #endregion
+
+        #region IGroupQuery
+
+        /// <summary>
+        /// Filters the query to include items with the specified group ID.
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        public UserQueryObject WithGroup(Guid groupId)
+        {
+            And(entity => entity.GroupUsers.Any(gu => gu.GroupId == groupId));
+            return this;
+        }
+
+        /// <summary>
+        /// Adds an OR condition to the query to include items with the specified group ID.
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        public UserQueryObject OrWithGroup(Guid groupId)
+        {
+            Or(entity => entity.GroupUsers.Any(gu => gu.GroupId == groupId));
+            return this;
+        }
+        #endregion
+
+        /// <summary>
+        /// Filters the query to exclude items with the specified group ID.
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        public UserQueryObject NotWithGroup(Guid groupId)
+        {
+            Not(entity => entity.GroupUsers.Any(gu => gu.GroupId == groupId));
+            return this;
+        }
 
         #region FULL NAME AND EMAIL DOMAIN FILTERS
 

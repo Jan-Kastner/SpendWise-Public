@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 namespace SpendWise.DAL.DTOs
 {
     /// <summary>

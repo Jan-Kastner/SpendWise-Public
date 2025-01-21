@@ -139,19 +139,13 @@ namespace SpendWise.BLL.Services
             if (query.NotDescriptionPartialMatch != null)
                 dalQuery = dalQuery.NotWithDescriptionPartialMatch(query.NotDescriptionPartialMatch);
 
-            if (query.WithoutDescription.HasValue)
+            if (query.WithDescription.HasValue)
             {
-                if (query.WithoutDescription.Value)
-                    dalQuery = dalQuery.WithoutDescription();
-                else
+                if (query.WithDescription.Value)
                     dalQuery = dalQuery.NotWithoutDescription();
+                else
+                    dalQuery = dalQuery.WithoutDescription();
             }
-
-            if (query.GroupUserId.HasValue)
-                dalQuery = dalQuery.WithGroupUser(query.GroupUserId.Value);
-
-            if (query.NotGroupUserId.HasValue)
-                dalQuery = dalQuery.NotWithGroupUser(query.NotGroupUserId.Value);
 
             if (query.InvitationId.HasValue)
                 dalQuery = dalQuery.WithInvitation(query.InvitationId.Value);

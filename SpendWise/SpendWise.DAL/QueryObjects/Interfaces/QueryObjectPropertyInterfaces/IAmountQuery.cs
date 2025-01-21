@@ -12,20 +12,62 @@ namespace SpendWise.DAL.QueryObjects.Interfaces.QueryPropertyInterfaces
         /// </summary>
         /// <param name="amount">The amount to filter by.</param>
         /// <returns>The query object with the applied filter.</returns>
-        T WithAmount(decimal amount);
+        T WithAmountEqual(decimal amount);
 
         /// <summary>
         /// Adds an OR condition to the query to include items with the specified amount.
         /// </summary>
         /// <param name="amount">The amount to filter by.</param>
         /// <returns>The query object with the applied OR condition.</returns>
-        T OrWithAmount(decimal amount);
+        T OrWithAmountEqual(decimal amount);
 
         /// <summary>
         /// Filters the query to exclude items with the specified amount.
         /// </summary>
         /// <param name="amount">The amount to exclude.</param>
         /// <returns>The query object with the applied exclusion filter.</returns>
-        T NotWithAmount(decimal amount);
+        T NotWithAmountEqual(decimal amount);
+
+        /// <summary>
+        /// Filters the query to include items with the amount greater than the specified value.
+        /// </summary>
+        /// <param name="amount">The amount to filter by.</param>
+        /// <returns>The query object with the applied filter.</returns>
+        T WithAmountGreaterThan(decimal amount);
+
+        /// <summary>
+        /// Adds an OR condition to the query to include items with the amount greater than the specified value.
+        /// </summary>
+        /// <param name="amount">The amount to filter by.</param>
+        /// <returns>The query object with the applied OR condition.</returns>
+        T OrWithAmountGreaterThan(decimal amount);
+
+        /// <summary>
+        /// Filters the query to exclude items with the amount greater than the specified value.
+        /// </summary>
+        /// <param name="amount">The amount to exclude.</param>
+        /// <returns>The query object with the applied exclusion filter.</returns>
+        T NotWithAmountGreaterThan(decimal amount);
+
+        /// <summary>
+        /// Filters the query to include items with the amount less than the specified value.
+        /// </summary>
+        /// <param name="amount">The amount to filter by.</param>
+        /// <returns>The query object with the applied filter.</returns>
+        T WithAmountLessThan(decimal amount);
+
+        /// <summary>
+        /// Adds an OR condition to the query to include items with the amount less than the specified value.
+        /// </summary>
+        /// <param name="amount">The amount to filter by.</param>
+        /// <returns>The query object with the applied OR condition.</returns>
+        T OrWithAmountLessThan(decimal amount);
+
+        /// <summary>
+        /// Filters the query to exclude items with the amount less than the specified value.
+        /// </summary>
+        /// <param name="amount">The amount to exclude.</param>
+        /// <returns>The query object with the applied exclusion filter.</returns>
+        T NotWithAmountLessThan(decimal amount);
     }
 }

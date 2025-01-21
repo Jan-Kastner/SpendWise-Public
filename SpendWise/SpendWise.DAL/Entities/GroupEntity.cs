@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using SpendWise.DAL.Entities.Interfaces;
 
 namespace SpendWise.DAL.Entities
 {

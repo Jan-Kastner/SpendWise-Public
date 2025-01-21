@@ -1,9 +1,7 @@
-using SpendWise.DAL.Entities;
-using System;
-using System.Collections.Generic;
+using SpendWise.DAL.Entities.Interfaces;
 using System.Linq.Expressions;
 
-namespace SpendWise.DAL.QueryObjects
+namespace SpendWise.DAL.QueryObjects.Interfaces
 {
     /// <summary>
     /// Represents a query object for filtering entities of type <typeparamref name="TEntity"/>.

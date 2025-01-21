@@ -167,7 +167,7 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
 
             // Act
             var limits = await _unitOfWork.LimitRepository
-                .ListAsync(queryObject.WithAmount(limitAmount));
+                .ListAsync(queryObject.WithAmountEqual(limitAmount));
 
             // Assert
             Assert.NotNull(limits);
@@ -189,7 +189,7 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
 
             // Act
             var limits = await _unitOfWork.LimitRepository
-                .ListAsync(queryObject.OrWithAmount(amount1).OrWithAmount(amount2));
+                .ListAsync(queryObject.OrWithAmountEqual(amount1).OrWithAmountEqual(amount2));
 
             // Assert
             Assert.NotNull(limits);
@@ -209,7 +209,7 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
 
             // Act
             var limits = await _unitOfWork.LimitRepository
-                .ListAsync(queryObject.NotWithAmount(excludedAmount));
+                .ListAsync(queryObject.NotWithAmountEqual(excludedAmount));
 
             // Assert
             Assert.NotNull(limits);
@@ -305,7 +305,7 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             var limits = await _unitOfWork.LimitRepository
                 .ListAsync(
                     queryObject.WithGroupUser(groupUserId) // AND condition
-                               .OrWithAmount(limitAmount)    // OR condition
+                               .OrWithAmountEqual(limitAmount)    // OR condition
                                .NotWithNoticeType(excludedNoticeType) // NOT condition
                 );
 
@@ -371,7 +371,7 @@ namespace SpendWise.DAL.Tests.QueryObjectTests
             // Act
             var limits = await _unitOfWork.LimitRepository
                 .ListAsync(
-                    queryObject.WithAmount(limitAmount) // AND condition
+                    queryObject.WithAmountEqual(limitAmount) // AND condition
                                .OrWithGroupUser(groupUserId) // OR condition
                                .NotWithId(excludedLimitId) // NOT condition
                 );

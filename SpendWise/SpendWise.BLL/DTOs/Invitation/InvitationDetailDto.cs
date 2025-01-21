@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using SpendWise.BLL.DTOs.Interfaces;
 
 namespace SpendWise.BLL.DTOs

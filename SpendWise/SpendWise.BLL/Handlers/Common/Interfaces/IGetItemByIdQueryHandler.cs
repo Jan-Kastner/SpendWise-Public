@@ -7,7 +7,7 @@ namespace SpendWise.BLL.Handlers.Interfaces
     public interface IGetItemByIdQueryHandler<TCreateDto, TUpdateDto, TCriteriaQuery, TDto>
         where TCreateDto : class, ICreatableDto
         where TUpdateDto : class, IUpdatableDto
-        where TCriteriaQuery : ICriteriaQuery
+        where TCriteriaQuery : class, ICriteriaQuery<TCriteriaQuery>
         where TDto : class, IQueryableDto
     {
         Task<TDto> Handle(IIdQuery query);

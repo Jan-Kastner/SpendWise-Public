@@ -1,14 +1,9 @@
 ﻿using AutoMapper;
-using SpendWise.DAL.Entities;
+using SpendWise.DAL.Entities.Interfaces;
 using SpendWise.DAL.DTOs;
 using Microsoft.EntityFrameworkCore;
 using SpendWise.DAL.dbContext;
-using LinqKit;
-using SpendWise.DAL.QueryObjects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using SpendWise.DAL.QueryObjects.Interfaces;
 
 namespace SpendWise.DAL.Repositories
 {
